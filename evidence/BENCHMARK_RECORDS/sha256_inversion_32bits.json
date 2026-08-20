@@ -1,0 +1,72 @@
+{
+  "benchmark": "sha256_inversion_32bits",
+  "prefix_bits": 32,
+  "rounds": 16,
+  "variables": 2048,
+  "clauses_before_target": 2528,
+  "target_clauses_count": 32,
+  "total_clauses": 2560,
+  "m_over_n": 1.25,
+  "timestamp": "2026-08-18T19:02:29.167601",
+  "spectral_telemetry": {
+    "incidence_rows": 2560,
+    "incidence_cols": 2048,
+    "incidence_nnz": 7136,
+    "incidence_density": 0.001361083984375,
+    "laplacian_nnz": 5056,
+    "laplacian_density": 0.0012054443359375,
+    "lambda_1": 0.24122951924800873,
+    "lambda_2": 0.24122951924800873,
+    "lambda_3": 0.24122951924800873,
+    "fiedler_gap": 0.0,
+    "norm_fiedler_gap": 0.0,
+    "gate_state": "TRIGGERED_DEGENERACY_SUPPRESSED",
+    "sbp_budget": 4096,
+    "candidates_total": 1851889,
+    "accepted_sbps_count": 0,
+    "rejected_degeneracy": 1851889,
+    "rejected_degree_mismatch": 0,
+    "rejected_budget_overflow": 0,
+    "acceptance_ratio": 0.0,
+    "timing": {
+      "matrix_build_time": 0.2622881999996025,
+      "eigen_decomposition_time": 3.5796534000037354,
+      "filter_time": 1.9507703999988735,
+      "total_spectral_time": 5.792712000002211
+    }
+  },
+  "ablation_modes": {
+    "mode_a_baseline": {
+      "result": "SAT",
+      "solver_time": 0.00035820000630337745,
+      "stats": {
+        "restarts": 1,
+        "conflicts": 0,
+        "decisions": 1522,
+        "propagations": 2049
+      }
+    },
+    "mode_b_polarity_only": {
+      "result": "SAT",
+      "solver_time": 0.0003099999958067201,
+      "total_time": 5.793021999998018,
+      "stats": {
+        "restarts": 1,
+        "conflicts": 0,
+        "decisions": 1972,
+        "propagations": 2049
+      }
+    },
+    "mode_c_phase5_gated": {
+      "result": "SAT",
+      "solver_time": 0.000312700001813937,
+      "total_time": 5.793024700004025,
+      "stats": {
+        "restarts": 1,
+        "conflicts": 0,
+        "decisions": 1972,
+        "propagations": 2049
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "input_bits": 224,
+  "output_bits": 32,
+  "seed": 42,
+  "variables": 2048,
+  "base_clauses": 2528,
+  "input_clauses": 224,
+  "output_clauses": 32,
+  "total_clauses": 2784,
+  "m_over_n": 1.359375,
+  "regime": "SEARCH_EMERGING",
+  "spectral_telemetry": {
+    "incidence_rows": 2784,
+    "incidence_cols": 2048,
+    "incidence_nnz": 7360,
+    "incidence_density": 0.0012908584770114943,
+    "laplacian_nnz": 5056,
+    "laplacian_density": 0.0012054443359375,
+    "lambda_1": 0.24122951924800873,
+    "lambda_2": 0.24122951924800873,
+    "lambda_3": 0.24122951924800873,
+    "fiedler_gap": 0.0,
+    "norm_fiedler_gap": 0.0,
+    "gate_state": "TRIGGERED_DEGENERACY_SUPPRESSED",
+    "candidates_total": 0,
+    "accepted_sbps_count": 0,
+    "total_spectral_time": 3.606876599995303
+  },
+  "mode_a": {
+    "result": "SAT",
+    "time": 0.0013598000005003996,
+    "stats": {
+      "restarts": 1,
+      "conflicts": 9,
+      "decisions": 12158,
+      "propagations": 16767
+    }
+  },
+  "mode_b": {
+    "result": "SAT",
+    "time": 0.001750499999616295,
+    "stats": {
+      "restarts": 1,
+      "conflicts": 12,
+      "decisions": 19129,
+      "propagations": 20297
+    }
+  },
+  "mode_c": {
+    "result": "SAT",
+    "time": 0.0017544000002089888,
+    "stats": {
+      "restarts": 1,
+      "conflicts": 12,
+      "decisions": 19129,
+      "propagations": 20297
+    }
+  }
+}

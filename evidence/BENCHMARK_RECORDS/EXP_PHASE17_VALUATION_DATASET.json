@@ -1,0 +1,240 @@
+{
+  "summary": {
+    "regime_1_separation_rate_pct": 100.0,
+    "regime_2_separation_rate_pct": 100.0,
+    "all_6_gates_pass_rate_pct": 100.0,
+    "overall_soundness_rate_pct": 100.0
+  },
+  "collision_pairs": [
+    {
+      "pair_id": 1,
+      "regime": "REGIME_1_QUADRATIC_COLLISION",
+      "degree": 2,
+      "n_vars_base": 32,
+      "structural_rank_identical": true,
+      "shared_rank": 21,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 2,
+      "regime": "REGIME_1_QUADRATIC_COLLISION",
+      "degree": 2,
+      "n_vars_base": 32,
+      "structural_rank_identical": true,
+      "shared_rank": 21,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 3,
+      "regime": "REGIME_1_QUADRATIC_COLLISION",
+      "degree": 2,
+      "n_vars_base": 32,
+      "structural_rank_identical": true,
+      "shared_rank": 20,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 4,
+      "regime": "REGIME_1_QUADRATIC_COLLISION",
+      "degree": 2,
+      "n_vars_base": 32,
+      "structural_rank_identical": true,
+      "shared_rank": 21,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 5,
+      "regime": "REGIME_1_QUADRATIC_COLLISION",
+      "degree": 2,
+      "n_vars_base": 32,
+      "structural_rank_identical": true,
+      "shared_rank": 20,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 6,
+      "regime": "REGIME_2_CUBIC_COLLISION",
+      "degree": 3,
+      "n_vars_base": 28,
+      "structural_rank_identical": true,
+      "shared_rank": 17,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 7,
+      "regime": "REGIME_2_CUBIC_COLLISION",
+      "degree": 3,
+      "n_vars_base": 28,
+      "structural_rank_identical": true,
+      "shared_rank": 16,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 8,
+      "regime": "REGIME_2_CUBIC_COLLISION",
+      "degree": 3,
+      "n_vars_base": 28,
+      "structural_rank_identical": true,
+      "shared_rank": 20,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 9,
+      "regime": "REGIME_2_CUBIC_COLLISION",
+      "degree": 3,
+      "n_vars_base": 28,
+      "structural_rank_identical": true,
+      "shared_rank": 19,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    },
+    {
+      "pair_id": 10,
+      "regime": "REGIME_2_CUBIC_COLLISION",
+      "degree": 3,
+      "n_vars_base": 28,
+      "structural_rank_identical": true,
+      "shared_rank": 19,
+      "sat_valuation_score": 0.0,
+      "unsat_valuation_score": -1.0,
+      "valuation_separated": true,
+      "sat_conflicts": 0,
+      "unsat_conflicts": 0,
+      "gates_passed": {
+        "G1_compression": true,
+        "G2_construction_poly": true,
+        "G3_preservation": true,
+        "G4_collision_separation": true,
+        "G5_search_elimination": true,
+        "G6_no_exp_work_audit": true
+      },
+      "all_6_gates_passed": true,
+      "soundness": true
+    }
+  ]
+}

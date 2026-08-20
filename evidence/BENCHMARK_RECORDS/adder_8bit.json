@@ -1,0 +1,40 @@
+{
+  "instance": "adder_8bit",
+  "timestamp": "2026-08-18T18:45:13.892401",
+  "variables": 33,
+  "clauses": 121,
+  "diagnostics": {
+    "incidence_rows": 121,
+    "incidence_cols": 33,
+    "incidence_nnz": 409,
+    "incidence_density": 0.10242925118958177,
+    "laplacian_nnz": 129,
+    "laplacian_density": 0.1184573002754821,
+    "lambda_1": 2.5968756675720215,
+    "lambda_2": 8.645598411560059,
+    "lambda_3": 8.90034008026123,
+    "fiedler_gap": 0.2547416687011719,
+    "norm_fiedler_gap": 0.02946489382338904
+  },
+  "ablation_modes": {
+    "mode_a_baseline": {
+      "result": "SAT",
+      "solver_time": 9.309999586548656e-05,
+      "sbp_count": 0,
+      "sbp_ratio": 0.0
+    },
+    "mode_b_polarity_only": {
+      "result": "SAT",
+      "solver_time": 0.001316699999733828,
+      "sbp_count": 0,
+      "sbp_ratio": 0.0
+    },
+    "mode_c_full_spectral": {
+      "result": "SAT",
+      "solver_time": 0.008558800000173505,
+      "sbp_count": 36,
+      "sbp_ratio": 0.2975206611570248,
+      "degeneracy_gated": false
+    }
+  }
+}

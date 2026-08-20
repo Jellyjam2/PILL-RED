@@ -1,0 +1,412 @@
+[
+  {
+    "seed": 42,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "modes": [
+      {
+        "mode": "Mode A (Pure Glucose3)",
+        "result": "SAT",
+        "solver_time": 0.0015140000032261014,
+        "total_time": 0.0015140000032261014,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 12,
+          "decisions": 12515,
+          "propagations": 17391
+        },
+        "sbp_injected": 0
+      },
+      {
+        "mode": "Mode B (Fiedler + Phase-V Gate)",
+        "result": "SAT",
+        "prep_time": 4.117582199993194,
+        "solver_time": 0.004501299998082686,
+        "total_time": 4.122083499991277,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 19,
+          "decisions": 24562,
+          "propagations": 26180
+        },
+        "sbp_injected": 0,
+        "fiedler_gap": 0.0,
+        "gated": true
+      },
+      {
+        "mode": "Mode C (Higher Modes v_2..v_k)",
+        "result": "SAT",
+        "prep_time": 3.72820390000561,
+        "solver_time": 0.0022610999949392863,
+        "total_time": 3.7304650000005495,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 19,
+          "decisions": 24467,
+          "propagations": 26168
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode D (Projector Operator P)",
+        "result": "UNSAT",
+        "prep_time": 7.000805200004834,
+        "solver_time": 1.5400000847876072e-05,
+        "total_time": 7.000820600005682,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 363
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode E (Boundary-Conditioned Manifold)",
+        "result": "SAT",
+        "prep_time": 3.781244500001776,
+        "solver_time": 0.003294000001915265,
+        "total_time": 3.7845385000036913,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 11,
+          "decisions": 15600,
+          "propagations": 16697
+        },
+        "sbp_injected": 0,
+        "delta_f_boundary": 0.0,
+        "gated": true
+      }
+    ]
+  },
+  {
+    "seed": 43,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "modes": [
+      {
+        "mode": "Mode A (Pure Glucose3)",
+        "result": "SAT",
+        "solver_time": 0.0022046000012778677,
+        "total_time": 0.0022046000012778677,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 17,
+          "decisions": 18154,
+          "propagations": 25086
+        },
+        "sbp_injected": 0
+      },
+      {
+        "mode": "Mode B (Fiedler + Phase-V Gate)",
+        "result": "SAT",
+        "prep_time": 3.5558971999998903,
+        "solver_time": 0.0018072999955620617,
+        "total_time": 3.5577044999954524,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 18175,
+          "propagations": 19486
+        },
+        "sbp_injected": 0,
+        "fiedler_gap": 0.0,
+        "gated": true
+      },
+      {
+        "mode": "Mode C (Higher Modes v_2..v_k)",
+        "result": "UNSAT",
+        "prep_time": 3.5464993999994476,
+        "solver_time": 2.0600004063453525e-05,
+        "total_time": 3.546520000003511,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 366
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode D (Projector Operator P)",
+        "result": "UNSAT",
+        "prep_time": 5.884743999995408,
+        "solver_time": 1.68999977177009e-05,
+        "total_time": 5.884760899993125,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 366
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode E (Boundary-Conditioned Manifold)",
+        "result": "SAT",
+        "prep_time": 6.260229600004095,
+        "solver_time": 0.002274899998155888,
+        "total_time": 6.262504500002251,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 15,
+          "decisions": 19528,
+          "propagations": 21020
+        },
+        "sbp_injected": 0,
+        "delta_f_boundary": 0.0,
+        "gated": true
+      }
+    ]
+  },
+  {
+    "seed": 44,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "modes": [
+      {
+        "mode": "Mode A (Pure Glucose3)",
+        "result": "SAT",
+        "solver_time": 0.00318689999403432,
+        "total_time": 0.00318689999403432,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 12343,
+          "propagations": 17199
+        },
+        "sbp_injected": 0
+      },
+      {
+        "mode": "Mode B (Fiedler + Phase-V Gate)",
+        "result": "SAT",
+        "prep_time": 3.93084049999743,
+        "solver_time": 0.0019333000018377788,
+        "total_time": 3.932773799999268,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 19378,
+          "propagations": 20796
+        },
+        "sbp_injected": 0,
+        "fiedler_gap": 0.0,
+        "gated": true
+      },
+      {
+        "mode": "Mode C (Higher Modes v_2..v_k)",
+        "result": "UNSAT",
+        "prep_time": 3.4162393000005977,
+        "solver_time": 1.5799996617715806e-05,
+        "total_time": 3.4162550999972154,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 359
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode D (Projector Operator P)",
+        "result": "UNSAT",
+        "prep_time": 5.447969900000317,
+        "solver_time": 1.4000004739500582e-05,
+        "total_time": 5.447983900005056,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 359
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode E (Boundary-Conditioned Manifold)",
+        "result": "SAT",
+        "prep_time": 3.6301755999957095,
+        "solver_time": 0.0014491000038105994,
+        "total_time": 3.63162469999952,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 10,
+          "decisions": 13745,
+          "propagations": 14972
+        },
+        "sbp_injected": 0,
+        "delta_f_boundary": 0.0,
+        "gated": true
+      }
+    ]
+  },
+  {
+    "seed": 45,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "modes": [
+      {
+        "mode": "Mode A (Pure Glucose3)",
+        "result": "SAT",
+        "solver_time": 0.001965600000403356,
+        "total_time": 0.001965600000403356,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 16,
+          "decisions": 15973,
+          "propagations": 22126
+        },
+        "sbp_injected": 0
+      },
+      {
+        "mode": "Mode B (Fiedler + Phase-V Gate)",
+        "result": "SAT",
+        "prep_time": 3.517961199999263,
+        "solver_time": 0.0018734000041149557,
+        "total_time": 3.519834600003378,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 12,
+          "decisions": 18427,
+          "propagations": 19791
+        },
+        "sbp_injected": 0,
+        "fiedler_gap": 0.0,
+        "gated": true
+      },
+      {
+        "mode": "Mode C (Higher Modes v_2..v_k)",
+        "result": "UNSAT",
+        "prep_time": 3.5590522999991663,
+        "solver_time": 1.2600001355167478e-05,
+        "total_time": 3.5590649000005214,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 344
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode D (Projector Operator P)",
+        "result": "UNSAT",
+        "prep_time": 5.251638900001126,
+        "solver_time": 2.3799999326001853e-05,
+        "total_time": 5.251662700000452,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 344
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode E (Boundary-Conditioned Manifold)",
+        "result": "SAT",
+        "prep_time": 3.5315396999940276,
+        "solver_time": 0.002026900001510512,
+        "total_time": 3.533566599995538,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 17,
+          "decisions": 21232,
+          "propagations": 22750
+        },
+        "sbp_injected": 0,
+        "delta_f_boundary": 0.0,
+        "gated": true
+      }
+    ]
+  },
+  {
+    "seed": 46,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "modes": [
+      {
+        "mode": "Mode A (Pure Glucose3)",
+        "result": "SAT",
+        "solver_time": 0.0021847000025445595,
+        "total_time": 0.0021847000025445595,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 15,
+          "decisions": 14992,
+          "propagations": 20866
+        },
+        "sbp_injected": 0
+      },
+      {
+        "mode": "Mode B (Fiedler + Phase-V Gate)",
+        "result": "SAT",
+        "prep_time": 3.300441300001694,
+        "solver_time": 0.0018976999999722466,
+        "total_time": 3.302339000001666,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 17409,
+          "propagations": 18651
+        },
+        "sbp_injected": 0,
+        "fiedler_gap": 0.0,
+        "gated": true
+      },
+      {
+        "mode": "Mode C (Higher Modes v_2..v_k)",
+        "result": "UNSAT",
+        "prep_time": 3.556727500006673,
+        "solver_time": 1.3999997463542968e-05,
+        "total_time": 3.5567415000041365,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 374
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode D (Projector Operator P)",
+        "result": "UNSAT",
+        "prep_time": 5.549048399996536,
+        "solver_time": 1.679999695625156e-05,
+        "total_time": 5.549065199993493,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 374
+        },
+        "sbp_injected": 4096
+      },
+      {
+        "mode": "Mode E (Boundary-Conditioned Manifold)",
+        "result": "SAT",
+        "prep_time": 3.494501400004083,
+        "solver_time": 0.002007499999308493,
+        "total_time": 3.4965089000033913,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 14,
+          "decisions": 19312,
+          "propagations": 20573
+        },
+        "sbp_injected": 0,
+        "delta_f_boundary": 0.0,
+        "gated": true
+      }
+    ]
+  }
+]

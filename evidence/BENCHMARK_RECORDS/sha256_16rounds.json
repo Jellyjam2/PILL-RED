@@ -1,0 +1,51 @@
+{
+  "benchmark": "sha256_16rounds",
+  "rounds": 16,
+  "variables": 1984,
+  "clauses": 2449,
+  "timestamp": "2026-08-18T18:52:43.388700",
+  "spectral_telemetry": {
+    "incidence_rows": 2449,
+    "incidence_cols": 1984,
+    "incidence_nnz": 6882,
+    "incidence_density": 0.001416394446712944,
+    "laplacian_nnz": 4898,
+    "laplacian_density": 0.0012443296370967742,
+    "lambda_1": -4.2976982670915305e-16,
+    "lambda_2": -2.892575957319461e-16,
+    "lambda_3": -2.220446049250313e-16,
+    "fiedler_gap": 6.721299080691479e-17,
+    "norm_fiedler_gap": 6.721299082635666e-11,
+    "gate_state": "TRIGGERED_DEGENERACY_SUPPRESSED",
+    "sbp_budget": 3968,
+    "candidates_total": 1961193,
+    "accepted_sbps_count": 0,
+    "rejected_degeneracy": 1961193,
+    "rejected_degree_mismatch": 0,
+    "rejected_budget_overflow": 0,
+    "acceptance_ratio": 0.0,
+    "timing": {
+      "matrix_build_time": 0.2508038000014494,
+      "eigen_decomposition_time": 3.550208799999382,
+      "filter_time": 2.165173399997002,
+      "total_spectral_time": 5.966185999997833
+    }
+  },
+  "ablation_modes": {
+    "mode_a_baseline": {
+      "result": "SAT",
+      "solver_time": 0.0002969999986817129,
+      "total_time": 0.0002969999986817129
+    },
+    "mode_b_polarity_only": {
+      "result": "SAT",
+      "solver_time": 0.00035460000071907416,
+      "total_time": 5.966540599998552
+    },
+    "mode_c_phase5_gated": {
+      "result": "SAT",
+      "solver_time": 0.0014592000006814487,
+      "total_time": 5.967645199998515
+    }
+  }
+}

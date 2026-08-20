@@ -1,0 +1,21 @@
+[package]
+name = "pill_red_core"
+version = "1.0.0"
+edition = "2021"
+description = "PILL RED - High-Performance Continuous Graph Laplacian & Spectral SAT Reduction Engine"
+
+[lib]
+name = "pill_red_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = { version = "0.29", features = ["extension-module"] }
+rayon = "1.8"
+nalgebra = "0.33"
+rand = "0.8"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

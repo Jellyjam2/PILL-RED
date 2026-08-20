@@ -1,0 +1,674 @@
+[
+  {
+    "rounds": 16,
+    "variables": 2048,
+    "base_clauses": 2528,
+    "total_clauses": 2816,
+    "mean_conflicts_mode_a": 14.6,
+    "mean_conflicts_mode_e": 13.4,
+    "mean_decisions_mode_a": 14795.4,
+    "mean_decisions_mode_e": 17883.4,
+    "mean_conflict_reduction_pct": 8.219178082191776,
+    "seed_records": [
+      {
+        "seed": 42,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 12,
+          "decisions": 12515,
+          "time": 0.0031172000017249957,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 12,
+            "decisions": 12515,
+            "propagations": 17391
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 15600,
+          "prep_time": 4.025220499999705,
+          "solver_time": 0.003178500002832152,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 15600,
+            "propagations": 16697
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 8.333333333333332
+      },
+      {
+        "seed": 43,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 18154,
+          "time": 0.0021785999997518957,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 18154,
+            "propagations": 25086
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 19528,
+          "prep_time": 3.6575757000027806,
+          "solver_time": 0.00199570000404492,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 19528,
+            "propagations": 21020
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 11.76470588235294
+      },
+      {
+        "seed": 44,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 13,
+          "decisions": 12343,
+          "time": 0.0016113000019686297,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 13,
+            "decisions": 12343,
+            "propagations": 17199
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 10,
+          "decisions": 13745,
+          "prep_time": 7.117236199999752,
+          "solver_time": 0.00144160000490956,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 10,
+            "decisions": 13745,
+            "propagations": 14972
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 23.076923076923077
+      },
+      {
+        "seed": 45,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 16,
+          "decisions": 15973,
+          "time": 0.0021250999998301268,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 16,
+            "decisions": 15973,
+            "propagations": 22126
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 21232,
+          "prep_time": 3.577202500004205,
+          "solver_time": 0.002075299998978153,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 21232,
+            "propagations": 22750
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": -6.25
+      },
+      {
+        "seed": 46,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 14992,
+          "time": 0.0018716000049607828,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 14992,
+            "propagations": 20866
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 14,
+          "decisions": 19312,
+          "prep_time": 3.464876500001992,
+          "solver_time": 0.002195400003984105,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 14,
+            "decisions": 19312,
+            "propagations": 20573
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 6.666666666666667
+      }
+    ]
+  },
+  {
+    "rounds": 24,
+    "variables": 3072,
+    "base_clauses": 3808,
+    "total_clauses": 4096,
+    "mean_conflicts_mode_a": 15.8,
+    "mean_conflicts_mode_e": 13.0,
+    "mean_decisions_mode_a": 25012.6,
+    "mean_decisions_mode_e": 29506.4,
+    "mean_conflict_reduction_pct": 17.721518987341774,
+    "seed_records": [
+      {
+        "seed": 42,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 19325,
+          "time": 0.0021084999971208163,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 19325,
+            "propagations": 26453
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 10,
+          "decisions": 25593,
+          "prep_time": 10.429714099998819,
+          "solver_time": 0.002520000001823064,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 10,
+            "decisions": 25593,
+            "propagations": 26749
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 9.090909090909092
+      },
+      {
+        "seed": 43,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 18,
+          "decisions": 32652,
+          "time": 0.00345509999897331,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 18,
+            "decisions": 32652,
+            "propagations": 44452
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 35107,
+          "prep_time": 10.365406899996742,
+          "solver_time": 0.0033199000026797876,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 35107,
+            "propagations": 36627
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 16.666666666666664
+      },
+      {
+        "seed": 44,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 14,
+          "decisions": 19396,
+          "time": 0.002148999999917578,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 14,
+            "decisions": 19396,
+            "propagations": 26631
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 10,
+          "decisions": 22950,
+          "prep_time": 10.138172799997847,
+          "solver_time": 0.0021469999992405064,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 10,
+            "decisions": 22950,
+            "propagations": 24198
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 28.57142857142857
+      },
+      {
+        "seed": 45,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 21,
+          "decisions": 30217,
+          "time": 0.0031641000023228116,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 21,
+            "decisions": 30217,
+            "propagations": 41055
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 19,
+          "decisions": 36226,
+          "prep_time": 10.299747599994589,
+          "solver_time": 0.00493589999678079,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 19,
+            "decisions": 36226,
+            "propagations": 37740
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 9.523809523809524
+      },
+      {
+        "seed": 46,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 23473,
+          "time": 0.002544399998441804,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 23473,
+            "propagations": 32063
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 27656,
+          "prep_time": 10.328218099995865,
+          "solver_time": 0.002522299997508526,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 27656,
+            "propagations": 28852
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 26.666666666666668
+      }
+    ]
+  },
+  {
+    "rounds": 32,
+    "variables": 4096,
+    "base_clauses": 5088,
+    "total_clauses": 5376,
+    "mean_conflicts_mode_a": 14.8,
+    "mean_conflicts_mode_e": 12.6,
+    "mean_decisions_mode_a": 34232.4,
+    "mean_decisions_mode_e": 40899.2,
+    "mean_conflict_reduction_pct": 14.864864864864872,
+    "seed_records": [
+      {
+        "seed": 42,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 12,
+          "decisions": 29474,
+          "time": 0.0034837999992305413,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 12,
+            "decisions": 29474,
+            "propagations": 40001
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 39181,
+          "prep_time": 26.077956200002518,
+          "solver_time": 0.005511799994565081,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 39181,
+            "propagations": 40385
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 8.333333333333332
+      },
+      {
+        "seed": 43,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 42995,
+          "time": 0.00456080000003567,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 42995,
+            "propagations": 58231
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 48136,
+          "prep_time": 29.188359699997818,
+          "solver_time": 0.006899100000737235,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 48136,
+            "propagations": 49532
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 11.76470588235294
+      },
+      {
+        "seed": 44,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 16,
+          "decisions": 34808,
+          "time": 0.0038065999979153275,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 16,
+            "decisions": 34808,
+            "propagations": 47278
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 9,
+          "decisions": 28227,
+          "prep_time": 28.254349199996796,
+          "solver_time": 0.003273799993621651,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 9,
+            "decisions": 28227,
+            "propagations": 29299
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 43.75
+      },
+      {
+        "seed": 45,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 34963,
+          "time": 0.0037926000004517846,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 34963,
+            "propagations": 47337
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 14,
+          "decisions": 42756,
+          "prep_time": 24.662732500000857,
+          "solver_time": 0.004078799996932503,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 14,
+            "decisions": 42756,
+            "propagations": 44156
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 17.647058823529413
+      },
+      {
+        "seed": 46,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 12,
+          "decisions": 28922,
+          "time": 0.0033801000026869588,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 12,
+            "decisions": 28922,
+            "propagations": 39343
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 14,
+          "decisions": 46196,
+          "prep_time": 26.046760699995502,
+          "solver_time": 0.0064825999943423085,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 14,
+            "decisions": 46196,
+            "propagations": 47573
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": -16.666666666666664
+      }
+    ]
+  },
+  {
+    "rounds": 48,
+    "variables": 6144,
+    "base_clauses": 7648,
+    "total_clauses": 7936,
+    "mean_conflicts_mode_a": 15.0,
+    "mean_conflicts_mode_e": 13.4,
+    "mean_decisions_mode_a": 53774.2,
+    "mean_decisions_mode_e": 68757.2,
+    "mean_conflict_reduction_pct": 10.666666666666664,
+    "seed_records": [
+      {
+        "seed": 42,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 42357,
+          "time": 0.004724700003862381,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 42357,
+            "propagations": 57197
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 11,
+          "decisions": 62016,
+          "prep_time": 74.97727260000102,
+          "solver_time": 0.01074269999662647,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 11,
+            "decisions": 62016,
+            "propagations": 63315
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": -0.0
+      },
+      {
+        "seed": 43,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 67035,
+          "time": 0.0071131000004243106,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 67035,
+            "propagations": 90238
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 18,
+          "decisions": 94753,
+          "prep_time": 75.69408639999892,
+          "solver_time": 0.010574500003713183,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 18,
+            "decisions": 94753,
+            "propagations": 96509
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": -5.88235294117647
+      },
+      {
+        "seed": 44,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 13,
+          "decisions": 42437,
+          "time": 0.004944899999827612,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 13,
+            "decisions": 42437,
+            "propagations": 57347
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 9,
+          "decisions": 45006,
+          "prep_time": 73.79218440000113,
+          "solver_time": 0.00437190000229748,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 9,
+            "decisions": 45006,
+            "propagations": 46175
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 30.76923076923077
+      },
+      {
+        "seed": 45,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 19,
+          "decisions": 63556,
+          "time": 0.006974999996600673,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 19,
+            "decisions": 63556,
+            "propagations": 85612
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 17,
+          "decisions": 74959,
+          "prep_time": 73.34338569999818,
+          "solver_time": 0.006954299999051727,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 17,
+            "decisions": 74959,
+            "propagations": 76373
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 10.526315789473683
+      },
+      {
+        "seed": 46,
+        "mode_a": {
+          "result": "SAT",
+          "conflicts": 15,
+          "decisions": 53486,
+          "time": 0.008406799999647774,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 15,
+            "decisions": 53486,
+            "propagations": 72122
+          }
+        },
+        "mode_e": {
+          "result": "SAT",
+          "conflicts": 12,
+          "decisions": 67052,
+          "prep_time": 73.01091839999572,
+          "solver_time": 0.008475700000417419,
+          "stats": {
+            "restarts": 1,
+            "conflicts": 12,
+            "decisions": 67052,
+            "propagations": 68371
+          },
+          "delta_f": 0.0
+        },
+        "sound_agreement": true,
+        "conflict_reduction_pct": 20.0
+      }
+    ]
+  }
+]

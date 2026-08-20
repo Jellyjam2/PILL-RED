@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-08-19 02:29:16",
+  "family": "high_girth_expander",
+  "candidate": "vpti",
+  "n_samples": 3,
+  "gates_evaluated": [
+    "G1_compression",
+    "G2_construction_time",
+    "G3_preservation",
+    "G4_collision_separation",
+    "G5_search_elimination",
+    "G6_hidden_work_audit"
+  ],
+  "results": [
+    {
+      "sample_id": 1,
+      "nodes": 20,
+      "girth": 5,
+      "structural_rank": 17,
+      "candidate_sat_signature": 0.0,
+      "candidate_unsat_signature": 0.0,
+      "separated_without_search": false,
+      "unsat_search_conflicts": 435,
+      "ground_truth_soundness": true
+    },
+    {
+      "sample_id": 2,
+      "nodes": 24,
+      "girth": 5,
+      "structural_rank": 21,
+      "candidate_sat_signature": 0.0,
+      "candidate_unsat_signature": 0.0,
+      "separated_without_search": false,
+      "unsat_search_conflicts": 727,
+      "ground_truth_soundness": true
+    },
+    {
+      "sample_id": 3,
+      "nodes": 28,
+      "girth": 5,
+      "structural_rank": 24,
+      "candidate_sat_signature": 0.0,
+      "candidate_unsat_signature": 0.0,
+      "separated_without_search": false,
+      "unsat_search_conflicts": 967,
+      "ground_truth_soundness": true
+    }
+  ],
+  "total_time_ms": 317.55
+}

@@ -1,0 +1,311 @@
+{
+  "summary_unsat": {
+    "mean_mode_a": 323.7,
+    "mean_mode_e": 280.2,
+    "mean_mode_h": 321.7,
+    "reduction_l0_pct": 13.44,
+    "reduction_hodge_pct": 0.62
+  },
+  "instances": [
+    {
+      "instance_id": 1,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 2,
+      "instance_hash": "293e062d332c4e4c",
+      "mode_a_conflicts": 861,
+      "mode_e_conflicts": 861,
+      "mode_h_conflicts": 861,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 8.0
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 2,
+      "category": "TSEITIN_UNSAT",
+      "variables": 35,
+      "clauses": 92,
+      "triangles": 1,
+      "instance_hash": "c7dd42ecc120f57a",
+      "mode_a_conflicts": 435,
+      "mode_e_conflicts": 0,
+      "mode_h_conflicts": 435,
+      "reduction_l0_pct": 100.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 3.9999999999999996
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 3,
+      "category": "TSEITIN_UNSAT",
+      "variables": 35,
+      "clauses": 92,
+      "triangles": 1,
+      "instance_hash": "70e9f562d4fecbc1",
+      "mode_a_conflicts": 2,
+      "mode_e_conflicts": 2,
+      "mode_h_conflicts": 2,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 4.000000000000001
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 4,
+      "category": "TSEITIN_UNSAT",
+      "variables": 35,
+      "clauses": 88,
+      "triangles": 0,
+      "instance_hash": "96d3f61a1325d2ba",
+      "mode_a_conflicts": 20,
+      "mode_e_conflicts": 20,
+      "mode_h_conflicts": 2,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 90.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 3.9999999999999996
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 5,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 1,
+      "instance_hash": "a5e2c1db2cd948a0",
+      "mode_a_conflicts": 361,
+      "mode_e_conflicts": 361,
+      "mode_h_conflicts": 361,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 8.0
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 6,
+      "category": "TSEITIN_UNSAT",
+      "variables": 35,
+      "clauses": 92,
+      "triangles": 2,
+      "instance_hash": "7372ddb156a41b83",
+      "mode_a_conflicts": 2,
+      "mode_e_conflicts": 2,
+      "mode_h_conflicts": 0,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 100.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 3.9999999999999982
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 7,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 2,
+      "instance_hash": "f0c52c82a7181621",
+      "mode_a_conflicts": 357,
+      "mode_e_conflicts": 357,
+      "mode_h_conflicts": 357,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 7.999999999999998
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 8,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 1,
+      "instance_hash": "2ff628c73ee3ff3f",
+      "mode_a_conflicts": 506,
+      "mode_e_conflicts": 506,
+      "mode_h_conflicts": 506,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 7.999999999999999
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 9,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 5,
+      "instance_hash": "a9823b6b19261bea",
+      "mode_a_conflicts": 148,
+      "mode_e_conflicts": 148,
+      "mode_h_conflicts": 148,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 7.999999999999999
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 10,
+      "category": "TSEITIN_UNSAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 1,
+      "instance_hash": "0de28ce3b4e7236d",
+      "mode_a_conflicts": 545,
+      "mode_e_conflicts": 545,
+      "mode_h_conflicts": 545,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 8.0
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "UNSAT"
+    },
+    {
+      "instance_id": 11,
+      "category": "TSEITIN_SAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 2,
+      "instance_hash": "946075d40aed4371",
+      "mode_a_conflicts": 0,
+      "mode_e_conflicts": 0,
+      "mode_h_conflicts": 0,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 7.999999999999999
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 12,
+      "category": "TSEITIN_SAT",
+      "variables": 35,
+      "clauses": 92,
+      "triangles": 1,
+      "instance_hash": "75cba67cf1de6fa3",
+      "mode_a_conflicts": 0,
+      "mode_e_conflicts": 0,
+      "mode_h_conflicts": 0,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 3.9999999999999996
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 13,
+      "category": "TSEITIN_SAT",
+      "variables": 35,
+      "clauses": 92,
+      "triangles": 1,
+      "instance_hash": "231872e4c49f91a0",
+      "mode_a_conflicts": 0,
+      "mode_e_conflicts": 2,
+      "mode_h_conflicts": 0,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 4.0
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 14,
+      "category": "TSEITIN_SAT",
+      "variables": 35,
+      "clauses": 88,
+      "triangles": 0,
+      "instance_hash": "8002c85b824791b4",
+      "mode_a_conflicts": 2,
+      "mode_e_conflicts": 2,
+      "mode_h_conflicts": 19,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": -850.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 3.9999999999999987
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    },
+    {
+      "instance_id": 15,
+      "category": "TSEITIN_SAT",
+      "variables": 36,
+      "clauses": 96,
+      "triangles": 1,
+      "instance_hash": "29df32b7f60e471a",
+      "mode_a_conflicts": 0,
+      "mode_e_conflicts": 0,
+      "mode_h_conflicts": 0,
+      "reduction_l0_pct": 0.0,
+      "reduction_hodge_pct": 0.0,
+      "hodge_metric": {
+        "harmonic_dim": 0,
+        "first_eigenval": 8.0
+      },
+      "soundness_e": true,
+      "soundness_h": true,
+      "outcome": "SAT"
+    }
+  ]
+}

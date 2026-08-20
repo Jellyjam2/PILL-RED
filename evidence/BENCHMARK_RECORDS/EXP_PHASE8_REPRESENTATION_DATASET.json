@@ -1,0 +1,427 @@
+[
+  {
+    "seed": 42,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "representations": [
+      {
+        "rep": "Rep A (Baseline L=B\u1d40B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 5.607357900000352,
+        "solver_time": 0.00465970000368543,
+        "total_time": 5.612017600004037,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 19,
+          "decisions": 24562,
+          "propagations": 26180
+        }
+      },
+      {
+        "rep": "Rep B (Boundary L_B=B\u1d40W_B B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.8636183999988134,
+        "solver_time": 0.0016086999967228621,
+        "total_time": 3.8652270999955363,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 11,
+          "decisions": 15600,
+          "propagations": 16697
+        }
+      },
+      {
+        "rep": "Rep C (Unitary Evolution U=exp(i\u03b8L))",
+        "result": "SAT",
+        "unitarity_residual": 2.4935050933000725e-14,
+        "operator_invariance_residual": 1.397550130662095e-13,
+        "spectral_diff": 6.252282291375606e-06,
+        "prep_time": 24.1091815999971,
+        "solver_time": 0.002909499999077525,
+        "total_time": 24.112091099996178,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 19,
+          "decisions": 24750,
+          "propagations": 26169
+        }
+      },
+      {
+        "rep": "Rep D (3D Spatial Grid L_3D)",
+        "result": "UNSAT",
+        "delta_f": 0.0,
+        "sbp_count": 4096,
+        "prep_time": 3.7770469000024605,
+        "solver_time": 1.3199998647905886e-05,
+        "total_time": 3.7770601000011084,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 363
+        }
+      },
+      {
+        "rep": "Rep E (Hybrid L_B + \u03b1L_3D)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 4.191728199999488,
+        "solver_time": 0.002394600000116043,
+        "total_time": 4.1941227999996045,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 19,
+          "decisions": 24750,
+          "propagations": 26169
+        }
+      }
+    ]
+  },
+  {
+    "seed": 43,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "representations": [
+      {
+        "rep": "Rep A (Baseline L=B\u1d40B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.822191200000816,
+        "solver_time": 0.003374799998709932,
+        "total_time": 3.825565999999526,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 18175,
+          "propagations": 19486
+        }
+      },
+      {
+        "rep": "Rep B (Boundary L_B=B\u1d40W_B B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.9455420000012964,
+        "solver_time": 0.0035053000028710812,
+        "total_time": 3.9490473000041675,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 15,
+          "decisions": 19528,
+          "propagations": 21020
+        }
+      },
+      {
+        "rep": "Rep C (Unitary Evolution U=exp(i\u03b8L))",
+        "result": "SAT",
+        "unitarity_residual": 2.4935050933000725e-14,
+        "operator_invariance_residual": 1.397550130662095e-13,
+        "spectral_diff": 6.252282291375606e-06,
+        "prep_time": 28.97598830000061,
+        "solver_time": 0.001782799998181872,
+        "total_time": 28.97777109999879,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 18260,
+          "propagations": 19476
+        }
+      },
+      {
+        "rep": "Rep D (3D Spatial Grid L_3D)",
+        "result": "UNSAT",
+        "delta_f": 0.0,
+        "sbp_count": 4096,
+        "prep_time": 3.7535279000003356,
+        "solver_time": 1.2700002116616815e-05,
+        "total_time": 3.7535406000024523,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 366
+        }
+      },
+      {
+        "rep": "Rep E (Hybrid L_B + \u03b1L_3D)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 5.997291800005769,
+        "solver_time": 0.0019295999954920262,
+        "total_time": 5.999221400001261,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 18260,
+          "propagations": 19476
+        }
+      }
+    ]
+  },
+  {
+    "seed": 44,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "representations": [
+      {
+        "rep": "Rep A (Baseline L=B\u1d40B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 4.018195000004198,
+        "solver_time": 0.0020659000001614913,
+        "total_time": 4.020260900004359,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 19378,
+          "propagations": 20796
+        }
+      },
+      {
+        "rep": "Rep B (Boundary L_B=B\u1d40W_B B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.4477450999984285,
+        "solver_time": 0.0015206000025500543,
+        "total_time": 3.4492657000009785,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 10,
+          "decisions": 13745,
+          "propagations": 14972
+        }
+      },
+      {
+        "rep": "Rep C (Unitary Evolution U=exp(i\u03b8L))",
+        "result": "SAT",
+        "unitarity_residual": 2.4935050933000725e-14,
+        "operator_invariance_residual": 1.397550130662095e-13,
+        "spectral_diff": 6.252282291375606e-06,
+        "prep_time": 24.30466090000118,
+        "solver_time": 0.0019563000023481436,
+        "total_time": 24.30661720000353,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 19500,
+          "propagations": 20780
+        }
+      },
+      {
+        "rep": "Rep D (3D Spatial Grid L_3D)",
+        "result": "UNSAT",
+        "delta_f": 0.0,
+        "sbp_count": 4096,
+        "prep_time": 4.7984986000010394,
+        "solver_time": 1.460000203223899e-05,
+        "total_time": 4.798513200003072,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 359
+        }
+      },
+      {
+        "rep": "Rep E (Hybrid L_B + \u03b1L_3D)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 4.881213299995579,
+        "solver_time": 0.002030600000580307,
+        "total_time": 4.88324389999616,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 19500,
+          "propagations": 20780
+        }
+      }
+    ]
+  },
+  {
+    "seed": 45,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "representations": [
+      {
+        "rep": "Rep A (Baseline L=B\u1d40B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.6514117999977316,
+        "solver_time": 0.0018612999992910773,
+        "total_time": 3.6532730999970227,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 12,
+          "decisions": 18427,
+          "propagations": 19791
+        }
+      },
+      {
+        "rep": "Rep B (Boundary L_B=B\u1d40W_B B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.7057151999979396,
+        "solver_time": 0.0023168999978224747,
+        "total_time": 3.708032099995762,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 17,
+          "decisions": 21232,
+          "propagations": 22750
+        }
+      },
+      {
+        "rep": "Rep C (Unitary Evolution U=exp(i\u03b8L))",
+        "result": "SAT",
+        "unitarity_residual": 2.4935050933000725e-14,
+        "operator_invariance_residual": 1.397550130662095e-13,
+        "spectral_diff": 6.252282291375606e-06,
+        "prep_time": 24.41254250000202,
+        "solver_time": 0.0025996000040322542,
+        "total_time": 24.41514210000605,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 12,
+          "decisions": 18573,
+          "propagations": 19779
+        }
+      },
+      {
+        "rep": "Rep D (3D Spatial Grid L_3D)",
+        "result": "UNSAT",
+        "delta_f": 0.0,
+        "sbp_count": 4096,
+        "prep_time": 4.299155900000187,
+        "solver_time": 1.4099998224992305e-05,
+        "total_time": 4.299169999998412,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 344
+        }
+      },
+      {
+        "rep": "Rep E (Hybrid L_B + \u03b1L_3D)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 4.500208499994187,
+        "solver_time": 0.0018714999969233759,
+        "total_time": 4.5020799999911105,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 12,
+          "decisions": 18573,
+          "propagations": 19779
+        }
+      }
+    ]
+  },
+  {
+    "seed": 46,
+    "input_bits": 256,
+    "output_bits": 32,
+    "variables": 2048,
+    "clauses": 2816,
+    "representations": [
+      {
+        "rep": "Rep A (Baseline L=B\u1d40B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.547862900006294,
+        "solver_time": 0.002147500003047753,
+        "total_time": 3.5500104000093415,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 17409,
+          "propagations": 18651
+        }
+      },
+      {
+        "rep": "Rep B (Boundary L_B=B\u1d40W_B B)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 3.766082900001493,
+        "solver_time": 0.002467500002239831,
+        "total_time": 3.7685504000037326,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 14,
+          "decisions": 19312,
+          "propagations": 20573
+        }
+      },
+      {
+        "rep": "Rep C (Unitary Evolution U=exp(i\u03b8L))",
+        "result": "SAT",
+        "unitarity_residual": 2.4935050933000725e-14,
+        "operator_invariance_residual": 1.397550130662095e-13,
+        "spectral_diff": 6.252282291375606e-06,
+        "prep_time": 24.771438300005684,
+        "solver_time": 0.001994499994907528,
+        "total_time": 24.77343280000059,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 17580,
+          "propagations": 18633
+        }
+      },
+      {
+        "rep": "Rep D (3D Spatial Grid L_3D)",
+        "result": "UNSAT",
+        "delta_f": 0.0,
+        "sbp_count": 4096,
+        "prep_time": 4.114380599996366,
+        "solver_time": 1.2999997125007212e-05,
+        "total_time": 4.114393599993491,
+        "stats": {
+          "restarts": 0,
+          "conflicts": 0,
+          "decisions": 0,
+          "propagations": 374
+        }
+      },
+      {
+        "rep": "Rep E (Hybrid L_B + \u03b1L_3D)",
+        "result": "SAT",
+        "delta_f": 0.0,
+        "sbp_count": 0,
+        "prep_time": 4.346482499997364,
+        "solver_time": 0.0019341999941389076,
+        "total_time": 4.348416699991503,
+        "stats": {
+          "restarts": 1,
+          "conflicts": 13,
+          "decisions": 17580,
+          "propagations": 18633
+        }
+      }
+    ]
+  }
+]

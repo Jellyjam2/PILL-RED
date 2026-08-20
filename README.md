@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/pill_red_logo.jpg" width="260" alt="PILL RED Logo" />
+![PILL RED Logo](assets/pill_red_logo.jpg)
 
 # 🔴 PILL RED
 ### An Adversarial Study of Polynomial SAT Representations & Negative Results

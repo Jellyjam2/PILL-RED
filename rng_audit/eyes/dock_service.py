@@ -11,6 +11,7 @@ import time
 from typing import Any, Dict, Optional
 
 from rng_audit.eyes.adapter import ObservationAdapter, RawObservation
+from rng_audit.eyes.prediction_ledger import ForensicPredictionLedger, PredictionRecord
 from rng_audit.statistics.session_auditor import MultiSessionAuditor
 
 
@@ -18,6 +19,7 @@ class DockRequestHandler(BaseHTTPRequestHandler):
     """Handles REST/JSON requests from RED PILL DOCK."""
 
     adapter = ObservationAdapter()
+    prediction_ledger = ForensicPredictionLedger()
     observed_records = []
     lock = threading.Lock()
 
@@ -43,13 +45,40 @@ class DockRequestHandler(BaseHTTPRequestHandler):
                     rec = self.adapter.normalize(raw)
                     self.observed_records.append(rec)
 
+                    # 1. Resolve pending prediction for this spin
+                    outcome_target = rec.outcome_symbols[0] if rec.outcome_symbols else int(rec.payout_multiplier)
+                    resolved_pred = self.prediction_ledger.resolve_prediction(
+                        session_id=rec.session_id,
+                        target_spin_index=rec.spin_index,
+                        actual_result=outcome_target,
+                        timestamp_resolved=rec.timestamp
+                    )
+
+                    # 2. Lock pre-registered prediction for NEXT spin (rec.spin_index + 1)
+                    # Baseline candidate: modal symbol from recent history
+                    history_symbols = [r.outcome_symbols[0] for r in self.observed_records if r.outcome_symbols]
+                    next_decision = history_symbols[-1] if history_symbols else 0
+                    
+                    next_pred = self.prediction_ledger.lock_prediction(
+                        session_id=rec.session_id,
+                        source_spin_index=rec.spin_index,
+                        target_spin_index=rec.spin_index + 1,
+                        predicted_target="SYMBOL",
+                        decision=next_decision,
+                        confidence=0.5,
+                        model_hash="HASH-MODEL-MARKOV-V1",
+                        timestamp=time.time()
+                    )
+
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 resp = {
                     "status": "RECORDED",
                     "spin_index": rec.spin_index,
-                    "total_observed": len(self.observed_records)
+                    "total_observed": len(self.observed_records),
+                    "resolved_prediction": resolved_pred.to_dict() if resolved_pred else None,
+                    "next_prediction": next_pred.to_dict()
                 }
                 self.wfile.write(json.dumps(resp).encode("utf-8"))
 
@@ -63,8 +92,23 @@ class DockRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def do_GET(self):
-        """Endpoint to query current audit status and statistics."""
-        if self.path == "/api/audit_status":
+        """Endpoint to query current audit status, statistics, or next prediction."""
+        if self.path == "/api/next_prediction":
+            with self.lock:
+                n = len(self.observed_records)
+                next_target = n + 1
+                key = f"DOCK-SESS-001:{next_target}"
+                pred = self.prediction_ledger.pending_predictions.get(key)
+                if not pred and self.prediction_ledger.pending_predictions:
+                    pred = list(self.prediction_ledger.pending_predictions.values())[-1]
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            resp = pred.to_dict() if pred else {"status": "NO_PREDICTION_PENDING"}
+            self.wfile.write(json.dumps(resp).encode("utf-8"))
+
+        elif self.path == "/api/audit_status":
             with self.lock:
                 n = len(self.observed_records)
                 records = list(self.observed_records)

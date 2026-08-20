@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PILL RED // Causal Model & Data Verification Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-pill">🔴</span>
+            <span class="brand-title">PILL RED</span>
+            <span class="brand-badge">COMMAND CENTER v2.0</span>
+        </div>
+        <div class="nav-controls">
+            <div class="domain-selector">
+                <label>DOMAIN:</label>
+                <select id="domainSelect">
+                    <option value="RNG_AUDIT" selected>Gaming & RNG Structural Audit</option>
+                    <option value="FINANCE">Quantitative Finance & Signal Backtesting</option>
+                    <option value="SIMULATION">Monte Carlo & Synthetic Data QA</option>
+                </select>
+            </div>
+            <div class="session-badge">
+                <span class="pulse-dot"></span>
+                <span id="sessionDisplay">SESSION: SESS-LIVE</span>
+            </div>
+            <button class="btn btn-export" id="btnExport">Export Dossier</button>
+        </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="dashboard-grid">
+        
+        <!-- Panel 1: Live Observation Stream -->
+        <section class="card panel-stream">
+            <div class="card-header">
+                <h2>1. INGESTION &amp; OBSERVATION FEED</h2>
+                <span class="status-tag" id="streamStatus">STREAM ACTIVE</span>
+            </div>
+            <div class="stream-stats">
+                <div class="stat-box">
+                    <div class="stat-label">TOTAL OBSERVED</div>
+                    <div class="stat-value" id="valTotalObserved">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">SETTLE DETECTOR</div>
+                    <div class="stat-value text-green" id="valSettleState">STABLE / REST</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">SOURCE TYPE</div>
+                    <div class="stat-value" id="valSourceType">PILL RED EYES</div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>TIMESTAMP</th>
+                            <th>SYMBOLS</th>
+                            <th>PAYOUT</th>
+                            <th>BONUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spinsTableBody">
+                        <tr><td colspan="5" class="empty-msg">Awaiting incoming telemetry...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="stream-actions">
+                <button class="btn btn-sim" id="btnSimulateSpin">+ Simulate Incoming Spin</button>
+            </div>
+        </section>
+
+        <!-- Panel 2: Causal Pre-Registration & Next Prediction -->
+        <section class="card panel-prediction">
+            <div class="card-header">
+                <h2>2. PRE-SETTLEMENT PREDICTION LOCK</h2>
+                <span class="status-tag tag-red" id="predStatus">PRE-COMMITTED</span>
+            </div>
+            <div class="lock-box">
+                <div class="lock-header">
+                    <span class="lock-icon">🔒</span>
+                    <div>
+                        <div class="lock-title">PREDICTION LOCKED FOR NEXT EVENT</div>
+                        <div class="lock-sub" id="valPredTarget">TARGET: SPIN #1</div>
+                    </div>
+                </div>
+                <div class="lock-details">
+                    <div class="detail-row">
+                        <span>PREDICTION ID:</span>
+                        <strong id="valPredId">PRED-INIT-001</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>DECISION / SIGNAL:</span>
+                        <strong class="text-cyan" id="valPredDecision">SYMBOL #7 (BET-ELIGIBLE)</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>MODEL HASH:</span>
+                        <code id="valPredModel">HASH-MARKOV-V1</code>
+                    </div>
+                    <div class="detail-row">
+                        <span>LOCKED TIMESTAMP:</span>
+                        <span id="valPredTime">--:--:--</span>
+                    </div>
+                </div>
+                <div class="causal-guarantee">
+                    <span class="guarantee-badge">✓ CAUSAL INTEGRITY GUARANTEED</span>
+                    <p>Decision cryptographically locked prior to outcome revelation.</p>
+                </div>
+            </div>
+
+            <!-- Recent Resolved Predictions -->
+            <div class="sub-header">RECENT CAUSAL RESOLUTIONS</div>
+            <div class="table-container table-compact">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>TARGET</th>
+                            <th>SIGNAL</th>
+                            <th>ACTUAL</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="predsTableBody">
+                        <tr><td colspan="4" class="empty-msg">No resolved predictions yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Panel 3: Competing Models & ELO Scorecard -->
+        <section class="card panel-models">
+            <div class="card-header">
+                <h2>3. COMPETING MODEL TOURNAMENT</h2>
+                <span class="status-tag">ELO RANKED</span>
+            </div>
+            <div class="models-list" id="modelsContainer">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- Panel 4: Out-of-Sample Scorecard & Analytics -->
+        <section class="card panel-analytics">
+            <div class="card-header">
+                <h2>4. OUT-OF-SAMPLE VERIFICATION &amp; EV SCORECARD</h2>
+                <span class="verdict-badge" id="valVerdictBadge">COLLECTING DATA</span>
+            </div>
+            <div class="analytics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">OUT-OF-SAMPLE HIT RATE</div>
+                    <div class="metric-value text-cyan" id="valHitRate">0.00%</div>
+                    <div class="metric-sub" id="valNullRate">Null Baseline: 10.00%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">99% WILSON CONFIDENCE INTERVAL</div>
+                    <div class="metric-value text-yellow" id="valWilsonCI">[0.00%, 0.00%]</div>
+                    <div class="metric-sub">Strict error bound (α = 0.01)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">EXACT BINOMIAL P-VALUE</div>
+                    <div class="metric-value" id="valPValue">1.0000</div>
+                    <div class="metric-sub" id="valSignificance">Not Significant</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">NET EXPECTED VALUE (EV)</div>
+                    <div class="metric-value text-red" id="valNetEV">-4.00%</div>
+                    <div class="metric-sub">After 4.0% House Edge / Cost</div>
+                </div>
+            </div>
+            <div class="verdict-banner">
+                <div class="verdict-label">EPISTEMIC AUDIT VERDICT:</div>
+                <div class="verdict-text" id="valVerdictText">Collecting baseline observations...</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

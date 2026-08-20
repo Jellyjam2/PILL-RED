@@ -107,6 +107,31 @@ class TestRNGAudit(unittest.TestCase):
         self.assertEqual(res["game_title"], "TestSlot")
         self.assertTrue(res["statistically_significant"])
 
+    def test_rare_event_jackpot_target_evaluator(self):
+        """Tests that evaluate_rare_event_target correctly assesses rare jackpot triggers."""
+        from rng_audit.statistics.predictor import PredictiveHypothesisTester
+
+        # 10,000 spin sequence with a rare jackpot occurring at fixed period of 500 spins
+        unseen_spins = [1 if (i > 0 and i % 500 == 0) else 0 for i in range(5000)]
+        
+        # Trigger: trigger bet only when spin counter is multiple of 500
+        trigger_fn = lambda hist: len(hist) > 0 and len(hist) % 500 == 0
+
+        res = PredictiveHypothesisTester.evaluate_rare_event_target(
+            discovery_sequence=[],
+            unseen_sequence=unseen_spins,
+            trigger_fn=trigger_fn,
+            null_event_probability=1e-4,  # baseline 1 in 10,000
+            payout_multiplier=5000.0       # 5,000x jackpot
+        )
+
+        self.assertEqual(res["triggered_bets"], 9)
+        self.assertEqual(res["hits"], 9)
+        self.assertEqual(res["triggered_hit_rate"], 1.0)
+        self.assertTrue(res["statistically_significant"])
+        self.assertTrue(res["economically_viable"])
+        self.assertEqual(res["verdict"], "REPRODUCIBLE_ECONOMIC_EDGE")
+
 
 if __name__ == "__main__":
     unittest.main()

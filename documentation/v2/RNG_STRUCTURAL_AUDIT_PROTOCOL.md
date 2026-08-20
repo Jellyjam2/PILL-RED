@@ -40,7 +40,7 @@ The PILL RED RNG Structural Audit Engine evaluates whether an observed data stre
                      ▼                    noise (CSPRNG / Certified)
       [STEP 4: ECONOMIC ACCOUNTING]
       • Calculate Net Expected Value (EV):
-        Net EV = Gross Return - (1 + House Edge)
+        Net EV = Hit Rate * [Alphabet Size * (1 - House Edge)] - 1.0
       • Distinction:
         - Statistical Structure != Profitable Exploit
         - House edge often absorbs statistical non-uniformities
@@ -68,7 +68,7 @@ The frozen hypothesis is evaluated on $N_{\text{test}}$ completely unseen observ
 
 ### Step 5: Statistical vs. Economic Significance Separation
 A statistically detectable pattern (e.g. a $0.5\%$ frequency bias) does not automatically generate positive expected value ($+EV$) if the game has a $4.0\%$ house edge (e.g. $96\%$ RTP). The audit engine explicitly computes:
-$$\text{Net EV} = \text{Hit Rate} \times \text{Multiplier} - (1.0 + \text{House Edge})$$
+$$\text{Net EV} = \text{Hit Rate} \times \big(\text{Alphabet Size} \times (1 - \text{House Edge})\big) - 1.0$$
 * **`STATISTICAL_STRUCTURE_WITHOUT_ECONOMIC_EDGE`**: Pattern is real ($p < 0.01$), but Net EV $\le 0$.
 * **`REPRODUCIBLE_ECONOMIC_EDGE`**: Pattern is real ($p < 0.01$) AND Net EV $> 0$.
 

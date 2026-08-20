@@ -1,10 +1,19 @@
-# 🔴 PILL RED: An Adversarial Study of Polynomial SAT Representations & Negative Results
+<div align="center">
 
-**Version:** 1.0.0 (Research Archive & Benchmark Suite)  
-**License:** Apache 2.0 / MIT Dual License  
-**Git Baseline:** Tagged `v1.0.0` (Codebase Frozen)
+![PILL RED Banner](assets/pill_red_banner.jpg)
+
+# 🔴 PILL RED
+### An Adversarial Study of Polynomial SAT Representations & Negative Results
+
+[![Rust](https://img.shields.io/badge/Rust-2021_Edition-orange?logo=rust&logoColor=white&style=for-the-badge)](src/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white&style=for-the-badge)](pillred/)
+[![License](https://img.shields.io/badge/License-MIT%20%2F%20Apache%202.0-blue?style=for-the-badge)](LICENSE)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-crimson?style=for-the-badge)](https://github.com/Jellyjam2/PILL-RED/releases)
+[![Build](https://img.shields.io/badge/Cargo%20Build-Passing-brightgreen?style=for-the-badge&logo=rust&logoColor=white)](src/)
 
 ---
+
+</div>
 
 ## 🏛️ What This Project Actually Is
 

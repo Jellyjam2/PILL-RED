@@ -4,9 +4,10 @@ Implements discrete, spectral, multilinear, and algebraic representation operato
 """
 
 from abc import ABC, abstractmethod
+import itertools
 import math
 import time
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 import numpy as np
 from scipy.linalg import svd, eigh
 
@@ -438,6 +439,138 @@ class QuadraticIdealMPOPrimitive(RepresentationPrimitive):
             "rank": total_rank,
             "linear_rank": len(linear_pivots),
             "quadratic_rank": len(quadratic_pivots),
+            "basis_size": num_basis,
+            "inconsistent": inconsistent,
+            "condition_number": 1.0,
+            "construction_time_ms": t_con,
+            "extraction_time_ms": t_eval,
+            "peak_memory_kb": mat.nbytes / 1024.0,
+        }
+
+
+class CubicIdealMPOPrimitive(RepresentationPrimitive):
+    """Truncated Degree-3 Polynomial Ideal / MPO Primitive.
+
+    Maintains full algebraic information for degree-0, degree-1, degree-2, and degree-3 monomials.
+    State size: N_basis = 1 + n + n*(n-1)/2 + n*(n-1)*(n-2)/6 = O(n^3).
+    3-clauses map exactly into the basis without truncation defects.
+    Degree-4+ relations are projected away.
+    """
+
+    def construct_and_evaluate(self, formula: CNFFormula) -> Dict[str, Union[float, int, bool]]:
+        t0 = time.perf_counter()
+        n = formula.num_vars
+
+        # 1. Build Degree-3 Monomial Index Map
+        pair_to_idx: Dict[Tuple[int, int], int] = {}
+        triplet_to_idx: Dict[Tuple[int, int, int], int] = {}
+        
+        idx = n + 1
+        for i in range(1, n + 1):
+            for j in range(i + 1, n + 1):
+                pair_to_idx[(i, j)] = idx
+                idx += 1
+
+        for i in range(1, n + 1):
+            for j in range(i + 1, n + 1):
+                for k in range(j + 1, n + 1):
+                    triplet_to_idx[(i, j, k)] = idx
+                    idx += 1
+
+        num_basis = idx  # 1 (const) + n (linear) + (n choose 2) + (n choose 3)
+
+        # 2. Map CNF Clauses to Polynomial Equations over GF(2) via exact ANF
+        row_list: List[Dict[int, int]] = []
+
+        for c in formula.clauses:
+            P = [abs(lit) for lit in c if lit > 0]
+            N = [abs(lit) for lit in c if lit < 0]
+            
+            row: Dict[int, int] = {}
+            # Expand sum_{S subseteq P} prod_{v in S cup N} v = 0
+            for r in range(len(P) + 1):
+                for S in itertools.combinations(P, r):
+                    monomial_vars = sorted(list(S) + N)
+                    deg = len(monomial_vars)
+                    
+                    if deg == 0:
+                        row[0] = row.get(0, 0) ^ 1
+                    elif deg == 1:
+                        v = monomial_vars[0]
+                        row[v] = row.get(v, 0) ^ 1
+                    elif deg == 2:
+                        pair = (monomial_vars[0], monomial_vars[1])
+                        col = pair_to_idx.get(pair)
+                        if col:
+                            row[col] = row.get(col, 0) ^ 1
+                    elif deg == 3:
+                        triplet = (monomial_vars[0], monomial_vars[1], monomial_vars[2])
+                        col = triplet_to_idx.get(triplet)
+                        if col:
+                            row[col] = row.get(col, 0) ^ 1
+                    # Degree >= 4 monomials are discarded by degree-3 truncation
+
+            row = {k: v for k, v in row.items() if v == 1}
+            if row:
+                row_list.append(row)
+
+        t_con = (time.perf_counter() - t0) * 1000.0
+
+        # 3. Dense GF(2) Elimination on Truncated Cubic Basis
+        t_eval_0 = time.perf_counter()
+        num_rows = len(row_list)
+        mat = np.zeros((num_rows, num_basis), dtype=np.uint8)
+        for r_idx, row in enumerate(row_list):
+            for col, val in row.items():
+                if col < num_basis and val == 1:
+                    mat[r_idx, col] ^= 1
+
+        pivot_row = 0
+        linear_pivots = []
+        quadratic_pivots = []
+        cubic_pivots = []
+        num_quad_max = n + len(pair_to_idx)
+
+        # Monomial columns: 1..num_basis-1, Column 0 is constant 1 (RHS)
+        for col in range(1, num_basis):
+            pivot = None
+            for r in range(pivot_row, num_rows):
+                if mat[r, col] == 1:
+                    pivot = r
+                    break
+            if pivot is not None:
+                if pivot != pivot_row:
+                    mat[[pivot, pivot_row]] = mat[[pivot_row, pivot]]
+                for r in range(num_rows):
+                    if r != pivot_row and mat[r, col] == 1:
+                        mat[r] ^= mat[pivot_row]
+                
+                if col <= n:
+                    linear_pivots.append(col)
+                elif col <= num_quad_max:
+                    quadratic_pivots.append(col)
+                else:
+                    cubic_pivots.append(col)
+                pivot_row += 1
+
+        # Check for GF(2) contradiction
+        inconsistent = False
+        for r in range(num_rows):
+            if np.all(mat[r, 1:] == 0) and mat[r, 0] == 1:
+                inconsistent = True
+                break
+
+        t_eval = (time.perf_counter() - t_eval_0) * 1000.0
+        total_rank = len(linear_pivots) + len(quadratic_pivots) + len(cubic_pivots)
+
+        observable = -1.0 if inconsistent else float(total_rank) / float(num_basis)
+
+        return {
+            "observable": observable,
+            "rank": total_rank,
+            "linear_rank": len(linear_pivots),
+            "quadratic_rank": len(quadratic_pivots),
+            "cubic_rank": len(cubic_pivots),
             "basis_size": num_basis,
             "inconsistent": inconsistent,
             "condition_number": 1.0,

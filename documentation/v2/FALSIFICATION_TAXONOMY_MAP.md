@@ -48,6 +48,9 @@ Spectral Laplacians     Local Valuation Cuts            Linear Affine GF(2)     
 │ quadratic_ideal_mpo  │ OUTCOME_A   │ Pure Degree-3 Expander          │ Truncated degree-2 basis preserves pairwise couplings  │
 │ (CAND-11E3D21E86)    │ COLLAPSE    │ Obstructions (Level 4)          │ but collapses when obstruction is pure degree 3.       │
 ├──────────────────────┼─────────────┼─────────────────────────────────┼────────────────────────────────────────────────────────┤
+│ cubic_ideal_mpo      │ OUTCOME_D/C │ Higher-Order Degree Escalation  │ Recovers degree-3 obstruction (L4 Δ > 0), but incurs   │
+│ (CAND-CB7DEE006D)    │ SURVIVE/RES │ (Level 4 & 5 scaling)           │ steep O(n^3) state size and O(n^9) elimination time.   │
+├──────────────────────┼─────────────┼─────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ tensor_svd           │ OUTCOME_C   │ Expander incidence matrix       │ Singular value spectrum becomes ill-conditioned        │
 │ (CAND-98A121EF03)    │ BLOWUP      │ flattening (m x 2n)             │ (cond > 1e8) or requires exponential bond dimension.   │
 └──────────────────────┴─────────────┴─────────────────────────────────┴────────────────────────────────────────────────────────┘

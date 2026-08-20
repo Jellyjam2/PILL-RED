@@ -10,6 +10,7 @@ from engine.aag.expander import HighGirthExpanderGenerator
 from engine.aag.nonlinear_expander import NonlinearExpanderGenerator
 from engine.aag.hypergraph_expander import HypergraphExpanderGenerator
 from engine.aag.pure_degree3_expander import PureDegree3ExpanderGenerator
+from engine.aag.pure_degree4_expander import PureDegree4ExpanderGenerator
 from engine.ivr.verifier import IndependentVerifier
 
 
@@ -118,6 +119,19 @@ class AdaptiveAdversaryManager:
         return pairs
 
     @classmethod
+    def get_level5_pure_degree4_pairs(cls, count: int = 5, num_vertices: int = 18) -> List[InstancePair]:
+        """Level 5: Pure Degree-4 Obstruction pairs (Degree <= 3 projections identical)."""
+        pairs = []
+        for i in range(count):
+            seed = 500 + i * 47
+            pair = PureDegree4ExpanderGenerator.generate_pure_degree4_pair(
+                num_vertices=num_vertices,
+                seed=seed
+            )
+            pairs.append(pair)
+        return pairs
+
+    @classmethod
     def get_adversarial_suite(cls, level: int = 1, count: int = 5) -> List[InstancePair]:
         """Returns the appropriate adversarial instance suite for the specified Q8 level."""
         if level == 0:
@@ -130,5 +144,7 @@ class AdaptiveAdversaryManager:
             return cls.get_level3_hypergraph_pairs(count=count, num_vertices=18)
         elif level == 4:
             return cls.get_level4_pure_degree3_pairs(count=count, num_vertices=18)
+        elif level == 5:
+            return cls.get_level5_pure_degree4_pairs(count=count, num_vertices=18)
         else:
-            return cls.get_level4_pure_degree3_pairs(count=count, num_vertices=24)
+            return cls.get_level5_pure_degree4_pairs(count=count, num_vertices=24)

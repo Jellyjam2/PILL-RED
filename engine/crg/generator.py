@@ -12,6 +12,7 @@ from engine.dsl.primitives import (
     TensorRankPrimitive,
     VPTIProjectorPrimitive,
     QuadraticIdealMPOPrimitive,
+    CubicIdealMPOPrimitive,
 )
 
 
@@ -47,6 +48,17 @@ class CandidateRepresentationGenerator:
                 "discards": "degree >= 3 monomials",
                 "hypothesized_state_size": "polynomial (O(n^2) basis coefficients; scaling to be measured)",
                 "primary_adversary": "degree-3 / 3-uniform expander structure",
+                "expected_failure": "UNKNOWN"
+            }
+        ),
+        "cubic_ideal_mpo": (
+            "CubicIdealMPO(TruncatedDegree3, Basis=O(n^3))",
+            CubicIdealMPOPrimitive,
+            {
+                "preserves": "degree-1 terms, degree-2 pairs, degree-3 triplets (x_i*x_j*x_k), 3-clause ANF",
+                "discards": "degree >= 4 monomials",
+                "hypothesized_state_size": "polynomial (O(n^3) basis coefficients; scaling to be measured)",
+                "primary_adversary": "degree-4 / 4-uniform hypergraph expander structure",
                 "expected_failure": "UNKNOWN"
             }
         ),

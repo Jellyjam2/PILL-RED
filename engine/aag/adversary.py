@@ -8,6 +8,8 @@ from typing import Dict, List, Optional
 from engine.interfaces import InstancePair, CNFFormula
 from engine.aag.expander import HighGirthExpanderGenerator
 from engine.aag.nonlinear_expander import NonlinearExpanderGenerator
+from engine.aag.hypergraph_expander import HypergraphExpanderGenerator
+from engine.aag.pure_degree3_expander import PureDegree3ExpanderGenerator
 from engine.ivr.verifier import IndependentVerifier
 
 
@@ -77,7 +79,7 @@ class AdaptiveAdversaryManager:
 
     @classmethod
     def get_level2_nonlinear_pairs(cls, count: int = 5, num_vertices: int = 20, nonlinear_fraction: float = 0.4) -> List[InstancePair]:
-        """Level 2: Mixed Non-linear XOR/3-SAT expander collision pairs."""
+        """Level 2: Mixed Non-linear XOR/3-SAT expander collision pairs (degree d >= 2)."""
         pairs = []
         for i in range(count):
             seed = 100 + i * 23
@@ -90,14 +92,26 @@ class AdaptiveAdversaryManager:
         return pairs
 
     @classmethod
-    def get_level3_dense_nonlinear_pairs(cls, count: int = 5, num_vertices: int = 26) -> List[InstancePair]:
-        """Level 3: Dense Non-linear expander collision pairs with higher-order couplings."""
+    def get_level3_hypergraph_pairs(cls, count: int = 5, num_vertices: int = 18) -> List[InstancePair]:
+        """Level 3: 3-Uniform Hypergraph Expander parity pairs (degree d = 3)."""
         pairs = []
         for i in range(count):
-            seed = 200 + i * 31
-            pair = NonlinearExpanderGenerator.generate_mixed_nonlinear_pair(
+            seed = 300 + i * 37
+            pair = HypergraphExpanderGenerator.generate_degree3_hypergraph_pair(
                 num_vertices=num_vertices,
-                nonlinear_fraction=0.75,
+                seed=seed
+            )
+            pairs.append(pair)
+        return pairs
+
+    @classmethod
+    def get_level4_pure_degree3_pairs(cls, count: int = 5, num_vertices: int = 18) -> List[InstancePair]:
+        """Level 4: Pure Degree-3 Obstruction pairs (Degree 1 and 2 projections identical)."""
+        pairs = []
+        for i in range(count):
+            seed = 400 + i * 43
+            pair = PureDegree3ExpanderGenerator.generate_pure_degree3_pair(
+                num_vertices=num_vertices,
                 seed=seed
             )
             pairs.append(pair)
@@ -113,6 +127,8 @@ class AdaptiveAdversaryManager:
         elif level == 2:
             return cls.get_level2_nonlinear_pairs(count=count, num_vertices=20, nonlinear_fraction=0.4)
         elif level == 3:
-            return cls.get_level3_dense_nonlinear_pairs(count=count, num_vertices=26)
+            return cls.get_level3_hypergraph_pairs(count=count, num_vertices=18)
+        elif level == 4:
+            return cls.get_level4_pure_degree3_pairs(count=count, num_vertices=18)
         else:
-            return cls.get_level3_dense_nonlinear_pairs(count=count, num_vertices=30)
+            return cls.get_level4_pure_degree3_pairs(count=count, num_vertices=24)

@@ -136,11 +136,12 @@ def cmd_escalate(args):
     print(f"Objective: Progressively escalate adversarial complexity (Level 1 -> 2 -> 3) to test bounds.")
     print("-" * 80)
 
-    for level in [1, 2, 3]:
+    for level in [1, 2, 3, 4]:
         level_names = {
             1: "Level 1: Linear High-Girth Tseitin Expanders",
             2: "Level 2: Mixed Non-linear XOR/3-SAT Expanders (degree d >= 2)",
-            3: "Level 3: Dense Non-linear Expanders with Higher-Order Couplings"
+            3: "Level 3: 3-Uniform Non-linear Expanders with Higher-Order Couplings",
+            4: "Level 4: Pure Non-Linear Topological Obstruction (Degree 1 & 2 Equivalence, Degree 3 Obstruction)"
         }
         print(f"\n[*] Launching {level_names[level]} (Samples={args.samples})...")
         verdict = execute_pipeline(args.candidate, samples=args.samples, level=level)

@@ -112,6 +112,15 @@ class CrucibleMeasurement:
     glucose_sat_conflicts: int
     glucose_unsat_conflicts: int
 
+    # Structural Degree Telemetry & Invariant Equivalence Certificates
+    linear_rank_sat: int = 0
+    linear_rank_unsat: int = 0
+    quadratic_rank_sat: int = 0
+    quadratic_rank_unsat: int = 0
+    projection_equiv_deg1: bool = True
+    projection_equiv_deg2: bool = True
+    projection_diff_deg3: bool = False
+
 
 @dataclass
 class CrucibleVerdict:

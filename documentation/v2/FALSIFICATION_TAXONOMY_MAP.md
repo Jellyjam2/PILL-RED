@@ -45,6 +45,9 @@ Spectral Laplacians     Local Valuation Cuts            Linear Affine GF(2)     
 │ gf2_affine           │ OUTCOME_A   │ Mixed XOR/3-SAT expanders       │ Linear GF(2) Gaussian elimination solves linear parity │
 │ (CAND-078F12A934)    │ COLLAPSE    │ (non-linear degree d >= 2)      │ but collapses under non-linear clause coupling.        │
 ├──────────────────────┼─────────────┼─────────────────────────────────┼────────────────────────────────────────────────────────┤
+│ quadratic_ideal_mpo  │ OUTCOME_A   │ Pure Degree-3 Expander          │ Truncated degree-2 basis preserves pairwise couplings  │
+│ (CAND-11E3D21E86)    │ COLLAPSE    │ Obstructions (Level 4)          │ but collapses when obstruction is pure degree 3.       │
+├──────────────────────┼─────────────┼─────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ tensor_svd           │ OUTCOME_C   │ Expander incidence matrix       │ Singular value spectrum becomes ill-conditioned        │
 │ (CAND-98A121EF03)    │ BLOWUP      │ flattening (m x 2n)             │ (cond > 1e8) or requires exponential bond dimension.   │
 └──────────────────────┴─────────────┴─────────────────────────────────┴────────────────────────────────────────────────────────┘

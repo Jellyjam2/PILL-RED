@@ -89,6 +89,13 @@ class AutomatedCrucibleEngine:
                 internal_sat_conflicts=0,
                 glucose_sat_conflicts=sat_conflicts,
                 glucose_unsat_conflicts=unsat_conflicts,
+                linear_rank_sat=int(res_sat.get("linear_rank", 0)),
+                linear_rank_unsat=int(res_unsat.get("linear_rank", 0)),
+                quadratic_rank_sat=int(res_sat.get("quadratic_rank", 0)),
+                quadratic_rank_unsat=int(res_unsat.get("quadratic_rank", 0)),
+                projection_equiv_deg1=bool(pair.sat_instance.metadata.get("projection_equivalence_degree_1", True)),
+                projection_equiv_deg2=bool(pair.sat_instance.metadata.get("projection_equivalence_degree_2", True)),
+                projection_diff_deg3=bool(pair.sat_instance.metadata.get("projection_difference_degree_3", False)),
             )
             measurements.append(measurement)
 

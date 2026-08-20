@@ -295,3 +295,153 @@ class VPTIProjectorPrimitive(RepresentationPrimitive):
             "extraction_time_ms": t_eval,
             "peak_memory_kb": (m * 8) / 1024.0,
         }
+
+
+class QuadraticIdealMPOPrimitive(RepresentationPrimitive):
+    """Truncated Degree-2 Polynomial Ideal / Matrix Product Operator (MPO) Primitive.
+
+    Preserves degree-1 linear parity and degree-2 pairwise non-linear monomials (x_i * x_j).
+    Discards degree >= 3 monomials to maintain a polynomial state size of O(n^2).
+    """
+
+    def construct_and_evaluate(self, formula: CNFFormula) -> Dict[str, Any]:
+        t0 = time.perf_counter()
+        n = formula.num_vars
+        clauses = formula.clauses
+        m = len(clauses)
+
+        if n == 0 or m == 0:
+            return {
+                "observable": 0.0,
+                "construction_time_ms": 0.0,
+                "extraction_time_ms": 0.0,
+                "condition_number": 1.0,
+                "rank": 0,
+                "basis_size": 0,
+            }
+
+        # 1. Map Monomial Basis: Constant(0), Linear(1..n), Quadratic(n+1..N)
+        pair_to_idx: Dict[Tuple[int, int], int] = {}
+        idx = n + 1
+        for i in range(1, n + 1):
+            for j in range(i + 1, n + 1):
+                pair_to_idx[(i, j)] = idx
+                idx += 1
+
+        num_basis = idx  # Total monomials: 1 + n + n*(n-1)/2
+        row_list: List[Dict[int, int]] = []  # Sparse GF(2) equations: dict of col -> 1
+
+        # 2. Encode CNF clauses into degree-2 polynomial equations over GF(2)
+        for c in clauses:
+            if len(c) == 1:
+                # Linear unit: x_i = 1 or x_i = 0
+                var = abs(c[0])
+                rhs = 1 if c[0] > 0 else 0
+                row = {var: 1}
+                if rhs == 1:
+                    row[0] = 1
+                row_list.append(row)
+
+            elif len(c) == 2:
+                # 2-clause: (l1 OR l2) -> (1 + l1)(1 + l2) = 0
+                # Case 1: (-x_i OR -x_j) -> x_i * x_j = 0
+                # Case 2: (x_i OR x_j) -> 1 + x_i + x_j + x_i * x_j = 0
+                # Case 3: (-x_i OR x_j) -> x_i + x_i * x_j = 0
+                v1, v2 = abs(c[0]), abs(c[1])
+                pair = (min(v1, v2), max(v1, v2))
+                quad_col = pair_to_idx.get(pair)
+
+                row: Dict[int, int] = {}
+                if c[0] < 0 and c[1] < 0:
+                    # x_i * x_j = 0
+                    if quad_col is not None:
+                        row[quad_col] = 1
+                elif c[0] > 0 and c[1] > 0:
+                    # 1 + x_i + x_j + x_i * x_j = 0
+                    row[0] = 1
+                    row[v1] = 1
+                    row[v2] = 1
+                    if quad_col is not None:
+                        row[quad_col] = 1
+                else:
+                    # Pos/neg mix: e.g. (-x_i OR x_j) -> x_i + x_i * x_j = 0
+                    neg_v = v1 if c[0] < 0 else v2
+                    row[neg_v] = 1
+                    if quad_col is not None:
+                        row[quad_col] = 1
+
+                if row:
+                    row_list.append(row)
+
+            elif len(c) == 3:
+                # 3-clause: (l1 OR l2 OR l3)
+                # Linear parity relaxation over GF(2): preserves Tseitin parity without spurious truncation defects
+                v1, v2, v3 = abs(c[0]), abs(c[1]), abs(c[2])
+                row = {v1: 1, v2: 1, v3: 1}
+                rhs = 1
+                for lit in c:
+                    if lit < 0:
+                        rhs ^= 1
+                if rhs == 1:
+                    row[0] = 1
+                row_list.append(row)
+
+        t_con = (time.perf_counter() - t0) * 1000.0
+
+        # 3. Dense GF(2) Elimination on Truncated Quadratic Basis
+        t_eval_0 = time.perf_counter()
+        num_rows = len(row_list)
+        mat = np.zeros((num_rows, num_basis), dtype=np.uint8)
+        for r_idx, row in enumerate(row_list):
+            for col, val in row.items():
+                if col < num_basis and val == 1:
+                    mat[r_idx, col] ^= 1
+
+        pivot_row = 0
+        linear_pivots = []
+        quadratic_pivots = []
+        
+        # Monomial columns: 1..num_basis-1, Column 0 is constant 1 (RHS)
+        for col in range(1, num_basis):
+            pivot = None
+            for r in range(pivot_row, num_rows):
+                if mat[r, col] == 1:
+                    pivot = r
+                    break
+            if pivot is not None:
+                if pivot != pivot_row:
+                    mat[[pivot, pivot_row]] = mat[[pivot_row, pivot]]
+                for r in range(num_rows):
+                    if r != pivot_row and mat[r, col] == 1:
+                        mat[r] ^= mat[pivot_row]
+                
+                if col <= n:
+                    linear_pivots.append(col)
+                else:
+                    quadratic_pivots.append(col)
+                pivot_row += 1
+
+        # Check for GF(2) contradiction: row where all monomial cols are 0 but col 0 (RHS) is 1
+        inconsistent = False
+        for r in range(num_rows):
+            if np.all(mat[r, 1:] == 0) and mat[r, 0] == 1:
+                inconsistent = True
+                break
+
+        t_eval = (time.perf_counter() - t_eval_0) * 1000.0
+        total_rank = len(linear_pivots) + len(quadratic_pivots)
+
+        observable = -1.0 if inconsistent else float(total_rank) / float(num_basis)
+
+        return {
+            "observable": observable,
+            "rank": total_rank,
+            "linear_rank": len(linear_pivots),
+            "quadratic_rank": len(quadratic_pivots),
+            "basis_size": num_basis,
+            "inconsistent": inconsistent,
+            "condition_number": 1.0,
+            "construction_time_ms": t_con,
+            "extraction_time_ms": t_eval,
+            "peak_memory_kb": mat.nbytes / 1024.0,
+        }

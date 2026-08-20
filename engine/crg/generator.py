@@ -3,7 +3,7 @@
 Instantiates candidate representations with deterministic fingerprinting.
 """
 
-from typing import Dict, List, Type
+from typing import Dict, List, Tuple, Type
 from engine.interfaces import CandidateProfile
 from engine.dsl.primitives import (
     RepresentationPrimitive,
@@ -11,17 +11,45 @@ from engine.dsl.primitives import (
     GF2AffinePrimitive,
     TensorRankPrimitive,
     VPTIProjectorPrimitive,
+    QuadraticIdealMPOPrimitive,
 )
 
 
 class CandidateRepresentationGenerator:
     """Generates and registers candidate representations."""
 
-    REGISTRY: Dict[str, Tuple[str, Type[RepresentationPrimitive]]] = {
-        "spectral_laplacian": ("SpectralLaplacian(L=B^T*B, Fiedler)", SpectralLaplacianPrimitive),
-        "gf2_affine": ("GF2Affine(GaussianElimination, Parity)", GF2AffinePrimitive),
-        "tensor_svd": ("TensorRank(Matricization, SVD_Nuclear)", TensorRankPrimitive),
-        "vpti_projector": ("VPTI(LocalWitnessCut, MarginalOverlap)", VPTIProjectorPrimitive),
+    REGISTRY: Dict[str, Tuple[str, Type[RepresentationPrimitive], Dict]] = {
+        "spectral_laplacian": (
+            "SpectralLaplacian(L=B^T*B, Fiedler)",
+            SpectralLaplacianPrimitive,
+            {"preserves": "graph spectrum / Fiedler vector", "discards": "global parity", "expected_failure": "UNKNOWN"}
+        ),
+        "gf2_affine": (
+            "GF2Affine(GaussianElimination, Parity)",
+            GF2AffinePrimitive,
+            {"preserves": "linear parity (degree 1)", "discards": "nonlinear monomials (degree >= 2)", "expected_failure": "UNKNOWN"}
+        ),
+        "tensor_svd": (
+            "TensorRank(Matricization, SVD_Nuclear)",
+            TensorRankPrimitive,
+            {"preserves": "multilinear clause couplings", "discards": "low condition number", "expected_failure": "UNKNOWN"}
+        ),
+        "vpti_projector": (
+            "VPTI(LocalWitnessCut, MarginalOverlap)",
+            VPTIProjectorPrimitive,
+            {"preserves": "local 2-hop marginals", "discards": "global cycle obstructions", "expected_failure": "UNKNOWN"}
+        ),
+        "quadratic_ideal_mpo": (
+            "QuadraticIdealMPO(TruncatedDegree2, Basis=O(n^2))",
+            QuadraticIdealMPOPrimitive,
+            {
+                "preserves": "degree-1 terms, degree-2 monomials, pairwise clause couplings",
+                "discards": "degree >= 3 monomials",
+                "hypothesized_state_size": "polynomial (O(n^2) basis coefficients; scaling to be measured)",
+                "primary_adversary": "degree-3 / 3-uniform expander structure",
+                "expected_failure": "UNKNOWN"
+            }
+        ),
     }
 
     @classmethod
@@ -30,8 +58,11 @@ class CandidateRepresentationGenerator:
         if name not in cls.REGISTRY:
             raise KeyError(f"Unknown candidate '{name}'. Available: {list(cls.REGISTRY.keys())}")
 
-        dsl_expr, primitive_cls = cls.REGISTRY[name]
-        profile = CandidateProfile.create(name=name, dsl_expr=dsl_expr, params=params or {})
+        dsl_expr, primitive_cls, default_params = cls.REGISTRY[name]
+        merged_params = dict(default_params)
+        if params:
+            merged_params.update(params)
+        profile = CandidateProfile.create(name=name, dsl_expr=dsl_expr, params=merged_params)
         primitive = primitive_cls(profile)
         return profile, primitive
 

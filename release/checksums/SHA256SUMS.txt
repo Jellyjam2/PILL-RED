@@ -1,0 +1,6 @@
+8479500fb6fcbf2048fcb71b6938fc7a59e7336c4725bab086064ac8c7fd0925  dist/pillred-1.0.0-py3-none-any.whl
+00280494de606dde6eaf37305bcdd987791f621f44538e3b12059f33e59f9b1d  dist/pillred-1.0.0.tar.gz
+17d2972c077289a81c60f8f616fa692d5b4b48fdd854b236f0daf7270323758b  target/release/pillred-verify.exe
+f6da1b25dc81cf4a62239cb21511a99205898e5aefd22646d11264d7c98d556c  test_vectors/expected/test_vector_manifest.json
+89263f6c6aeb4af4207239d65846d0832e5b9cd17787fceb73179bb6dd0c8a07  test_vectors/valid/passport_001.json
+20b1d94b2029d2472245711825a6e8d80f953f84c968476ab1fe6a5d94450aa2  docs/PILLRED_SPEC_1.0.md

@@ -1,0 +1,42 @@
+[
+  {
+    "protocol_version": "PILLRED-SPEC-1.0",
+    "receipt_id": "REC-VEC-001",
+    "model_id": "MOD-BENCHMARK-V1",
+    "model_version": "1.0.0",
+    "target_event": "EVENT_100",
+    "prediction": "7",
+    "confidence": 0.75,
+    "commit_timestamp": 1700000000.0,
+    "previous_receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": "VEC_NONCE_001",
+    "commit_hash": "d4f0f828c3c5cf7433eb8c814951bf0c28409b425a8256402f260e9ea41c4280",
+    "event_id": "EVENT_100",
+    "event_timestamp": 1700000005.0,
+    "resolution_timestamp": 1700000006.0,
+    "actual_outcome": "7",
+    "payout_multiplier": 10.0,
+    "is_hit": true,
+    "receipt_hash": "4dbab7c1cc47b0c8ceaead9ad784f7a1bef90bdf087df66387feb3239f6011eb"
+  },
+  {
+    "protocol_version": "PILLRED-SPEC-1.0",
+    "receipt_id": "REC-VEC-002",
+    "model_id": "MOD-BENCHMARK-V1",
+    "model_version": "1.0.0",
+    "target_event": "EVENT_101",
+    "prediction": "0",
+    "confidence": 0.8,
+    "commit_timestamp": 1700000010.0,
+    "previous_receipt_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "nonce": "VEC_NONCE_002",
+    "commit_hash": "a0746496ca4c8c74fce0496356727dd10c84c16497756714a17dd7073bb8117f",
+    "event_id": "EVENT_101",
+    "event_timestamp": 1700000015.0,
+    "resolution_timestamp": 1700000016.0,
+    "actual_outcome": "0",
+    "payout_multiplier": 0.0,
+    "is_hit": true,
+    "receipt_hash": "257a569156291accf227888879446fff96ee3d78ae36e7dc4899d458c4646046"
+  }
+]

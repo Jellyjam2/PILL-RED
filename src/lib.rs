@@ -2,6 +2,8 @@
 //
 // Continuous Graph Laplacian Manifold & Spectral SAT Reduction Engine
 
+pub mod protocol;
+
 use nalgebra::DMatrix;
 use pyo3::prelude::*;
 use rand::prelude::*;

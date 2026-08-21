@@ -119,7 +119,7 @@ class ForensicPredictionLedger:
                 else:
                     record.is_hit = bool(actual_result == 0 or actual_result is False)
             else:
-                record.is_hit = bool(record.decision == actual_result)
+                record.is_hit = bool(record.decision == actual_result or str(record.decision) == str(actual_result))
 
         record.actual_result = actual_result
         record.timestamp_resolved = t_res

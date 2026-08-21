@@ -1,0 +1,91 @@
+{
+  "identity": {
+    "passport_id": "PASS-VEC-001",
+    "protocol_version": "PILLRED-SPEC-1.0",
+    "model_id": "MOD-BENCHMARK-V1",
+    "model_version": "1.0.0",
+    "target_domain": "RNG_SLOT_BENCHMARK",
+    "evaluation_window_start": 1700000000.0,
+    "evaluation_window_end": 1700000020.0,
+    "generation_timestamp": 1700000030.0
+  },
+  "provenance": {
+    "total_receipts": 3,
+    "valid_receipts": 3,
+    "invalid_receipts": 0,
+    "orphaned_receipts": 0,
+    "merkle_root": "9b4f9972144e0149db05a9d445ad3b6f984d1f00e705d137dfec7709c4671bcb",
+    "chain_integrity": true,
+    "temporal_integrity": true,
+    "status": "VERIFIED"
+  },
+  "statistical_evidence": {
+    "measured": {
+      "observations": 3,
+      "hits": 2,
+      "accuracy": 0.666667,
+      "majority_baseline": 0.666667,
+      "uniform_null_baseline": 0.5,
+      "delta_over_majority": 0.0,
+      "wilson_ci_99": [
+        0.144216,
+        0.959573
+      ],
+      "brier_score": 0.154167,
+      "expected_calibration_error": 0.35
+    },
+    "inferred": {
+      "is_serially_dependent": false,
+      "markov_transition_p_value": 1.0,
+      "block_bootstrap_ci_99": [
+        0.666667,
+        0.666667
+      ],
+      "effective_alpha": 0.01,
+      "engine_verdict": "FAIL",
+      "justification": "Accuracy (66.7%) fails to beat the majority-class baseline (66.7%)."
+    },
+    "statistical_evidence_hash": "3d9fb7376c302907e5be05038bb0e3a43375b15edc496654faf757c0cbdeb39e",
+    "status": "NOT PROVEN"
+  },
+  "economic_evidence": {
+    "measured": {
+      "wagers_count": 2,
+      "winning_wagers": 1,
+      "losing_wagers": 1,
+      "push_wagers": 0,
+      "total_stake": 2.0,
+      "gross_return": 10.0,
+      "friction_cost": 0.08,
+      "net_pnl": 7.92,
+      "roi_pct": 396.0,
+      "win_rate": 0.5,
+      "profit_factor": 9.0,
+      "max_drawdown_units": 1.0,
+      "max_drawdown_pct": 0.0092,
+      "drawdown_duration_events": 1,
+      "skipped_events_count": 1,
+      "correctly_avoided_losses_count": 1,
+      "missed_winning_opportunities_count": 0,
+      "capital_preserved": 1.0,
+      "missed_gross_profit": 0.0,
+      "net_preservation_benefit": 1.0,
+      "filter_precision": 1.0
+    },
+    "inferred": {
+      "exposure_rate": 0.6667,
+      "engine_verdict": "PASS",
+      "justification": "Positive realized net P/L (+7.92 units, ROI: +396.0%) after 4.0% friction, with controlled drawdown (0.9%)."
+    },
+    "economic_evidence_hash": "0caf408b4330628125f983c8ec5589d50ec05d8e7f66b9a1a0c68f3d2d5d6e0b",
+    "status": "INFERRED"
+  },
+  "evidentiary_conclusions": {
+    "provenance": "VERIFIED",
+    "empirical_data": "MEASURED",
+    "statistical_claim": "NOT PROVEN",
+    "economic_claim": "INFERRED",
+    "overall_status": "EVIDENCE_PRESERVED"
+  },
+  "passport_hash": "722812a9411a23a05d5fea69b620f9fed00fe53de757f85bfbb981344f979e27"
+}

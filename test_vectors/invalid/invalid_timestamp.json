@@ -1,0 +1,20 @@
+{
+  "protocol_version": "PILLRED-SPEC-1.0",
+  "receipt_id": "REC-VEC-001",
+  "model_id": "MOD-BENCHMARK-V1",
+  "model_version": "1.0.0",
+  "target_event": "EVENT_100",
+  "prediction": "7",
+  "confidence": 0.75,
+  "commit_timestamp": 1700000010.0,
+  "previous_receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "nonce": "VEC_NONCE_001",
+  "commit_hash": "f4eeae25721b79762390e004461fcd7ffd4c11b3ae4d5d726f19e68ade93f059",
+  "event_id": "EVENT_100",
+  "event_timestamp": 1700000005.0,
+  "resolution_timestamp": 1700000006.0,
+  "actual_outcome": "7",
+  "payout_multiplier": 10.0,
+  "is_hit": true,
+  "receipt_hash": "4dbab7c1cc47b0c8ceaead9ad784f7a1bef90bdf087df66387feb3239f6011eb"
+}

@@ -2,6 +2,8 @@
 //
 // Continuous Graph Laplacian Manifold & Spectral SAT Reduction Engine
 
+pub mod protocol;
+
 use nalgebra::DMatrix;
 use pyo3::prelude::*;
 use rand::prelude::*;
@@ -46,12 +48,26 @@ pub unsafe extern "C" fn anneal_gradient_manifold(manifold: FFIOmegaManifold) ->
         continuous_gradients[idx] = eigenvectors[(idx, fiedler_col)];
     }
 
-    // Leak box memory structure intentionally to establish raw pointer boundary across FFI
+    // FFI Ownership Contract:
+    // The returned pointer is owned by the caller across the C-ABI.
+    // Callers in Python or C must release it by calling `free_gradient_manifold(ptr, cols)`
+    // to reclaim the boxed slice memory.
     let boxed_allocation = continuous_gradients.into_boxed_slice();
     let static_pointer = boxed_allocation.as_ptr();
     std::mem::forget(boxed_allocation);
 
     static_pointer
+}
+
+/// Deallocates memory returned by `anneal_gradient_manifold`.
+///
+/// # Safety
+/// Caller must ensure `ptr` was allocated by `anneal_gradient_manifold` and `len` equals `manifold.cols`.
+#[no_mangle]
+pub unsafe extern "C" fn free_gradient_manifold(ptr: *mut f32, len: usize) {
+    if !ptr.is_null() && len > 0 {
+        let _ = Box::from_raw(std::slice::from_raw_parts_mut(ptr, len));
+    }
 }
 
 // ---------------------------------------------------------------------------

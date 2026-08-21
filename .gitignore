@@ -2,3 +2,8 @@ target/
 __pycache__/
 *.pyc
 .tempmediaStorage/
+data/
+build/
+dist/
+*.egg-info/
+

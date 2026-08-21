@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PILL RED // Forensic Verification &amp; Certified Prediction Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar (Aerowave Obsidian Style) -->
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="brand">
+                <img src="assets/logo.jpg" alt="PILL RED Logo" class="brand-logo">
+                <div>
+                    <span class="brand-title">PILL RED</span>
+                    <span class="brand-subtitle">Forensic Verification Protocol</span>
+                </div>
+            </div>
+            
+            <!-- Clean Page Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-page="overview">Overview</button>
+                <button class="nav-tab" data-page="stream">Live Stream</button>
+                <button class="nav-tab" data-page="models">Model Arena</button>
+                <button class="nav-tab" data-page="ledger">Forensic Ledger</button>
+                <button class="nav-tab" data-page="settings">Settings</button>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <div class="domain-badge">
+                <span class="pulse-dot"></span>
+                <span id="navDomainDisplay">GAMING / RNG</span>
+            </div>
+            <button class="btn btn-secondary" id="btnResetSession" title="Reset active session and start fresh Genesis block">Reset</button>
+            <button class="btn btn-export" id="btnExportTop">Export Dossier</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area with Dynamic Page Views -->
+    <main class="content-container">
+        
+        <!-- ==================== PAGE 1: OVERVIEW ==================== -->
+        <section class="page-view active" id="page-overview">
+            
+            <!-- Hero Pre-Commitment Card -->
+            <div class="card hero-card">
+                <div class="card-header">
+                    <div class="section-title">
+                        <span class="indicator-icon">🔒</span>
+                        <h3>Active Pre-Commitment Lock</h3>
+                    </div>
+                    <span class="status-pill pill-verified" id="heroStatusPill">PRE-COMMITTED</span>
+                </div>
+                <div class="hero-body">
+                    <div class="hero-main">
+                        <div class="hero-target-label" id="valHeroTarget">TARGET: EVENT #1</div>
+                        <div class="hero-signal" id="valHeroSignal">SIGNAL: SYMBOL #7</div>
+                        <div class="hero-meta">
+                            <span>Prediction ID: <code id="valHeroPredId">PRED-INIT-001</code></span>
+                            <span>Model Hash: <code id="valHeroModel">HASH-MARKOV-V1</code></span>
+                            <span>Locked At: <span id="valHeroTime">--:--:--</span></span>
+                        </div>
+                    </div>
+                    <div class="hero-guarantee">
+                        <div class="guarantee-title">✓ Merkle Integrity Certified</div>
+                        <p>Prediction payload cryptographically hashed &amp; chained strictly prior to event resolution.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3-Column Minimal KPI Metrics -->
+            <div class="kpi-grid">
+                <div class="card kpi-card">
+                    <div class="kpi-label">Out-of-Sample Hit Rate</div>
+                    <div class="kpi-value text-cyan" id="valHitRate">0.00%</div>
+                    <div class="kpi-sub" id="valNullRate">Null Baseline: 10.00%</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="kpi-label">Realized Betting P/L (Active Wagers)</div>
+                    <div class="kpi-value text-green" id="valRealizedPnl">R0.00</div>
+                    <div class="kpi-sub" id="valActiveWagerCount">0 Active Wagers placed</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="kpi-label">Capital Preserved (Avoided Loss)</div>
+                    <div class="kpi-value text-yellow" id="valAvoidedLoss">R0.00</div>
+                    <div class="kpi-sub" id="valAvoidedLossCount">0 Dry streaks skipped</div>
+                </div>
+            </div>
+
+            <!-- Verified Models Quick Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Top Competing Models</h3>
+                    <button class="link-btn" onclick="switchPage('models')">View All Models →</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>MODEL</th>
+                                <th>IDENTIFIER</th>
+                                <th>IN-SAMPLE</th>
+                                <th>OUT-SAMPLE</th>
+                                <th>ELO</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overviewModelsBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PAGE 2: LIVE STREAM ==================== -->
+        <section class="page-view" id="page-stream">
+            
+            <!-- Connect Game Browser Bar -->
+            <div class="card browser-connect-card">
+                <div class="card-header">
+                    <div class="section-title">
+                        <span class="indicator-icon">🌐</span>
+                        <h3>Launch &amp; Connect Game Browser</h3>
+                    </div>
+                    <span class="status-pill pill-benchmark" id="browserStatusBadge">DISCONNECTED</span>
+                </div>
+                <div class="browser-connect-body">
+                    <div class="url-input-group">
+                        <input type="text" id="inputGameUrl" placeholder="Enter Slot Game URL (e.g. https://demo.spadegaming.com or casino slot link)" class="text-input url-input" value="https://demo.spadegaming.com">
+                        <button class="btn btn-export" id="btnLaunchBrowser">🚀 Launch Game Window</button>
+                    </div>
+                    <div class="observation-notice">
+                        <strong>🛡️ Strict Observation-Only Mode:</strong> PILL RED operates strictly as a read-only scientific auditor. Zero automated wagering or betting controls.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Live Telemetry Ingestion Feed</h3>
+                        <p class="card-desc">Real-time event stream monitored by PILL RED Eyes and Settle Detector.</p>
+                    </div>
+                    <div class="stream-indicators">
+                        <div class="badge-subtle">Settle: <strong class="text-green" id="valSettleState">STABLE / REST</strong></div>
+                        <div class="badge-subtle">Total: <strong id="valTotalObserved">0</strong></div>
+                        <button class="btn btn-secondary btn-sm" id="btnUndoLast" title="Undo the most recent spin">⌫ Undo Last</button>
+                    </div>
+                </div>
+                <div class="table-container table-large">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>EVENT #</th>
+                                <th>TIMESTAMP</th>
+                                <th>OBSERVED OUTCOME</th>
+                                <th>PAYOUT</th>
+                                <th>BONUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spinsTableBody">
+                            <tr><td colspan="6" class="empty-msg">Awaiting incoming telemetry...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="stream-actions">
+                    <div class="quick-log-row">
+                        <span class="quick-log-label">HOT HOT FRUIT PAYTABLE SYMBOLS:</span>
+                        <div class="symbol-presets">
+                            <button class="preset-btn" onclick="quickLogOutcome('7', 10.0)">7️⃣ Seven</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('BAR', 6.0)">🍫 BAR</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('PLUM', 4.0)">🟣 Plum</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('ORANGE', 3.0)">🍊 Orange</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('MELON', 2.5)">🍉 Watermelon</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('WILD', 0.0)">🃏 WILD</button>
+                            <button class="preset-btn preset-bonus" onclick="quickLogOutcome('HOT_HOT', 15.0)">🔥 HOT HOT</button>
+                            <button class="preset-btn preset-bonus" onclick="quickLogOutcome('FREE_GAMES', 50.0, true)">★ FREE GAMES</button>
+                            <button class="preset-btn" onclick="quickLogOutcome('NO_WIN', 0.0)">❌ No Pay (0x)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PAGE 3: MODEL ARENA ==================== -->
+        <section class="page-view" id="page-models">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Model Tournament &amp; Verification Lifecycle</h3>
+                        <p class="card-desc">Pre-registered models competing under identical out-of-sample conditions.</p>
+                    </div>
+                    <span class="status-pill pill-cyan">GATEKEEPER ACTIVE</span>
+                </div>
+                <div class="models-grid" id="modelsGridContainer">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PAGE 4: FORENSIC LEDGER ==================== -->
+        <section class="page-view" id="page-ledger">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Cryptographic Merkle Hash Chain</h3>
+                        <p class="card-desc">Immutable parent-child linked predictions verifying pre-commitment before outcome.</p>
+                    </div>
+                    <button class="btn btn-export" id="btnExportLedger">Export Certified Dossier</button>
+                </div>
+                <div class="table-container table-large">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>TARGET</th>
+                                <th>SIGNAL</th>
+                                <th>ACTUAL OUTCOME</th>
+                                <th>CAUSAL RESOLUTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="predsTableBody">
+                            <tr><td colspan="4" class="empty-msg">No resolved predictions yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PAGE 5: SETTINGS ==================== -->
+        <section class="page-view" id="page-settings">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Platform &amp; Domain Configuration</h3>
+                        <p class="card-desc">Adjust operational domain, house edge / friction thresholds, and pre-registration parameters.</p>
+                    </div>
+                </div>
+                <div class="settings-body">
+                    <div class="settings-row">
+                        <div>
+                            <div class="settings-title">Operational Domain</div>
+                            <div class="settings-desc">Select active evaluation and data ingestion module.</div>
+                        </div>
+                        <select id="domainSelect" class="select-input">
+                            <option value="RNG_AUDIT" selected>Gaming &amp; RNG Structural Audit</option>
+                            <option value="FINANCE">Quantitative Finance &amp; Signal Backtesting</option>
+                            <option value="SIMULATION">Monte Carlo &amp; Synthetic Data QA</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-row">
+                        <div>
+                            <div class="settings-title">House Edge / Trading Friction</div>
+                            <div class="settings-desc">Applied cost percentage used to compute net expected value (EV).</div>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="inputHouseEdge" value="4.0" step="0.1" class="text-input">
+                            <span>%</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div>
+                            <div class="settings-title">Significance Threshold (Alpha)</div>
+                            <div class="settings-desc">Pre-registered p-value threshold for statistical edge certification.</div>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="inputAlpha" value="0.01" step="0.001" disabled class="text-input text-muted">
+                        </div>
+                    </div>
+
+                    <div class="settings-row">
+                        <div>
+                            <div class="settings-title">Audit Ledger Session</div>
+                            <div class="settings-desc">Clear active telemetry, reset hit rates, and anchor a fresh Genesis block.</div>
+                        </div>
+                        <button class="btn btn-secondary" id="btnResetSettings">Clear &amp; Reset Session</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

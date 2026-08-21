@@ -6,13 +6,13 @@
 
 ---
 
-## 🏛️ The 12 Constitutional Rules of PILL RED
+## 🏛️ The 13 Constitutional Rules of PILL RED
 
 ### Rule 001 — Single-Source Sovereignty
 `C:\PILL RED\` is the sole, authoritative home for the entire project. Everything we build, discover, test, reject, prove, falsify, modify, or decide belongs to `PILL RED`.
 
-### Rule 002 — RED PILL DOCK
-The native command and visual interface of PILL RED is officially named **RED PILL DOCK**. It is located at `C:\PILL RED\red_pill_dock\`.
+### Rule 002 — CLI & Headless Research Sovereignty
+The authoritative runtime interface of PILL RED is the headless CLI harness (`pillred_cli.py`). Experimental execution and benchmark verification must run autonomously without reliance on graphical interfaces or external daemon processes.
 
 ### Rule 003 — No External Runtime Coupling
 PILL RED cannot depend on another project's runtime, source tree, or execution configuration to operate. External code may be copied and rewritten inside `C:\PILL RED\`, but the PILL RED system stands completely alone.
@@ -36,8 +36,8 @@ Failed or invalid approaches (such as unitary rotations or synthetic 3D namespac
 ### Rule 009 — No Silent State
 Important changes, mathematical formulations, and engineering states cannot exist solely in an AI session, terminal buffer, or developer memory. Everything is committed to the repository.
 
-### Rule 010 — Dock Telemetry Must Have Provenance
-Anything presented by `RED PILL DOCK` as scientific or engineering telemetry must identify its authoritative source record, test domain, and claim scope.
+### Rule 010 — Research Telemetry Must Have Provenance
+Any telemetry presented by benchmark runners or CLI tools must identify its authoritative source record, test domain, and claim scope.
 
 ### Rule 011 — Master Status Is a Map, Not the Evidence
 `PROJECT_MASTER_STATUS.md` points to authoritative evidence records; it does not replace or overwrite them.
@@ -57,8 +57,8 @@ No new computational experiment may be designated as a $P = NP$ investigation un
                            │
            ┌───────────────┴───────────────┐
            │                               │
-    RED PILL DOCK                    RESEARCH CORE
-    (red_pill_dock/)                       │
+   UNIFIED CLI HARNESS               RESEARCH CORE
+   (pillred_cli.py)                        │
            │                     ┌─────────┼─────────┐
            │                     │         │         │
      ┌─────┴─────┐          experiments discoveries falsifications

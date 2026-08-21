@@ -25,3 +25,9 @@ A powerful visual command interface is required to inspect real-time continuous 
 
 ## Consequences
 - RED PILL DOCK compiles natively with zero warnings and zero external runtime dependencies.
+
+---
+
+## Historical Amendment (2026-08-20, v1.0.1)
+* **Status:** SUPERSEDED & RETIRED (Headless CLI Sovereignty)
+* **Rationale:** In accordance with Constitution Rule 002 (CLI & Headless Research Sovereignty), the graphical interface was decoupled and retired from the public archive to maintain a strictly headless, reproducible Python/Rust research core and to ensure clean separation from private P2P networking protocols. All telemetry and benchmark executions are handled authoritatively via `pillred_cli.py`.

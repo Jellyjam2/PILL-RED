@@ -562,16 +562,21 @@ if (btnDrawerRunTests) {
 
 // Session Reset Handlers
 async function handleSessionReset() {
-    if (confirm("Reset current audit session and start a fresh Genesis block?")) {
-        try {
-            const res = await fetch("/api/reset", { method: "POST" });
-            if (res.ok) {
-                fetchDashboardState();
+    showPillRedConfirm({
+        title: "PILL RED // Forensic Intelligence",
+        message: "Reset current audit session, purge active telemetry stream, and anchor a fresh Genesis block?",
+        confirmText: "Confirm Reset",
+        onConfirm: async () => {
+            try {
+                const res = await fetch("/api/reset", { method: "POST" });
+                if (res.ok) {
+                    fetchDashboardState();
+                }
+            } catch (err) {
+                console.error("Session reset error:", err);
             }
-        } catch (err) {
-            console.error("Session reset error:", err);
         }
-    }
+    });
 }
 
 const btnDrawerReset = document.getElementById("btnDrawerReset");
@@ -638,20 +643,72 @@ async function pollBrowserStatus() {
     } catch (e) {}
 }
 
+// Custom In-App Confirmation Modal System
+let modalConfirmCallback = null;
+
+function showPillRedConfirm({ title = "PILL RED // Forensic Intelligence", message, confirmText = "Confirm Delete", onConfirm }) {
+    const overlay = document.getElementById("pillRedModalOverlay");
+    const titleEl = document.getElementById("pillRedModalTitle");
+    const msgEl = document.getElementById("pillRedModalMessage");
+    const confirmBtn = document.getElementById("btnModalConfirm");
+
+    if (!overlay || !msgEl || !confirmBtn) {
+        if (confirm(message)) onConfirm();
+        return;
+    }
+
+    if (titleEl) titleEl.textContent = title;
+    msgEl.innerHTML = message;
+    confirmBtn.textContent = confirmText;
+    modalConfirmCallback = onConfirm;
+
+    overlay.style.display = "flex";
+}
+
+function hidePillRedModal() {
+    const overlay = document.getElementById("pillRedModalOverlay");
+    if (overlay) overlay.style.display = "none";
+    modalConfirmCallback = null;
+}
+
+const btnModalClose = document.getElementById("btnModalClose");
+const btnModalCancel = document.getElementById("btnModalCancel");
+const btnModalConfirm = document.getElementById("btnModalConfirm");
+const pillRedModalOverlay = document.getElementById("pillRedModalOverlay");
+
+if (btnModalClose) btnModalClose.addEventListener("click", hidePillRedModal);
+if (btnModalCancel) btnModalCancel.addEventListener("click", hidePillRedModal);
+if (btnModalConfirm) {
+    btnModalConfirm.addEventListener("click", () => {
+        if (modalConfirmCallback) modalConfirmCallback();
+        hidePillRedModal();
+    });
+}
+if (pillRedModalOverlay) {
+    pillRedModalOverlay.addEventListener("click", (e) => {
+        if (e.target === pillRedModalOverlay) hidePillRedModal();
+    });
+}
+
 // Delete and Undo Handlers
 async function deleteSpin(spinIndex) {
-    if (confirm(`Delete Event #${spinIndex} from the telemetry feed?`)) {
-        try {
-            const res = await fetch("/api/telemetry/delete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ spin_index: spinIndex })
-            });
-            if (res.ok) fetchDashboardState();
-        } catch (err) {
-            console.error("Delete spin error:", err);
+    showPillRedConfirm({
+        title: "PILL RED // Forensic Intelligence",
+        message: `Delete <strong>Event #${spinIndex}</strong> from the active telemetry feed and purge its cryptographic prediction from the ledger?`,
+        confirmText: "Confirm Delete",
+        onConfirm: async () => {
+            try {
+                const res = await fetch("/api/telemetry/delete", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ spin_index: spinIndex })
+                });
+                if (res.ok) fetchDashboardState();
+            } catch (err) {
+                console.error("Delete spin error:", err);
+            }
         }
-    }
+    });
 }
 
 async function undoLastSpin() {
@@ -672,3 +729,4 @@ setInterval(fetchDashboardState, 1000);
 setInterval(pollBrowserStatus, 2000);
 fetchDashboardState();
 pollBrowserStatus();
+

@@ -133,6 +133,27 @@ class ForensicPredictionLedger:
         with open(self.ledger_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(record.to_dict()) + "\n")
 
+    def purge_session(self, session_id: str) -> None:
+        """Purges all records for a session from both memory and disk ledger."""
+        self.pending_predictions = {k: v for k, v in self.pending_predictions.items() if not k.startswith(f"{session_id}:")}
+        if not os.path.exists(self.ledger_path):
+            return
+        try:
+            remaining_lines = []
+            with open(self.ledger_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip():
+                        try:
+                            data = json.loads(line)
+                            if data.get("session_id") != session_id:
+                                remaining_lines.append(line)
+                        except Exception:
+                            pass
+            with open(self.ledger_path, "w", encoding="utf-8") as f:
+                f.writelines(remaining_lines)
+        except Exception:
+            pass
+
     def load_predictions(self, session_id: Optional[str] = None) -> List[PredictionRecord]:
         """Loads and filters predictions from ledger."""
         if not os.path.exists(self.ledger_path):

@@ -64,9 +64,10 @@ class PlatformDataStore:
     def reset_session(self) -> Dict[str, Any]:
         """Resets the active session, clears records, and anchors a new Genesis prediction."""
         with self.lock:
+            # Purge prior session
+            self.prediction_ledger.purge_session(self.session_id)
             self.session_id = f"SESS-{int(time.time())}-{uuid.uuid4().hex[:6].upper()}"
             self.adapter = ObservationAdapter()
-            self.prediction_ledger = ForensicPredictionLedger()
             self.observed_records = []
             self.next_prediction = self.prediction_ledger.lock_prediction(
                 session_id=self.session_id,
@@ -92,8 +93,8 @@ class PlatformDataStore:
             for idx, r in enumerate(self.observed_records, start=1):
                 r.spin_index = idx
             
-            # Rebuild predictions from observed history
-            self.prediction_ledger = ForensicPredictionLedger()
+            # Purge session predictions from disk & memory
+            self.prediction_ledger.purge_session(self.session_id)
             history = []
             for idx, r in enumerate(self.observed_records, start=1):
                 sym = r.outcome_symbols[0] if r.outcome_symbols else "0"
@@ -383,7 +384,7 @@ A rigorous forensic audit accounts for every single sequence index without ambig
 ## 🔄 3. Empirical Transition Matrix & Serial Dependence
 Testing whether observations follow an independent Bernoulli trial process or exhibit Markovian clustering:
 
-| Previous State | Transitions to Loss (0) | Transitions to Win | Observed P(Win \| State) |
+| Previous State | Transitions to Loss (0) | Transitions to Win | Observed P(Win \\| State) |
 | :--- | :--- | :--- | :--- |
 | **Loss (0)** | {t_00} | {t_0w} | **{p_win_after_loss:.2f}%** |
 | **Win (>0)** | {t_w0} | {t_ww} | **{p_win_after_win:.2f}%** |

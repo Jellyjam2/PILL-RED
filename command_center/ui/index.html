@@ -115,7 +115,7 @@
             </button>
         </div>
 
-        <div class="drawer-section-label">IDENTITY &amp; ACCOUNT</div>
+        <div class="drawer-section-label">IDENTITY &amp; LICENSING</div>
         <div class="drawer-identity-card" id="drawerIdentityCard">
             <div class="drawer-user-row">
                 <span class="user-avatar-icon">👤</span>
@@ -127,6 +127,20 @@
             <div class="drawer-session-status">
                 <span class="status-dot-green"></span>
                 <span>Session: ACTIVE (Local Sovereign)</span>
+            </div>
+            <div class="drawer-license-actions">
+                <button class="btn-drawer-action" id="btnDrawerViewLicense" onclick="openLicenseReceiptModal()" title="View Signed Titan Black Swan Technologies License">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span>View License</span>
+                </button>
+                <button class="btn-drawer-action btn-action-upgrade" id="btnDrawerUpgrade" onclick="openUpgradeModal()" title="Upgrade to Forensic Pro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    <span>Upgrade Plan</span>
+                </button>
             </div>
             <button class="btn-drawer-signout" id="btnDrawerSignOut" title="Lock session and return to Access Gate">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -643,6 +657,176 @@
         </div>
     </div>
 
+    <!-- ==================== UPGRADE & PLANS MODAL ==================== -->
+    <div class="modal-overlay" id="upgradeModalOverlay" style="display: none;">
+        <div class="modal-card modal-card-large">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon-glow text-cyan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </span>
+                    <span class="modal-title">TITAN BLACK SWAN TECHNOLOGIES // PLANS &amp; ENTITLEMENTS</span>
+                </div>
+                <button class="modal-btn-close" onclick="closeUpgradeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="upgradeModalBody">
+                <div class="tier-matrix-grid">
+                    <!-- Free Community Card -->
+                    <div class="tier-card tier-card-free" id="cardTierFree">
+                        <div class="tier-badge-label">FREE COMMUNITY</div>
+                        <div class="tier-price">$0 <span>/ forever</span></div>
+                        <div class="tier-subtext">Sovereign Evidence Engine Evaluation</div>
+                        <ul class="tier-feature-list">
+                            <li>✓ Sovereign Local Evidence Engine</li>
+                            <li>✓ Telemetry Ingest &amp; Merkle Ledger</li>
+                            <li>✓ Deterministic Receipt Creation</li>
+                            <li>✓ 67-Test Rig Verification</li>
+                            <li>✓ Standalone Offline Verifier</li>
+                            <li>✓ Automatic Application Updates</li>
+                        </ul>
+                        <div class="tier-current-tag" id="tagCurrentFree">CURRENT TIER</div>
+                    </div>
+
+                    <!-- Forensic Pro Card (Recommended) -->
+                    <div class="tier-card tier-card-pro active" id="cardTierPro">
+                        <div class="tier-badge-recommended">RECOMMENDED</div>
+                        <div class="tier-badge-label text-red">🔴 FORENSIC PRO</div>
+                        <div class="tier-price">$49 <span>/ month</span></div>
+                        <div class="tier-subtext">Professional &amp; Commercial Audit License</div>
+                        <ul class="tier-feature-list">
+                            <li>✓ <strong>Everything in Free Community</strong></li>
+                            <li>✓ Advanced Transition Matrix Analytics</li>
+                            <li>✓ High-Throughput Live Audit Streams</li>
+                            <li>✓ Commercial-Use License Rights</li>
+                            <li>✓ Signed Certified Export Dossiers</li>
+                            <li>✓ Cryptographic License Receipt</li>
+                            <li>✓ Priority Protocol Updates</li>
+                        </ul>
+                    </div>
+
+                    <!-- Institutional Card -->
+                    <div class="tier-card tier-card-inst" id="cardTierInst">
+                        <div class="tier-badge-label text-yellow">🏛️ INSTITUTIONAL</div>
+                        <div class="tier-price" style="font-size: 16px;">Custom / Contact</div>
+                        <div class="tier-subtext">Enterprise Governance &amp; Multi-Seat</div>
+                        <ul class="tier-feature-list">
+                            <li>✓ Multi-Seat Organization Admin</li>
+                            <li>✓ Centralized License Governance</li>
+                            <li>✓ Formal Assurance Docs (Coq / Lean 4)</li>
+                            <li>✓ Custom Retention &amp; SLA Support</li>
+                            <li>✓ Enterprise Deployment Rights</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Checkout Container -->
+                <div class="checkout-box" id="checkoutBox">
+                    <div class="checkout-header">
+                        <div class="checkout-title">Secure Checkout — PayPal + Debit/Credit Card</div>
+                        <div class="payment-badges-row">
+                            <span class="pay-badge pay-paypal">PayPal</span>
+                            <span class="pay-badge pay-visa">VISA</span>
+                            <span class="pay-badge pay-mc">Mastercard</span>
+                        </div>
+                    </div>
+                    <div class="checkout-summary-row">
+                        <span>Selected Plan: <strong>Forensic Pro (1 Month Entitlement)</strong></span>
+                        <span class="text-pure font-mono font-bold">$49.00 USD</span>
+                    </div>
+                    <div class="evidence-safe-notice" style="margin-top: 10px;">
+                        <span class="text-green">✓ Evidence Sovereignty Invariant:</span> Payment modifies application entitlements only. Your sovereign evidence repository remains 100% untouched.
+                    </div>
+                    <div class="checkout-actions">
+                        <button class="btn-paypal-checkout" id="btnPaypalCheckout" onclick="handlePaypalCheckout()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.011.45 5.39.117 5.845.117h7.094c3.55 0 6.134 1.777 6.134 5.28 0 3.32-2.316 6.326-5.836 6.326H9.72a.641.641 0 0 0-.633.541l-1.378 8.532a.64.64 0 0 1-.633.541z"/>
+                            </svg>
+                            <span>Complete Purchase ($49.00)</span>
+                        </button>
+                    </div>
+                    <div class="checkout-footer-note">Powered by PayPal • Server-Side Authoritative Webhook State Verification</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeUpgradeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CERTIFIED LICENSE RECEIPT MODAL ==================== -->
+    <div class="modal-overlay" id="licenseReceiptModalOverlay" style="display: none;">
+        <div class="modal-card modal-card-large">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon-glow text-green">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+                        </svg>
+                    </span>
+                    <span class="modal-title">TITAN BLACK SWAN TECHNOLOGIES // CERTIFIED LICENSE</span>
+                </div>
+                <button class="modal-btn-close" onclick="closeLicenseReceiptModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="licenseReceiptModalBody">
+                <div class="license-status-header">
+                    <div class="license-badge-tag" id="licenseBadgeTag">🔴 FORENSIC PRO // ACTIVE</div>
+                    <div class="license-verification-indicators">
+                        <span class="ver-item text-green">✓ SIGNATURE VERIFIED</span>
+                        <span class="ver-item text-green">✓ ISSUER VERIFIED</span>
+                        <span class="ver-item text-green">✓ PRODUCT VERIFIED</span>
+                        <span class="ver-item text-green">✓ ENTITLEMENT VERIFIED</span>
+                    </div>
+                </div>
+
+                <div class="license-details-grid">
+                    <div class="lic-detail-item">
+                        <span class="lic-label">Issuer:</span>
+                        <strong class="text-pure">Titan Black Swan Technologies</strong>
+                    </div>
+                    <div class="lic-detail-item">
+                        <span class="lic-label">Licensed Product:</span>
+                        <strong class="text-pure">PILL RED (v1.0.0)</strong>
+                    </div>
+                    <div class="lic-detail-item">
+                        <span class="lic-label">Account / User:</span>
+                        <span class="font-mono text-cyan" id="licUsernameDisplay">@guest</span>
+                    </div>
+                    <div class="lic-detail-item">
+                        <span class="lic-label">Protocol Spec:</span>
+                        <span class="font-mono text-muted">PILLRED-SPEC-1.0</span>
+                    </div>
+                </div>
+
+                <div class="legal-heading" style="margin-top: 14px;">Canonical Signed License Receipt (PILLRED-LICENSE-1.0)</div>
+                <pre class="legal-code-block font-mono" id="licenseReceiptJson" style="max-height: 180px; overflow-y: auto;">
+{
+  "license_spec": "PILLRED-LICENSE-1.0",
+  "issuer": "Titan Black Swan Technologies",
+  "product": "PILL RED",
+  "tier": "FREE_COMMUNITY"
+}
+                </pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeLicenseReceiptModal()">Close</button>
+                <button class="btn btn-secondary" onclick="verifyLicenseOfflineUI()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>Verify Offline</span>
+                </button>
+                <button class="btn btn-primary" onclick="downloadLicenseJson()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Download License (.json)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom In-App Confirmation Modal Dialog -->
     <div class="modal-overlay" id="pillRedModalOverlay" style="display: none;">
         <div class="modal-card">
@@ -672,5 +856,6 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
 

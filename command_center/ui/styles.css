@@ -1852,3 +1852,278 @@ body {
     transition: width 0.3s ease;
 }
 
+/* ==================== DRAWER LICENSE ACTIONS ==================== */
+.drawer-license-actions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.btn-drawer-action {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.06);
+    color: #d4d4d8;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 5px;
+    padding: 6px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.btn-drawer-action:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.btn-action-upgrade {
+    background: rgba(255, 51, 102, 0.12);
+    color: #ff4d79;
+    border: 1px solid rgba(255, 51, 102, 0.3);
+}
+
+.btn-action-upgrade:hover {
+    background: rgba(255, 51, 102, 0.25);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+}
+
+/* ==================== TIER MATRIX & PLANS ==================== */
+.tier-matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.tier-card {
+    background: #08090d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 16px 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.tier-card-pro {
+    border-color: rgba(255, 51, 102, 0.4);
+    background: linear-gradient(180deg, #120d13 0%, #08090d 100%);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.12);
+}
+
+.tier-badge-recommended {
+    position: absolute;
+    top: -9px;
+    right: 12px;
+    background: var(--accent-red);
+    color: #ffffff;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(255, 51, 102, 0.5);
+}
+
+.tier-badge-label {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--text-pure);
+    margin-bottom: 6px;
+}
+
+.tier-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-pure);
+    font-family: var(--font-mono);
+}
+
+.tier-price span {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.tier-subtext {
+    font-size: 10.5px;
+    color: #a1a1aa;
+    margin: 4px 0 12px 0;
+    line-height: 1.4;
+    min-height: 28px;
+}
+
+.tier-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+    flex: 1;
+}
+
+.tier-feature-list li {
+    font-size: 11px;
+    color: #d4d4d8;
+    line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+.tier-current-tag {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 0;
+    border-radius: 4px;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
+/* ==================== CHECKOUT CONTAINER ==================== */
+.checkout-box {
+    background: #06070a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: left;
+}
+
+.checkout-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 8px;
+}
+
+.checkout-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-pure);
+    text-transform: uppercase;
+}
+
+.payment-badges-row {
+    display: flex;
+    gap: 6px;
+}
+
+.pay-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+}
+
+.pay-paypal { background: #003087; color: #ffffff; }
+.pay-visa { background: #1a1f71; color: #ffffff; }
+.pay-mc { background: #eb001b; color: #ffffff; }
+
+.checkout-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: #e4e4e7;
+    margin-bottom: 8px;
+}
+
+.checkout-actions {
+    margin-top: 14px;
+}
+
+.btn-paypal-checkout {
+    width: 100%;
+    background: #ffc439;
+    color: #003087;
+    border: none;
+    border-radius: 6px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    box-shadow: 0 0 16px rgba(255, 196, 57, 0.35);
+}
+
+.btn-paypal-checkout:hover {
+    background: #ffbb1a;
+    box-shadow: 0 0 22px rgba(255, 196, 57, 0.55);
+    transform: translateY(-1px);
+}
+
+.checkout-footer-note {
+    font-size: 10px;
+    color: #71717a;
+    text-align: center;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+}
+
+/* ==================== CERTIFIED LICENSE RECEIPT MODAL ==================== */
+.license-status-header {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+.license-badge-tag {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ff4d79;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+
+.license-verification-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+}
+
+.license-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: #08090d;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: left;
+}
+
+.lic-detail-item {
+    font-size: 11.5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lic-label {
+    font-size: 10px;
+    color: #71717a;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+}
+
+

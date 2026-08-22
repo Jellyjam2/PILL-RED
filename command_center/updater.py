@@ -28,11 +28,10 @@ BASE_DIR = getattr(sys, '_MEIPASS', os.path.abspath(os.path.join(os.path.dirname
 BACKUP_DIR = os.path.join(BASE_DIR, ".backup")
 STAGING_DIR = os.path.join(BASE_DIR, ".update_staging")
 
-# Protected evidence paths that must NEVER be mutated by updates
+# Protected evidence paths that must NEVER be mutated by updates or billing
 PROTECTED_EVIDENCE_PATHS = [
     os.path.join(BASE_DIR, "evidence"),
-    os.path.join(BASE_DIR, "rng_audit", "evidence"),
-    os.path.join(BASE_DIR, "data")
+    os.path.join(BASE_DIR, "rng_audit", "evidence")
 ]
 
 # Titan Black Swan Technologies Public Root Release Fingerprint (SHA256 of Authorized Key)

@@ -44,8 +44,10 @@ class TestAuthService(unittest.TestCase):
         self.assertFalse(verify_password_constant_time("WrongPwd123", salt_hex, hash_hex))
 
     def test_account_registration_and_login_lifecycle(self):
-        uname = "test_auditor_99"
-        email = "auditor99@titan.internal"
+        import secrets
+        rand_id = secrets.token_hex(4)
+        uname = f"test_auditor_{rand_id}"
+        email = f"auditor_{rand_id}@titan.internal"
         pwd = "SecurePassword@123"
 
         # Register

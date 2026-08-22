@@ -292,6 +292,7 @@ class PlatformDataStore:
 from command_center.browser_connector import BROWSER_CONNECTOR
 from command_center.auth import ACCOUNT_SERVICE
 from command_center.updater import UPDATE_MANAGER
+from command_center.billing import BILLING_SERVICE
 
 DATA_STORE = PlatformDataStore()
 
@@ -326,6 +327,12 @@ class CommandCenterRequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             update_info = UPDATE_MANAGER.check_for_updates()
             self.wfile.write(json.dumps(update_info).encode("utf-8"))
+        elif parsed.path == "/api/billing/tiers":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            tiers_info = BILLING_SERVICE.get_tiers()
+            self.wfile.write(json.dumps(tiers_info).encode("utf-8"))
         elif parsed.path == "/api/generate_report":
             state = DATA_STORE.get_dashboard_state()
             records = list(DATA_STORE.observed_records)
@@ -699,6 +706,79 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/billing/create_order":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                res = BILLING_SERVICE.create_order(
+                    user_id=data.get("user_id", "ANON"),
+                    tier_id=data.get("tier_id", "FORENSIC_PRO")
+                )
+                self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/billing/capture_order":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                res = BILLING_SERVICE.capture_order_idempotent(
+                    order_id=data.get("order_id", ""),
+                    user_id=data.get("user_id", "ANON"),
+                    username=data.get("username", "guest"),
+                    tier_id=data.get("tier_id", "FORENSIC_PRO")
+                )
+                self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/billing/webhook":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                res = BILLING_SERVICE.process_webhook_event(
+                    event_type=data.get("event_type", "CAPTURED"),
+                    order_id=data.get("order_id", ""),
+                    user_id=data.get("user_id", "")
+                )
+                self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/billing/verify_license":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                license_payload = data.get("license", {})
+                res = BILLING_SERVICE.verify_license_offline(license_payload)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"valid": False, "error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()

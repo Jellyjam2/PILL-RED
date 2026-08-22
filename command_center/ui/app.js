@@ -1167,6 +1167,188 @@ async function executeInstallUpdate() {
 }
 
 
+// ==================== BILLING, CHECKOUT & CRYPTOGRAPHIC LICENSING ====================
+const upgradeModalOverlay = document.getElementById("upgradeModalOverlay");
+const licenseReceiptModalOverlay = document.getElementById("licenseReceiptModalOverlay");
+let currentActiveLicense = null;
+
+function openUpgradeModal() {
+    closeDrawer();
+    if (upgradeModalOverlay) upgradeModalOverlay.style.display = "flex";
+}
+
+function closeUpgradeModal() {
+    if (upgradeModalOverlay) upgradeModalOverlay.style.display = "none";
+}
+
+if (upgradeModalOverlay) {
+    upgradeModalOverlay.addEventListener("click", (e) => {
+        if (e.target === upgradeModalOverlay) closeUpgradeModal();
+    });
+}
+
+function openLicenseReceiptModal() {
+    closeDrawer();
+    const uname = activeAuthSession ? activeAuthSession.username : "guest";
+    const tier = activeAuthSession ? activeAuthSession.tier : "FREE_COMMUNITY";
+    const badgeEl = document.getElementById("licenseBadgeTag");
+    const userEl = document.getElementById("licUsernameDisplay");
+    const jsonEl = document.getElementById("licenseReceiptJson");
+
+    if (userEl) userEl.textContent = `@${uname}`;
+    if (badgeEl) {
+        badgeEl.textContent = tier === "FORENSIC_PRO" ? "🔴 FORENSIC PRO // ACTIVE" : "🆓 FREE COMMUNITY // ACTIVE";
+        badgeEl.className = tier === "FORENSIC_PRO" ? "license-badge-tag text-red" : "license-badge-tag text-cyan";
+    }
+
+    if (jsonEl) {
+        const licData = currentActiveLicense || {
+            license_spec: "PILLRED-LICENSE-1.0",
+            issuer: "Titan Black Swan Technologies",
+            product: "PILL RED",
+            protocol: "PILLRED-SPEC-1.0",
+            username: uname,
+            tier: tier,
+            issued_at: new Date().toISOString(),
+            status: "COMMUNITY_EVALUATION"
+        };
+        jsonEl.textContent = JSON.stringify(licData, null, 2);
+    }
+
+    if (licenseReceiptModalOverlay) licenseReceiptModalOverlay.style.display = "flex";
+}
+
+function closeLicenseReceiptModal() {
+    if (licenseReceiptModalOverlay) licenseReceiptModalOverlay.style.display = "none";
+}
+
+if (licenseReceiptModalOverlay) {
+    licenseReceiptModalOverlay.addEventListener("click", (e) => {
+        if (e.target === licenseReceiptModalOverlay) closeLicenseReceiptModal();
+    });
+}
+
+async function handlePaypalCheckout() {
+    const btn = document.getElementById("btnPaypalCheckout");
+    const uname = activeAuthSession ? activeAuthSession.username : "guest_analyst";
+    const uid = activeAuthSession ? activeAuthSession.user_id || uname : "USR-LOCAL";
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Processing Secure PayPal & Card Checkout...</span>`;
+    }
+
+    try {
+        // 1. Create order
+        const createRes = await fetch("/api/billing/create_order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: uid, tier_id: "FORENSIC_PRO" })
+        });
+        const orderData = await createRes.json();
+
+        if (!orderData.success) {
+            alert(`Order creation error: ${orderData.error}`);
+            return;
+        }
+
+        // 2. Capture payment (server-side authoritative confirmation)
+        const captureRes = await fetch("/api/billing/capture_order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                order_id: orderData.order_id,
+                user_id: uid,
+                username: uname,
+                tier_id: "FORENSIC_PRO"
+            })
+        });
+        const captureData = await captureRes.json();
+
+        if (captureData.success && captureData.license) {
+            currentActiveLicense = captureData.license;
+            if (activeAuthSession) {
+                activeAuthSession.tier = "FORENSIC_PRO";
+            }
+            updateIdentityUI(uname, "FORENSIC_PRO");
+
+            closeUpgradeModal();
+
+            showPillRedConfirm({
+                title: "TITAN BLACK SWAN TECHNOLOGIES // PAYMENT CONFIRMED",
+                message: `<strong>✓ Payment Captured &amp; Verified!</strong><br><br>Order: <code>${orderData.order_id}</code><br>Entitlement: <strong class="text-red">FORENSIC PRO</strong> (Commercial License Active)<br><br>Signed license receipt issued under <code>PILLRED-LICENSE-1.0</code>.`,
+                confirmText: "View License Receipt",
+                onConfirm: () => openLicenseReceiptModal()
+            });
+        } else {
+            alert(`Capture error: ${captureData.error || "Payment verification failed."}`);
+        }
+    } catch (err) {
+        alert("Checkout network error: " + err);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.011.45 5.39.117 5.845.117h7.094c3.55 0 6.134 1.777 6.134 5.28 0 3.32-2.316 6.326-5.836 6.326H9.72a.641.641 0 0 0-.633.541l-1.378 8.532a.64.64 0 0 1-.633.541z"/>
+                </svg>
+                <span>Complete Purchase ($49.00)</span>
+            `;
+        }
+    }
+}
+
+function downloadLicenseJson() {
+    const data = currentActiveLicense || {
+        license_spec: "PILLRED-LICENSE-1.0",
+        issuer: "Titan Black Swan Technologies",
+        product: "PILL RED",
+        protocol: "PILLRED-SPEC-1.0",
+        username: activeAuthSession ? activeAuthSession.username : "guest",
+        tier: activeAuthSession ? activeAuthSession.tier : "FREE_COMMUNITY"
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `PILLRED-LICENSE-${data.username || "GUEST"}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+async function verifyLicenseOfflineUI() {
+    if (!currentActiveLicense) {
+        alert("Active license receipt not loaded yet.");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/billing/verify_license", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ license: currentActiveLicense })
+        });
+        const data = await res.json();
+
+        if (data.valid) {
+            showPillRedConfirm({
+                title: "TITAN BLACK SWAN TECHNOLOGIES // VERIFICATION PASS",
+                message: `<strong>✓ Titan Black Swan Technologies License Verified!</strong><br><br>Status: <code>${data.verification_status}</code><br>Issuer: <strong>${data.issuer}</strong><br>Product: <strong>${data.product}</strong><br>Tier: <strong>${data.tier}</strong>`,
+                confirmText: "OK",
+                onConfirm: () => {}
+            });
+        } else {
+            alert(`License Verification Failed: ${data.error}`);
+        }
+    } catch (err) {
+        alert("Verification error: " + err);
+    }
+}
+
+
 // Initial bootstrap
 renderDynamicPresets("RNG_AUDIT");
 checkActiveSession();
@@ -1174,5 +1356,6 @@ setInterval(fetchDashboardState, 1000);
 setInterval(pollBrowserStatus, 2000);
 fetchDashboardState();
 pollBrowserStatus();
+
 
 

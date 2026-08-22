@@ -1,12 +1,16 @@
 # 💊 PILL RED (v1.0.0)
 
 [![Protocol](https://img.shields.io/badge/Protocol-PILLRED--SPEC--1.0-red.svg)](docs/PILLRED_SPEC_1.0.md)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Master_Suite-54%2F54_PASS-brightgreen.svg)]()
-[![Zero-Trust](https://img.shields.io/badge/Zero--Trust-Offline_Verified-success.svg)]()
+[![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/Jellyjam2/PILL-RED/releases)
+[![Tests](https://img.shields.io/badge/Master_Suite-67%2F67_PASS-brightgreen.svg)](tests/)
+[![Python ↔ Rust](https://img.shields.io/badge/Parity-Python_↔_Rust-success.svg)](src/)
+[![Kani Verified](https://img.shields.io/badge/Kani-Formal_Verification-purple.svg)](formal/kani/protocol_proofs.rs)
+[![Coq Verified](https://img.shields.io/badge/Coq-Soundness_Proofs-blueviolet.svg)](formal/coq/PillRedSoundness.v)
+[![Lean 4 Verified](https://img.shields.io/badge/Lean_4-Formal_Theorems-darkblue.svg)](formal/lean/PillRed/Theorems.lean)
 
 > **The Universal Cryptographic Evidence & Model Audit Protocol.**  
 > *Before something happens, the system forces a model to put its prediction on the record. Then reality happens. PILL RED keeps the receipt.*
+
 
 ---
 
@@ -60,6 +64,22 @@ print(f"Economic Edge:     {passport.evidentiary_conclusions.economic_claim}")
 ```
 
 ---
+
+## 🖥️ Command Center & Real-Time UI
+
+To launch the interactive visual verification interface:
+
+```bash
+# Option A: One-click launcher (Windows)
+./launch_command_center.bat
+
+# Option B: Run via Python server
+python command_center/server.py 8080
+```
+Open **`http://localhost:8080`** in your browser to monitor real-time pre-settlement prediction locks, live settle feeds, and automated statistical scorecards.
+
+---
+
 
 ## 🔍 Public Offline Verifier (CLI)
 

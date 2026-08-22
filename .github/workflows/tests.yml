@@ -1,0 +1,57 @@
+name: Master Protocol & Conformance Suite
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test-suite:
+    name: 67/67 Python Master Tests & Cross-Language Conformance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build wheel scipy
+
+      - name: Run 67/67 Master Protocol Test Suite
+        run: |
+          python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Build Python Distribution Packages
+        run: |
+          python -m build
+
+      - name: Test Package Clean-Room Installation
+        run: |
+          pip install dist/*.whl --force-reinstall
+          python -c "import pillred; print(f'Installed version: {pillred.__version__}')"
+          pillred verify test_vectors/valid/passport_001.json
+
+  rust-suite:
+    name: Rust Zero-Trust Verifier & Bitwise Merkle Parity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install stable Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Rust Verifier Binary
+        run: |
+          cargo build --release --bin pillred-verify
+
+      - name: Run Rust Conformance Tests
+        run: |
+          cargo test --test test_vectors_conformance

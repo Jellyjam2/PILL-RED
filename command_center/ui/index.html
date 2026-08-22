@@ -115,9 +115,44 @@
             </button>
         </div>
 
+        <div class="drawer-section-label">IDENTITY &amp; ACCOUNT</div>
+        <div class="drawer-identity-card" id="drawerIdentityCard">
+            <div class="drawer-user-row">
+                <span class="user-avatar-icon">👤</span>
+                <div>
+                    <div class="drawer-username" id="drawerUsernameDisplay">@guest</div>
+                    <div class="drawer-user-tier" id="drawerUserTier">FREE COMMUNITY TIER</div>
+                </div>
+            </div>
+            <div class="drawer-session-status">
+                <span class="status-dot-green"></span>
+                <span>Session: ACTIVE (Local Sovereign)</span>
+            </div>
+            <button class="btn-drawer-signout" id="btnDrawerSignOut" title="Lock session and return to Access Gate">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Sign Out</span>
+            </button>
+        </div>
+
+        <div class="drawer-section-label">SOFTWARE UPDATES</div>
+        <div class="drawer-update-box">
+            <div class="update-status-row">
+                <span class="text-green font-mono" style="font-size: 11px;">✓ Integrity Verified</span>
+                <span class="text-muted font-mono" style="font-size: 10.5px;">STABLE v1.0.0</span>
+            </div>
+            <button class="btn-check-update" id="btnDrawerCheckUpdate">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>Check for Updates</span>
+            </button>
+        </div>
+
         <div class="drawer-footer">
-            <div class="spec-freeze-badge">PILLRED-SPEC-1.0 FROZEN</div>
-            <div class="footer-note">Formal Assurance • Zero-Trust Bound</div>
+            <div class="spec-freeze-badge">TITAN BLACK SWAN TECH</div>
+            <div class="footer-note">PILLRED-SPEC-1.0 • Formal Assurance Track</div>
         </div>
     </aside>
 
@@ -446,7 +481,169 @@
 
     </main>
 
-    <!-- Custom In-App Modal Dialog -->
+    <!-- ==================== ACCESS GATE OVERLAY ==================== -->
+    <div class="access-gate-overlay" id="accessGateOverlay" style="display: flex;">
+        <div class="access-gate-card">
+            <div class="gate-brand-header">
+                <div class="corporate-badge">TITAN BLACK SWAN TECHNOLOGIES</div>
+                <img src="assets/logo.jpg" alt="PILL RED" class="gate-logo-large">
+                <h1 class="gate-title">PILL RED <span class="gate-title-sep">//</span> <span class="gate-title-sub">FORENSIC INTELLIGENCE</span></h1>
+                <div class="gate-subtitle">Cryptographic Evidence &amp; Real-time Causal Audit Subsystem</div>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="gate-tab-switcher">
+                <button class="gate-tab-btn active" id="tabBtnSignIn">🔑 SIGN IN</button>
+                <button class="gate-tab-btn" id="tabBtnSignUp">📝 CREATE FREE ACCOUNT</button>
+            </div>
+
+            <!-- Sign In Panel -->
+            <div class="gate-tab-content" id="panelSignIn">
+                <form id="formSignIn" onsubmit="event.preventDefault(); handleSignIn();">
+                    <div class="gate-input-group">
+                        <label class="gate-label">Username or Email</label>
+                        <input type="text" id="inputLoginIdentifier" class="gate-input" placeholder="e.g. analyst@titan.internal" required autocomplete="username">
+                    </div>
+                    <div class="gate-input-group">
+                        <label class="gate-label">Password</label>
+                        <input type="password" id="inputLoginPassword" class="gate-input" placeholder="••••••••••••" required autocomplete="current-password">
+                    </div>
+                    <div class="gate-checkbox-row">
+                        <label class="gate-checkbox-label">
+                            <input type="checkbox" id="chkRememberMe" checked>
+                            <span>Remember My Session (Local Sovereign)</span>
+                        </label>
+                    </div>
+                    <div class="gate-error-banner" id="loginErrorBanner" style="display: none;"></div>
+                    <button type="submit" class="btn-gate-primary" id="btnSubmitSignIn">
+                        <span>SIGN IN TO COMMAND CENTER</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Create Free Account Panel -->
+            <div class="gate-tab-content" id="panelSignUp" style="display: none;">
+                <form id="formSignUp" onsubmit="event.preventDefault(); handleSignUp();">
+                    <div class="gate-input-group">
+                        <label class="gate-label">Username</label>
+                        <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                    </div>
+                    <div class="gate-input-group">
+                        <label class="gate-label">Email Address</label>
+                        <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
+                    </div>
+                    <div class="gate-input-group">
+                        <label class="gate-label">Password</label>
+                        <input type="password" id="inputRegPassword" class="gate-input" placeholder="Minimum 8 characters" required autocomplete="new-password">
+                    </div>
+                    <div class="gate-input-group">
+                        <label class="gate-label">Confirm Password</label>
+                        <input type="password" id="inputRegPasswordConfirm" class="gate-input" placeholder="Re-enter password" required autocomplete="new-password">
+                    </div>
+                    
+                    <!-- Live Password Strength Meter -->
+                    <div class="pwd-requirements" id="pwdRequirements">
+                        <div class="pwd-req-item" id="reqLen"><span class="req-dot">○</span> 8+ characters</div>
+                        <div class="pwd-req-item" id="reqLetter"><span class="req-dot">○</span> At least 1 letter</div>
+                        <div class="pwd-req-item" id="reqNum"><span class="req-dot">○</span> At least 1 number</div>
+                    </div>
+
+                    <div class="gate-checkbox-row">
+                        <label class="gate-checkbox-label">
+                            <input type="checkbox" id="chkAcceptTerms" required>
+                            <span>I agree to the <a href="javascript:void(0)" onclick="openLegalModal('terms')" class="gate-link">Terms of Service</a> &amp; <a href="javascript:void(0)" onclick="openLegalModal('privacy')" class="gate-link">Privacy Policy</a></span>
+                        </label>
+                    </div>
+
+                    <div class="gate-error-banner" id="registerErrorBanner" style="display: none;"></div>
+                    <div class="gate-success-banner" id="registerSuccessBanner" style="display: none;"></div>
+
+                    <button type="submit" class="btn-gate-primary" id="btnSubmitSignUp">
+                        <span>CREATE FREE ACCOUNT</span>
+                    </button>
+                    <button type="button" class="btn-gate-enter" id="btnEnterAfterRegister" style="display: none;" onclick="enterDashboardAfterRegister()">
+                        <span>ENTER COMMAND CENTER →</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Footer Governance & Info Links -->
+            <div class="gate-footer">
+                <button class="gate-footer-link" onclick="openLegalModal('terms')">Terms of Service</button>
+                <span class="gate-footer-dot">•</span>
+                <button class="gate-footer-link" onclick="openLegalModal('privacy')">Privacy Policy</button>
+                <span class="gate-footer-dot">•</span>
+                <button class="gate-footer-link" onclick="openLegalModal('developer')">Developer &amp; Protocol</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== AUTHORITATIVE LEGAL & PROTOCOL MODAL ==================== -->
+    <div class="modal-overlay" id="legalModalOverlay" style="display: none;">
+        <div class="modal-card modal-card-large">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon-glow">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                    </span>
+                    <span class="modal-title" id="legalModalTitle">TITAN BLACK SWAN TECHNOLOGIES // GOVERNANCE</span>
+                </div>
+                <button class="modal-btn-close" onclick="closeLegalModal()">&times;</button>
+            </div>
+            <div class="modal-body legal-modal-body" id="legalModalContent">
+                <!-- Populated via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeLegalModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SOFTWARE UPDATE NOTIFICATION MODAL ==================== -->
+    <div class="modal-overlay" id="updateModalOverlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon-glow text-cyan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                    </span>
+                    <span class="modal-title">PILL RED UPDATE AVAILABLE</span>
+                </div>
+                <button class="modal-btn-close" onclick="closeUpdateModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="updateModalBody">
+                <div class="update-info-badge">
+                    <span>Current: <strong id="updateCurrentVer">v1.0.0</strong></span>
+                    <span>→</span>
+                    <span class="text-cyan">Available: <strong id="updateLatestVer">v1.1.0</strong></span>
+                </div>
+                <div class="update-notes-box" id="updateNotesBox">
+                    Security, protocol, and cryptographic verification improvements are available.
+                </div>
+                <div class="evidence-safe-notice">
+                    <span class="text-green">✓ Evidence Isolation Guard Active:</span> Local ledgers, Merkle trees, and passports are 100% preserved and never mutated during updates.
+                </div>
+                <div class="update-progress-bar" id="updateProgressBar" style="display: none;">
+                    <div class="update-progress-fill" id="updateProgressFill"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeUpdateModal()">Later</button>
+                <button class="btn-cyan-confirm" id="btnConfirmInstallUpdate" onclick="executeInstallUpdate()">
+                    <span>Update Now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom In-App Confirmation Modal Dialog -->
     <div class="modal-overlay" id="pillRedModalOverlay" style="display: none;">
         <div class="modal-card">
             <div class="modal-header">
@@ -475,4 +672,5 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 

@@ -290,6 +290,8 @@ class PlatformDataStore:
 
 
 from command_center.browser_connector import BROWSER_CONNECTOR
+from command_center.auth import ACCOUNT_SERVICE
+from command_center.updater import UPDATE_MANAGER
 
 DATA_STORE = PlatformDataStore()
 
@@ -318,6 +320,12 @@ class CommandCenterRequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             status = BROWSER_CONNECTOR.get_status()
             self.wfile.write(json.dumps(status).encode("utf-8"))
+        elif parsed.path == "/api/update/check":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            update_info = UPDATE_MANAGER.check_for_updates()
+            self.wfile.write(json.dumps(update_info).encode("utf-8"))
         elif parsed.path == "/api/generate_report":
             state = DATA_STORE.get_dashboard_state()
             records = list(DATA_STORE.observed_records)
@@ -598,6 +606,99 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/register":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                res = ACCOUNT_SERVICE.register_user(
+                    username=data.get("username", ""),
+                    email=data.get("email", ""),
+                    password=data.get("password", "")
+                )
+                self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/login":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                res = ACCOUNT_SERVICE.authenticate_user(
+                    identifier=data.get("identifier", ""),
+                    password=data.get("password", "")
+                )
+                self.send_response(200 if res.get("success") else 401)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/session":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                token = data.get("session_token", "")
+                res = ACCOUNT_SERVICE.verify_session(token)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"valid": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/logout":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                token = data.get("session_token", "")
+                res = ACCOUNT_SERVICE.revoke_session(token)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/update/install":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                download_url = data.get("download_url", "")
+                expected_sha256 = data.get("sha256", "")
+                stage_res = UPDATE_MANAGER.stage_and_verify_payload(download_url, expected_sha256)
+                if not stage_res.get("success"):
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(stage_res).encode("utf-8"))
+                else:
+                    exec_res = UPDATE_MANAGER.execute_atomic_update(stage_res["staged_path"])
+                    self.send_response(200 if exec_res.get("success") else 500)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(exec_res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()

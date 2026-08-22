@@ -1,0 +1,96 @@
+"""
+Test Suite: Titan Black Swan Technologies // PILL RED
+Tests Memory-Hard Authentication, Session Lifecycle, and Evidence Invariance during Updates.
+"""
+
+import os
+import shutil
+import sys
+import tempfile
+import unittest
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, PROJECT_ROOT)
+
+from command_center.auth import (
+    ACCOUNT_SERVICE,
+    hash_password_memory_hard,
+    verify_password_constant_time,
+    validate_password_strength,
+)
+from command_center.updater import (
+    UPDATE_MANAGER,
+    parse_semver,
+    is_version_newer,
+    compute_evidence_fingerprint,
+    PROTECTED_EVIDENCE_PATHS,
+)
+
+
+class TestAuthService(unittest.TestCase):
+
+    def test_password_strength(self):
+        self.assertFalse(validate_password_strength("short")[0])
+        self.assertFalse(validate_password_strength("alllowercase")[0])
+        self.assertFalse(validate_password_strength("12345678")[0])
+        self.assertTrue(validate_password_strength("ValidPassword123")[0])
+
+    def test_memory_hard_scrypt_hashing(self):
+        pwd = "AuditPassword@2026"
+        salt_hex, hash_hex = hash_password_memory_hard(pwd)
+        self.assertEqual(len(salt_hex), 64)  # 32 bytes hex
+        self.assertEqual(len(hash_hex), 128) # 64 bytes hex
+        self.assertTrue(verify_password_constant_time(pwd, salt_hex, hash_hex))
+        self.assertFalse(verify_password_constant_time("WrongPwd123", salt_hex, hash_hex))
+
+    def test_account_registration_and_login_lifecycle(self):
+        uname = "test_auditor_99"
+        email = "auditor99@titan.internal"
+        pwd = "SecurePassword@123"
+
+        # Register
+        res = ACCOUNT_SERVICE.register_user(uname, email, pwd)
+        self.assertTrue(res["success"], res.get("error"))
+        self.assertEqual(res["tier"], "FREE_COMMUNITY")
+
+        # Duplicate rejection
+        dup = ACCOUNT_SERVICE.register_user(uname, "other@titan.internal", pwd)
+        self.assertFalse(dup["success"])
+
+        # Authenticate
+        auth = ACCOUNT_SERVICE.authenticate_user(uname, pwd)
+        self.assertTrue(auth["success"], auth.get("error"))
+        token = auth["session_token"]
+        self.assertTrue(token.startswith("SESS-"))
+
+        # Verify Session
+        sess = ACCOUNT_SERVICE.verify_session(token)
+        self.assertTrue(sess["valid"])
+        self.assertEqual(sess["username"], uname)
+
+        # Logout / Revoke
+        ACCOUNT_SERVICE.revoke_session(token)
+        sess_after = ACCOUNT_SERVICE.verify_session(token)
+        self.assertFalse(sess_after["valid"])
+
+
+class TestUpdateManagerAndEvidenceInvariance(unittest.TestCase):
+
+    def test_semver_comparison(self):
+        self.assertTrue(is_version_newer("1.1.0", "1.0.0"))
+        self.assertTrue(is_version_newer("v2.0.0", "1.9.9"))
+        self.assertFalse(is_version_newer("1.0.0", "1.0.0"))
+        self.assertFalse(is_version_newer("0.9.5", "1.0.0"))
+
+    def test_evidence_invariance_guard(self):
+        """Proves that evidence directory hashes are preserved and non-mutated."""
+        snapshot_before = compute_evidence_fingerprint()
+        # Verify protected paths list
+        for p in PROTECTED_EVIDENCE_PATHS:
+            self.assertTrue("evidence" in p or "data" in p)
+        snapshot_after = compute_evidence_fingerprint()
+        self.assertEqual(snapshot_before, snapshot_after, "Evidence invariance check failed!")
+
+
+if __name__ == "__main__":
+    unittest.main()

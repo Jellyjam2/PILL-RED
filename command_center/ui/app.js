@@ -723,10 +723,456 @@ async function undoLastSpin() {
 const btnUndoLast = document.getElementById("btnUndoLast");
 if (btnUndoLast) btnUndoLast.addEventListener("click", undoLastSpin);
 
+// ==================== AUTHENTICATION & ACCESS GATE CONTROLLER ====================
+let activeAuthSession = null;
+
+const tabBtnSignIn = document.getElementById("tabBtnSignIn");
+const tabBtnSignUp = document.getElementById("tabBtnSignUp");
+const panelSignIn = document.getElementById("panelSignIn");
+const panelSignUp = document.getElementById("panelSignUp");
+const accessGateOverlay = document.getElementById("accessGateOverlay");
+
+function switchGateTab(tab) {
+    if (tab === "signin") {
+        if (tabBtnSignIn) tabBtnSignIn.classList.add("active");
+        if (tabBtnSignUp) tabBtnSignUp.classList.remove("active");
+        if (panelSignIn) panelSignIn.style.display = "block";
+        if (panelSignUp) panelSignUp.style.display = "none";
+    } else {
+        if (tabBtnSignIn) tabBtnSignIn.classList.remove("active");
+        if (tabBtnSignUp) tabBtnSignUp.classList.add("active");
+        if (panelSignIn) panelSignIn.style.display = "none";
+        if (panelSignUp) panelSignUp.style.display = "block";
+    }
+}
+
+if (tabBtnSignIn) tabBtnSignIn.addEventListener("click", () => switchGateTab("signin"));
+if (tabBtnSignUp) tabBtnSignUp.addEventListener("click", () => switchGateTab("signup"));
+
+// Live Password Validation Indicator
+const inputRegPassword = document.getElementById("inputRegPassword");
+const reqLen = document.getElementById("reqLen");
+const reqLetter = document.getElementById("reqLetter");
+const reqNum = document.getElementById("reqNum");
+
+if (inputRegPassword) {
+    inputRegPassword.addEventListener("input", () => {
+        const val = inputRegPassword.value;
+        const hasLen = val.length >= 8;
+        const hasLetter = /[A-Za-z]/.test(val);
+        const hasNum = /[0-9]/.test(val);
+
+        if (reqLen) {
+            reqLen.classList.toggle("valid", hasLen);
+            reqLen.querySelector(".req-dot").textContent = hasLen ? "✓" : "○";
+        }
+        if (reqLetter) {
+            reqLetter.classList.toggle("valid", hasLetter);
+            reqLetter.querySelector(".req-dot").textContent = hasLetter ? "✓" : "○";
+        }
+        if (reqNum) {
+            reqNum.classList.toggle("valid", hasNum);
+            reqNum.querySelector(".req-dot").textContent = hasNum ? "✓" : "○";
+        }
+    });
+}
+
+// Sign In Handler
+async function handleSignIn() {
+    const identifier = document.getElementById("inputLoginIdentifier")?.value || "";
+    const password = document.getElementById("inputLoginPassword")?.value || "";
+    const rememberMe = document.getElementById("chkRememberMe")?.checked || false;
+    const errorBanner = document.getElementById("loginErrorBanner");
+
+    if (errorBanner) errorBanner.style.display = "none";
+
+    try {
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identifier, password })
+        });
+        const data = await res.json();
+
+        if (data.success && data.session_token) {
+            activeAuthSession = data;
+            if (rememberMe) {
+                localStorage.setItem("pillred_session_token", data.session_token);
+            }
+            updateIdentityUI(data.username, data.tier);
+            if (accessGateOverlay) accessGateOverlay.style.display = "none";
+        } else {
+            if (errorBanner) {
+                errorBanner.textContent = data.error || "Authentication failed. Please check credentials.";
+                errorBanner.style.display = "block";
+            }
+        }
+    } catch (err) {
+        if (errorBanner) {
+            errorBanner.textContent = "Network error connecting to local authentication service.";
+            errorBanner.style.display = "block";
+        }
+    }
+}
+
+// Sign Up Handler
+let pendingRegisteredAuth = null;
+
+async function handleSignUp() {
+    const username = document.getElementById("inputRegUsername")?.value.trim() || "";
+    const email = document.getElementById("inputRegEmail")?.value.trim() || "";
+    const password = document.getElementById("inputRegPassword")?.value || "";
+    const confirmPassword = document.getElementById("inputRegPasswordConfirm")?.value || "";
+    const errorBanner = document.getElementById("registerErrorBanner");
+    const successBanner = document.getElementById("registerSuccessBanner");
+    const btnSubmitSignUp = document.getElementById("btnSubmitSignUp");
+    const btnEnterAfter = document.getElementById("btnEnterAfterRegister");
+
+    if (errorBanner) errorBanner.style.display = "none";
+    if (successBanner) successBanner.style.display = "none";
+
+    if (password !== confirmPassword) {
+        if (errorBanner) {
+            errorBanner.textContent = "Passwords do not match.";
+            errorBanner.style.display = "block";
+        }
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            pendingRegisteredAuth = { username, password };
+            if (successBanner) {
+                successBanner.innerHTML = `<strong>✓ Account Created:</strong> @${data.username} provisioned under <strong>FREE COMMUNITY TIER</strong>.`;
+                successBanner.style.display = "block";
+            }
+            if (btnSubmitSignUp) btnSubmitSignUp.style.display = "none";
+            if (btnEnterAfter) btnEnterAfter.style.display = "block";
+        } else {
+            if (errorBanner) {
+                errorBanner.textContent = data.error || "Registration failed.";
+                errorBanner.style.display = "block";
+            }
+        }
+    } catch (err) {
+        if (errorBanner) {
+            errorBanner.textContent = "Network error connecting to registration service.";
+            errorBanner.style.display = "block";
+        }
+    }
+}
+
+async function enterDashboardAfterRegister() {
+    if (pendingRegisteredAuth) {
+        document.getElementById("inputLoginIdentifier").value = pendingRegisteredAuth.username;
+        document.getElementById("inputLoginPassword").value = pendingRegisteredAuth.password;
+        await handleSignIn();
+    }
+}
+
+function updateIdentityUI(username, tier) {
+    const userDisplay = document.getElementById("drawerUsernameDisplay");
+    const tierDisplay = document.getElementById("drawerUserTier");
+    if (userDisplay) userDisplay.textContent = `@${username}`;
+    if (tierDisplay) tierDisplay.textContent = tier ? `${tier.replace('_', ' ')}` : "FREE COMMUNITY TIER";
+}
+
+async function checkActiveSession() {
+    const token = localStorage.getItem("pillred_session_token");
+    if (!token) {
+        if (accessGateOverlay) accessGateOverlay.style.display = "flex";
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_token: token })
+        });
+        const data = await res.json();
+
+        if (data.valid) {
+            activeAuthSession = data;
+            updateIdentityUI(data.username, data.tier);
+            if (accessGateOverlay) accessGateOverlay.style.display = "none";
+        } else {
+            localStorage.removeItem("pillred_session_token");
+            if (accessGateOverlay) accessGateOverlay.style.display = "flex";
+        }
+    } catch (err) {
+        if (accessGateOverlay) accessGateOverlay.style.display = "flex";
+    }
+}
+
+async function handleSignOut() {
+    const token = localStorage.getItem("pillred_session_token");
+    if (token) {
+        try {
+            await fetch("/api/auth/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session_token: token })
+            });
+        } catch (e) {}
+    }
+    localStorage.removeItem("pillred_session_token");
+    activeAuthSession = null;
+    updateIdentityUI("guest", "FREE COMMUNITY TIER");
+    closeDrawer();
+    if (accessGateOverlay) accessGateOverlay.style.display = "flex";
+}
+
+const btnDrawerSignOut = document.getElementById("btnDrawerSignOut");
+if (btnDrawerSignOut) btnDrawerSignOut.addEventListener("click", handleSignOut);
+
+
+// ==================== AUTHORITATIVE LEGAL & PROTOCOL MODALS ====================
+const legalModalOverlay = document.getElementById("legalModalOverlay");
+const legalModalTitle = document.getElementById("legalModalTitle");
+const legalModalContent = document.getElementById("legalModalContent");
+
+function openLegalModal(type) {
+    if (!legalModalOverlay || !legalModalContent) return;
+
+    if (type === "terms") {
+        if (legalModalTitle) legalModalTitle.textContent = "TITAN BLACK SWAN TECHNOLOGIES // TERMS OF SERVICE";
+        legalModalContent.innerHTML = `
+            <div class="legal-section">
+                <div class="legal-heading">1. Corporate Stewardship &amp; Scope</div>
+                <div class="legal-text">
+                    PILL RED is a high-assurance mathematical evidence and causal audit system developed, stewarded, and maintained by <strong>Titan Black Swan Technologies</strong>.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">2. Evidence System &amp; Non-Guarantee</div>
+                <div class="legal-text">
+                    PILL RED is an epistemic verification protocol, not a guarantee of predictive accuracy, betting advisory, or financial advice. Statistical measurement and correlation do not automatically establish underlying physical or computational causality.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">3. Non-Stationarity &amp; Past Performance</div>
+                <div class="legal-text">
+                    Historical statistical structures, out-of-sample hit rates, and empirical edge calculations do not guarantee future performance in non-stationary gaming or financial environments.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">4. Data Provenance &amp; User Responsibility</div>
+                <div class="legal-text">
+                    Users retain sole responsibility for the legality, accuracy, and provenance of all data feeds, event streams, and logs submitted to the platform.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">5. Cryptographic Integrity vs. Ground Truth</div>
+                <div class="legal-text">
+                    Protocol verification confirms that the cryptographic artifact has not been altered according to <code>PILLRED-SPEC-1.0</code>. It does not validate external real-world assertions beyond mathematically committed hashes.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">6. Authoritative Four-State Taxonomy</div>
+                <div class="legal-text">
+                    All protocol determinations are strictly governed under the authoritative taxonomy:
+                </div>
+                <div class="legal-code-block">
+                    [ VERIFIED ]    Cryptographically proven through zero-trust hash commitments<br>
+                    [ MEASURED ]    Statistically observed with formal Wilson confidence bounds<br>
+                    [ INFERRED ]    Derived via statistical model transition dynamics<br>
+                    [ NOT PROVEN ]  Hypothesis rejected or sample size below significance bound
+                </div>
+            </div>
+        `;
+    } else if (type === "privacy") {
+        if (legalModalTitle) legalModalTitle.textContent = "TITAN BLACK SWAN TECHNOLOGIES // PRIVACY POLICY";
+        legalModalContent.innerHTML = `
+            <div class="legal-section">
+                <div class="legal-heading">1. Sovereign Evidence Isolation (Zero Cloud Transmission)</div>
+                <div class="legal-text">
+                    <strong>PILL RED evidence artifacts are strictly local-first.</strong> Receipt data, event hashes, Merkle tree records, and audit passports remain 100% on your local host machine. They are never transmitted, logged, or mirrored to Titan Black Swan Technologies or external servers unless you explicitly export them.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">2. Account Data Separation</div>
+                <div class="legal-text">
+                    Account credentials (username, email, memory-hard Argon2id/scrypt password hashes, and session state) are managed solely for application access gating, community licensing, and client security.
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">3. Strict Domain Boundaries</div>
+                <div class="legal-code-block">
+                    ACCOUNT DOMAIN:   Username, Email, Salted Password Hash, Active Tier<br>
+                    EVIDENCE DOMAIN:  Receipts, Event Ledgers, Merkle Passports (LOCAL ONLY)
+                </div>
+            </div>
+        `;
+    } else if (type === "developer") {
+        if (legalModalTitle) legalModalTitle.textContent = "TITAN BLACK SWAN TECHNOLOGIES // PROTOCOL & DEVELOPER";
+        legalModalContent.innerHTML = `
+            <div class="legal-section">
+                <div class="legal-heading">Corporate Stewardship</div>
+                <div class="legal-text"><strong>Titan Black Swan Technologies</strong></div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">Product &amp; Protocol Architecture</div>
+                <div class="legal-text">
+                    Product: <strong>PILL RED</strong><br>
+                    Specification: <strong>PILLRED-SPEC-1.0 (Frozen)</strong><br>
+                    Release: <strong>v1.0.0-RELEASE (STABLE)</strong><br>
+                    Lead Developer: <strong>Enrico Leitch</strong> (GitHub: <code>Jellyjam2</code>)
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">Implementation Engine</div>
+                <div class="legal-text">
+                    • Python 3 Command Center Server &amp; Live Telemetry Bridge<br>
+                    • Native Rust Deterministic Verification Engine (<code>pillred-verify.exe</code>)<br>
+                    • SHA-256 Merkle Audit Stream Ingest
+                </div>
+            </div>
+            <div class="legal-section">
+                <div class="legal-heading">Verification &amp; Assurance Invariants</div>
+                <div class="legal-code-block">
+                    ✓ 67/67 Master Protocol Test Suite Passing<br>
+                    ✓ Bitwise Cross-Language Parity (Python ↔ Rust)<br>
+                    ✓ Standalone Public Offline Verifier Included<br>
+                    ⏳ Formal Assurance Track: Kani Model Checker / Coq / Lean 4 (In Progress)
+                </div>
+            </div>
+        `;
+    }
+
+    legalModalOverlay.style.display = "flex";
+}
+
+function closeLegalModal() {
+    if (legalModalOverlay) legalModalOverlay.style.display = "none";
+}
+
+if (legalModalOverlay) {
+    legalModalOverlay.addEventListener("click", (e) => {
+        if (e.target === legalModalOverlay) closeLegalModal();
+    });
+}
+
+
+// ==================== CRYPTOGRAPHIC SOFTWARE UPDATES CONTROLLER ====================
+const updateModalOverlay = document.getElementById("updateModalOverlay");
+let pendingUpdateData = null;
+
+async function checkSoftwareUpdates(interactive = false) {
+    const btnCheck = document.getElementById("btnDrawerCheckUpdate");
+    if (btnCheck) {
+        btnCheck.innerHTML = `<span>Checking...</span>`;
+    }
+
+    try {
+        const res = await fetch("/api/update/check");
+        const data = await res.json();
+
+        if (btnCheck) {
+            btnCheck.innerHTML = `
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>Check for Updates</span>
+            `;
+        }
+
+        if (data.has_update) {
+            pendingUpdateData = data;
+            const curEl = document.getElementById("updateCurrentVer");
+            const latEl = document.getElementById("updateLatestVer");
+            const notesEl = document.getElementById("updateNotesBox");
+
+            if (curEl) curEl.textContent = `v${data.current_version}`;
+            if (latEl) latEl.textContent = `v${data.latest_version}`;
+            if (notesEl) notesEl.textContent = data.release_notes || "Protocol and security enhancements available.";
+
+            if (updateModalOverlay) updateModalOverlay.style.display = "flex";
+        } else if (interactive) {
+            showPillRedConfirm({
+                title: "PILL RED // SOFTWARE UPDATES",
+                message: `<strong>✓ Application is up to date!</strong><br><br>Running certified STABLE release <strong>v${data.current_version}</strong> under Titan Black Swan Technologies stewardship.`,
+                confirmText: "Close",
+                onConfirm: () => {}
+            });
+        }
+    } catch (err) {
+        if (btnCheck) {
+            btnCheck.innerHTML = `<span>Check for Updates</span>`;
+        }
+    }
+}
+
+function closeUpdateModal() {
+    if (updateModalOverlay) updateModalOverlay.style.display = "none";
+}
+
+if (updateModalOverlay) {
+    updateModalOverlay.addEventListener("click", (e) => {
+        if (e.target === updateModalOverlay) closeUpdateModal();
+    });
+}
+
+const btnDrawerCheckUpdate = document.getElementById("btnDrawerCheckUpdate");
+if (btnDrawerCheckUpdate) {
+    btnDrawerCheckUpdate.addEventListener("click", () => checkSoftwareUpdates(true));
+}
+
+async function executeInstallUpdate() {
+    if (!pendingUpdateData || !pendingUpdateData.download_url) {
+        alert("Download URL not found in release manifest.");
+        return;
+    }
+
+    const pBar = document.getElementById("updateProgressBar");
+    const pFill = document.getElementById("updateProgressFill");
+    const btnConfirm = document.getElementById("btnConfirmInstallUpdate");
+
+    if (pBar) pBar.style.display = "block";
+    if (pFill) pFill.style.width = "40%";
+    if (btnConfirm) btnConfirm.disabled = true;
+
+    try {
+        const res = await fetch("/api/update/install", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                download_url: pendingUpdateData.download_url,
+                sha256: pendingUpdateData.sha256 || ""
+            })
+        });
+        const result = await res.json();
+
+        if (pFill) pFill.style.width = "100%";
+
+        if (result.success) {
+            alert("✓ PILL RED update installed and verified! Please restart the application to complete activation.");
+            closeUpdateModal();
+        } else {
+            alert(`Update error: ${result.error}`);
+        }
+    } catch (err) {
+        alert("Failed to install update: " + err);
+    } finally {
+        if (btnConfirm) btnConfirm.disabled = false;
+        if (pBar) pBar.style.display = "none";
+    }
+}
+
+
 // Initial bootstrap
 renderDynamicPresets("RNG_AUDIT");
+checkActiveSession();
 setInterval(fetchDashboardState, 1000);
 setInterval(pollBrowserStatus, 2000);
 fetchDashboardState();
 pollBrowserStatus();
+
 

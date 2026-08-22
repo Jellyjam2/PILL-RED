@@ -486,6 +486,114 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/domain":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                new_domain = data.get("domain", "RNG_AUDIT")
+                with DATA_STORE.lock:
+                    DATA_STORE.active_domain = new_domain
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "domain": new_domain}).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/verify_file":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8"))
+                from pillred.protocol.verifier import ZeroTrustVerifier
+                
+                # Check if it is a Passport format
+                if isinstance(data, dict) and "passport_id" in data:
+                    merkle_root = data.get("merkle_root", "")
+                    passport_id = data.get("passport_id", "")
+                    model_id = data.get("model_id", "")
+                    protocol_version = data.get("protocol_version", "")
+                    valid = bool(merkle_root and passport_id and protocol_version == "PILLRED-SPEC-1.0")
+                    violations = []
+                    if protocol_version != "PILLRED-SPEC-1.0":
+                        violations.append(f"Invalid protocol version: {protocol_version}")
+                    if not merkle_root:
+                        violations.append("Missing Merkle root commitment")
+                    
+                    res = {
+                        "valid": valid,
+                        "type": "PASSPORT",
+                        "id": passport_id,
+                        "model_id": model_id,
+                        "merkle_root": merkle_root,
+                        "hit_rate": data.get("out_of_sample_hit_rate", 0.0),
+                        "total_predictions": data.get("total_forward_predictions", 0),
+                        "verdict": data.get("statistical_verdict", "VERIFIED"),
+                        "violations": violations
+                    }
+                else:
+                    receipts = data if isinstance(data, list) else ([data] if "receipt_id" in data else data.get("receipts", []))
+                    if not receipts and isinstance(data, dict) and "records" in data:
+                        receipts = data.get("records", [])
+                    
+                    if receipts and "receipt_id" in receipts[0]:
+                        is_valid, violations, merkle_root = ZeroTrustVerifier.verify_chain(receipts)
+                        res = {
+                            "valid": is_valid,
+                            "type": "RECEIPTS_CHAIN",
+                            "count": len(receipts),
+                            "merkle_root": merkle_root,
+                            "violations": violations
+                        }
+                    else:
+                        res = {
+                            "valid": False,
+                            "type": "UNKNOWN",
+                            "violations": ["Payload does not match PILL RED Passport or Receipt specification schema."]
+                        }
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"valid": False, "error": str(e), "violations": [str(e)]}).encode("utf-8"))
+        elif parsed.path == "/api/import_dossier":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8"))
+                # Import records into DATA_STORE
+                records = data.get("observed_records") or data.get("records") or []
+                with DATA_STORE.lock:
+                    if records:
+                        DATA_STORE.observed_records = []
+                        for item in records:
+                            raw = RawObservation(
+                                timestamp=float(item.get("timestamp", time.time())),
+                                game_title=item.get("game_title", "Hot Hot Fruit"),
+                                session_id=DATA_STORE.session_id,
+                                raw_symbols=item.get("outcome_symbols") or item.get("symbols", [0]),
+                                payout_multiplier=float(item.get("payout_multiplier", 1.0)),
+                                bonus_flag=bool(item.get("bonus_event") or item.get("bonus_flag", False)),
+                                raw_metadata=item.get("metadata", {})
+                            )
+                            DATA_STORE.observed_records.append(DATA_STORE.adapter.normalize(raw))
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "imported_count": len(DATA_STORE.observed_records)}).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()

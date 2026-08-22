@@ -3,94 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILL RED // Forensic Verification &amp; Certified Prediction Platform</title>
+    <title>PILL RED // Forensic Intelligence Protocol</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Top Navigation Bar (Aerowave Obsidian Style) -->
-    <header class="navbar">
-        <div class="nav-left">
-            <div class="brand">
-                <img src="assets/logo.jpg" alt="PILL RED Logo" class="brand-logo">
+    <!-- Floating Minimal Hamburger Button (Top-Left, No Rail, No Line) -->
+    <button class="floating-menu-btn" id="btnDrawerToggle" title="Open Navigation &amp; Tools Menu">
+        <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+    </button>
+
+    <!-- Slide-out Left Navigation Drawer & Backdrop -->
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="sidebar-drawer" id="sidebarDrawer">
+        <div class="drawer-header">
+            <div class="drawer-brand">
+                <img src="assets/logo.jpg" alt="PILL RED" class="drawer-logo">
                 <div>
-                    <span class="brand-title">PILL RED</span>
-                    <span class="brand-subtitle">Forensic Verification Protocol</span>
+                    <div class="drawer-brand-title">PILL RED</div>
+                    <div class="drawer-brand-sub">Forensic Intelligence v1.0</div>
                 </div>
             </div>
-            
-            <!-- Clean Page Navigation Tabs -->
-            <nav class="nav-tabs">
-                <button class="nav-tab active" data-page="overview">Overview</button>
-                <button class="nav-tab" data-page="stream">Live Stream</button>
-                <button class="nav-tab" data-page="models">Model Arena</button>
-                <button class="nav-tab" data-page="ledger">Forensic Ledger</button>
-                <button class="nav-tab" data-page="settings">Settings</button>
-            </nav>
+            <button class="drawer-close-btn" id="btnDrawerClose" title="Close Menu">
+                <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
 
-        <div class="nav-right">
-            <div class="domain-badge">
-                <span class="pulse-dot"></span>
-                <span id="navDomainDisplay">GAMING / RNG</span>
-            </div>
-            <button class="btn btn-secondary" id="btnResetSession" title="Reset active session and start fresh Genesis block">Reset</button>
-            <button class="btn btn-export" id="btnExportTop">Export Dossier</button>
-        </div>
-    </header>
+        <div class="drawer-section-label">NAVIGATION</div>
+        <nav class="drawer-nav">
+            <button class="drawer-nav-item active" data-page="overview">
+                <span class="drawer-nav-icon">
+                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+                    </svg>
+                </span>
+                <span>Overview Dashboard</span>
+            </button>
+            <button class="drawer-nav-item" data-page="stream">
+                <span class="drawer-nav-icon">
+                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.48 12H2"/>
+                    </svg>
+                </span>
+                <span>Live Stream Telemetry</span>
+            </button>
+            <button class="drawer-nav-item" data-page="models">
+                <span class="drawer-nav-icon">
+                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45.98-.98 1.05A6 6 0 0 1 8 18h8a6 6 0 0 1-1.02-.05c-.53-.07-.98-.5-.98-1.05v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                    </svg>
+                </span>
+                <span>Model Arena &amp; ELO</span>
+            </button>
+            <button class="drawer-nav-item" data-page="ledger">
+                <span class="drawer-nav-icon">
+                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                </span>
+                <span>Forensic Merkle Ledger</span>
+            </button>
+            <button class="drawer-nav-item" data-page="settings">
+                <span class="drawer-nav-icon">
+                    <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </span>
+                <span>Configuration &amp; Settings</span>
+            </button>
+        </nav>
 
-    <!-- Main Content Area with Dynamic Page Views -->
+        <div class="drawer-section-label">OPERATIONAL DOMAIN</div>
+        <div class="drawer-domain-select">
+            <select id="domainSelectDrawer" class="select-input-drawer">
+                <option value="RNG_AUDIT" selected>Gaming &amp; RNG Structural Audit</option>
+                <option value="FINANCE">Quantitative Finance &amp; Signals</option>
+                <option value="SIMULATION">Monte Carlo &amp; Synthetic QA</option>
+            </select>
+        </div>
+
+        <div class="drawer-section-label">SESSION &amp; DATA MANAGEMENT</div>
+        <!-- 4 Action Buttons as 64px Square Tiles Next to Each Other -->
+        <div class="drawer-action-grid-64">
+            <button class="drawer-action-tile-64" id="btnDrawerImport" title="Import Session / Dossier JSON">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Import</span>
+            </button>
+            <button class="drawer-action-tile-64 drawer-tile-accent" id="btnDrawerExport" title="Export Certified Dossier">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Export</span>
+            </button>
+            <button class="drawer-action-tile-64" id="btnDrawerRunTests" title="Run 67-Test Protocol Audit">
+                <svg class="icon-svg text-yellow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span>67-Tests</span>
+            </button>
+            <button class="drawer-action-tile-64 drawer-tile-danger" id="btnDrawerReset" title="Reset Session &amp; Genesis Block">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+                </svg>
+                <span>Reset</span>
+            </button>
+        </div>
+
+        <div class="drawer-footer">
+            <div class="spec-freeze-badge">PILLRED-SPEC-1.0 FROZEN</div>
+            <div class="footer-note">Formal Assurance • Zero-Trust Bound</div>
+        </div>
+    </aside>
+
+    <!-- Hidden file input for imports -->
+    <input type="file" id="globalFileInput" accept=".json" style="display: none;">
+
+    <!-- Main Content Area -->
     <main class="content-container">
-        
+
         <!-- ==================== PAGE 1: OVERVIEW ==================== -->
         <section class="page-view active" id="page-overview">
             
-            <!-- Hero Pre-Commitment Card -->
+            <!-- Main Hero Card with 2x Large 72px Glowing Logo & Forensic Intelligence Header -->
             <div class="card hero-card">
-                <div class="card-header">
-                    <div class="section-title">
-                        <span class="indicator-icon">🔒</span>
-                        <h3>Active Pre-Commitment Lock</h3>
+                <div class="card-header hero-header-custom">
+                    <div class="hero-brand-header">
+                        <img src="assets/logo.jpg" alt="PILL RED Logo" class="brand-logo-large">
+                        <div>
+                            <h2 class="hero-title">PILL RED <span class="hero-title-separator">//</span> <span class="hero-title-sub">Forensic Intelligence</span></h2>
+                            <div class="hero-tagline">Epistemic Cryptographic Evidence &amp; Pre-Commitment Protocol</div>
+                        </div>
                     </div>
-                    <span class="status-pill pill-verified" id="heroStatusPill">PRE-COMMITTED</span>
+                    <div class="hero-status-group">
+                        <span class="status-pill pill-verified pulse-status" id="heroOnlinePill">● ONLINE</span>
+                        <span class="status-pill pill-verified" id="heroStatusPill">PRE-COMMITTED</span>
+                    </div>
                 </div>
+
                 <div class="hero-body">
                     <div class="hero-main">
                         <div class="hero-target-label" id="valHeroTarget">TARGET: EVENT #1</div>
-                        <div class="hero-signal" id="valHeroSignal">SIGNAL: SYMBOL #7</div>
-                        <div class="hero-meta">
-                            <span>Prediction ID: <code id="valHeroPredId">PRED-INIT-001</code></span>
-                            <span>Model Hash: <code id="valHeroModel">HASH-MARKOV-V1</code></span>
-                            <span>Locked At: <span id="valHeroTime">--:--:--</span></span>
+                        <div class="hero-signal-sleek" id="valHeroSignal">SIGNAL: 7 <span class="hero-conf-badge">(62% Conf)</span></div>
+                        <div class="hero-meta-sleek">
+                            <div class="meta-item">Prediction ID: <code id="valHeroPredId">PRED-INIT-001</code></div>
+                            <div class="meta-item">Model Hash: <code id="valHeroModel">HASH-MARKOV-V1</code></div>
+                            <div class="meta-item">Locked At: <span id="valHeroTime">--:--:--</span></div>
                         </div>
                     </div>
                     <div class="hero-guarantee">
-                        <div class="guarantee-title">✓ Merkle Integrity Certified</div>
+                        <div class="guarantee-title">
+                            <svg class="icon-svg text-green" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                            </svg>
+                            <span>Merkle Integrity Certified</span>
+                        </div>
                         <p>Prediction payload cryptographically hashed &amp; chained strictly prior to event resolution.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 3-Column Minimal KPI Metrics -->
+            <!-- 3-Column Minimal KPI Metrics with High-Contrast Sleek Financial Cards -->
             <div class="kpi-grid">
                 <div class="card kpi-card">
                     <div class="kpi-label">Out-of-Sample Hit Rate</div>
-                    <div class="kpi-value text-cyan" id="valHitRate">0.00%</div>
-                    <div class="kpi-sub" id="valNullRate">Null Baseline: 10.00%</div>
+                    <div class="kpi-value text-cyan-glow" id="valHitRate">0.00%</div>
+                    <div class="kpi-sub" id="valNullRate">Null: 10% (0/0 hits) | 99% CI: [0.0%, 0.0%]</div>
                 </div>
                 <div class="card kpi-card">
                     <div class="kpi-label">Realized Betting P/L (Active Wagers)</div>
-                    <div class="kpi-value text-green" id="valRealizedPnl">R0.00</div>
+                    <div class="kpi-value text-green-glow" id="valRealizedPnl">+R0.00</div>
                     <div class="kpi-sub" id="valActiveWagerCount">0 Active Wagers placed</div>
                 </div>
                 <div class="card kpi-card">
                     <div class="kpi-label">Capital Preserved (Avoided Loss)</div>
-                    <div class="kpi-value text-yellow" id="valAvoidedLoss">R0.00</div>
-                    <div class="kpi-sub" id="valAvoidedLossCount">0 Dry streaks skipped</div>
+                    <div class="kpi-value text-yellow-glow" id="valAvoidedLoss">R0.00</div>
+                    <div class="kpi-sub" id="valAvoidedLossCount">0 Dry streaks avoided</div>
                 </div>
             </div>
 
-            <!-- Verified Models Quick Summary -->
+            <!-- Compact Slim Drag & Drop Forensic Audit Bar -->
+            <div class="card dropzone-card" id="dropZoneArea">
+                <div class="dropzone-inner">
+                    <div class="dropzone-icon-wrap">
+                        <svg class="icon-svg-lg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <div class="dropzone-content">
+                        <div class="dropzone-title">DRAG &amp; DROP PASSPORT OR RECEIPT JSON FOR INSTANT FORENSIC AUDIT</div>
+                        <div class="dropzone-subtitle">Audits Merkle root commitments, causal temporal precedence, and cryptographic signatures</div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" id="btnBrowseFile">
+                        <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+                        </svg>
+                        <span>Browse File</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forensic Audit Result Modal Card (Hidden by default, shown on drop/verify) -->
+            <div class="card audit-result-card" id="auditResultCard" style="display: none;">
+                <div class="card-header audit-res-header" id="auditResultHeader">
+                    <div class="section-title">
+                        <span id="auditResultIcon">
+                            <svg class="icon-svg text-green" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </span>
+                        <h3 id="auditResultTitle">PASSPORT VERIFICATION: PASSED</h3>
+                    </div>
+                    <button class="btn-close-audit" id="btnCloseAudit">
+                        <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="audit-result-body" id="auditResultContent">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Top Competing Models Summary -->
             <div class="card">
                 <div class="card-header">
                     <h3>Top Competing Models</h3>
@@ -119,22 +259,32 @@
         <!-- ==================== PAGE 2: LIVE STREAM ==================== -->
         <section class="page-view" id="page-stream">
             
-            <!-- Connect Game Browser Bar -->
-            <div class="card browser-connect-card">
+            <!-- Connect Game Browser Bar (Only shown for RNG domain) -->
+            <div class="card browser-connect-card" id="browserConnectSection">
                 <div class="card-header">
                     <div class="section-title">
-                        <span class="indicator-icon">🌐</span>
+                        <svg class="icon-svg text-cyan" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
                         <h3>Launch &amp; Connect Game Browser</h3>
                     </div>
                     <span class="status-pill pill-benchmark" id="browserStatusBadge">DISCONNECTED</span>
                 </div>
                 <div class="browser-connect-body">
                     <div class="url-input-group">
-                        <input type="text" id="inputGameUrl" placeholder="Enter Slot Game URL (e.g. https://demo.spadegaming.com or casino slot link)" class="text-input url-input" value="https://demo.spadegaming.com">
-                        <button class="btn btn-export" id="btnLaunchBrowser">🚀 Launch Game Window</button>
+                        <input type="text" id="inputGameUrl" placeholder="Enter Slot Game URL (e.g. https://demo.spadegaming.com)" class="text-input url-input" value="https://demo.spadegaming.com">
+                        <button class="btn btn-export" id="btnLaunchBrowser">
+                            <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                            </svg>
+                            <span>Launch Game Window</span>
+                        </button>
                     </div>
                     <div class="observation-notice">
-                        <strong>🛡️ Strict Observation-Only Mode:</strong> PILL RED operates strictly as a read-only scientific auditor. Zero automated wagering or betting controls.
+                        <svg class="icon-svg-sm text-cyan" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <strong>Strict Observation-Only Mode:</strong> PILL RED operates strictly as a read-only scientific auditor. Zero automated wagering or betting controls.
                     </div>
                 </div>
             </div>
@@ -148,7 +298,12 @@
                     <div class="stream-indicators">
                         <div class="badge-subtle">Settle: <strong class="text-green" id="valSettleState">STABLE / REST</strong></div>
                         <div class="badge-subtle">Total: <strong id="valTotalObserved">0</strong></div>
-                        <button class="btn btn-secondary btn-sm" id="btnUndoLast" title="Undo the most recent spin">⌫ Undo Last</button>
+                        <button class="btn btn-secondary btn-sm" id="btnUndoLast" title="Undo the most recent event">
+                            <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                            </svg>
+                            <span>Undo Last</span>
+                        </button>
                     </div>
                 </div>
                 <div class="table-container table-large">
@@ -168,19 +323,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="stream-actions">
+
+                <!-- Dynamic Telemetry Presets: 64px Uniform Tiles -->
+                <div class="stream-actions" id="dynamicPresetsSection">
                     <div class="quick-log-row">
-                        <span class="quick-log-label">HOT HOT FRUIT PAYTABLE SYMBOLS:</span>
-                        <div class="symbol-presets">
-                            <button class="preset-btn" onclick="quickLogOutcome('7', 10.0)">7️⃣ Seven</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('BAR', 6.0)">🍫 BAR</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('PLUM', 4.0)">🟣 Plum</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('ORANGE', 3.0)">🍊 Orange</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('MELON', 2.5)">🍉 Watermelon</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('WILD', 0.0)">🃏 WILD</button>
-                            <button class="preset-btn preset-bonus" onclick="quickLogOutcome('HOT_HOT', 15.0)">🔥 HOT HOT</button>
-                            <button class="preset-btn preset-bonus" onclick="quickLogOutcome('FREE_GAMES', 50.0, true)">★ FREE GAMES</button>
-                            <button class="preset-btn" onclick="quickLogOutcome('NO_WIN', 0.0)">❌ No Pay (0x)</button>
+                        <span class="quick-log-label">TELEMETRY INGESTION PRESETS:</span>
+                        <div class="symbol-presets-grid-64" id="domainSpecificPresets">
+                            <!-- Rendered dynamically as 64px tiles by app.js -->
                         </div>
                     </div>
                 </div>
@@ -211,7 +360,12 @@
                         <h3>Cryptographic Merkle Hash Chain</h3>
                         <p class="card-desc">Immutable parent-child linked predictions verifying pre-commitment before outcome.</p>
                     </div>
-                    <button class="btn btn-export" id="btnExportLedger">Export Certified Dossier</button>
+                    <button class="btn btn-export" id="btnExportLedger">
+                        <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Export Certified Dossier</span>
+                    </button>
                 </div>
                 <div class="table-container table-large">
                     <table class="data-table">
@@ -279,7 +433,12 @@
                             <div class="settings-title">Audit Ledger Session</div>
                             <div class="settings-desc">Clear active telemetry, reset hit rates, and anchor a fresh Genesis block.</div>
                         </div>
-                        <button class="btn btn-secondary" id="btnResetSettings">Clear &amp; Reset Session</button>
+                        <button class="btn btn-secondary" id="btnResetSettings">
+                            <svg class="icon-svg-sm" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+                            </svg>
+                            <span>Clear &amp; Reset Session</span>
+                        </button>
                     </div>
                 </div>
             </div>

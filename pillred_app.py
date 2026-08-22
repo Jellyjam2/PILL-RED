@@ -1,54 +1,79 @@
-"""PILL RED Desktop Application Launcher.
+"""
+PILL RED Desktop Application Launcher (Native Window Mode)
 
-Starts the Command Center server and automatically launches the user's default browser
-with the PILL RED Causal Verification & Model Evaluation Dashboard.
+Launches the background Command Center engine and presents a clean, dedicated
+native Windows desktop interface with custom logo and zero terminal console.
 """
 
 import os
 import sys
 import threading
 import time
-import webbrowser
+import urllib.request
 
-# Ensure correct base path whether running as script or frozen PyInstaller executable
-if getattr(sys, "frozen", False):
-    BASE_DIR = sys._MEIPASS
-else:
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
+# Ensure project root is in sys.path
+BASE_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from command_center.server import start_command_center
 
+PORT = 8080
+SERVER_URL = f"http://127.0.0.1:{PORT}"
+
+
+def run_background_server():
+    try:
+        server = start_command_center(port=PORT)
+        server.serve_forever()
+    except Exception as e:
+        pass
+
+
+def wait_for_server(url: str, timeout: float = 5.0):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            with urllib.request.urlopen(f"{url}/api/state", timeout=1.0) as resp:
+                if resp.status == 200:
+                    return True
+        except Exception:
+            time.sleep(0.1)
+    return False
+
 
 def main():
-    port = 8080
-    print("============================================================")
-    print("               🔴 PILL RED COMMAND CENTER")
-    print("                    PILLRED-SPEC-1.0")
-    print("============================================================")
-    print(f"\n[*] Initializing forensic evidence platform on port {port}...")
-
-    # Start server in background daemon thread
-    server = start_command_center(port=port)
-    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    # 1. Start backend server in quiet daemon thread
+    server_thread = threading.Thread(target=run_background_server, daemon=True)
     server_thread.start()
 
-    time.sleep(0.6)
-    target_url = f"http://127.0.0.1:{port}"
-    print(f"[✓] Server live! Launching user interface at: {target_url}\n")
-    print("[*] Keep this window open while using the dashboard.")
-    print("[*] Press Ctrl+C in this window to shut down.\n")
+    # 2. Wait for server readiness
+    wait_for_server(SERVER_URL, timeout=4.0)
 
-    webbrowser.open(target_url)
+    # 3. Resolve icon path
+    icon_path = os.path.join(BASE_DIR, "assets", "icon.ico")
+    if not os.path.exists(icon_path):
+        icon_path = None
 
+    # 4. Launch clean native desktop application window
     try:
+        import webview
+        window = webview.create_window(
+            title="PILL RED // Forensic Intelligence",
+            url=SERVER_URL,
+            width=1280,
+            height=850,
+            min_size=(1024, 700),
+            background_color="#09090b",
+            text_select=True
+        )
+        webview.start(icon=icon_path)
+    except Exception as e:
+        # Fallback to default browser if webview fails
+        import webbrowser
+        webbrowser.open(SERVER_URL)
         while True:
             time.sleep(1)
-    except (KeyboardInterrupt, SystemExit):
-        print("\n[*] Shutting down PILL RED Command Center.")
-        server.server_close()
 
 
 if __name__ == "__main__":

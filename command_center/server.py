@@ -297,7 +297,10 @@ class CommandCenterRequestHandler(SimpleHTTPRequestHandler):
     """Serves static UI assets and REST API endpoints."""
 
     def __init__(self, *args, **kwargs):
-        ui_dir = os.path.join(os.path.dirname(__file__), "ui")
+        base = getattr(sys, '_MEIPASS', PROJECT_ROOT)
+        ui_dir = os.path.join(base, "command_center", "ui")
+        if not os.path.isdir(ui_dir):
+            ui_dir = os.path.join(os.path.dirname(__file__), "ui")
         super().__init__(*args, directory=ui_dir, **kwargs)
 
     def do_GET(self):
@@ -605,7 +608,7 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
 def start_command_center(port: int = 8080) -> HTTPServer:
     """Starts the Command Center server."""
     server = HTTPServer(("127.0.0.1", port), CommandCenterRequestHandler)
-    print(f"[*] 🔴 PILL RED Command Center live at: http://127.0.0.1:{port}")
+    print(f"[*] [PILL RED] Command Center live at: http://127.0.0.1:{port}")
     return server
 
 

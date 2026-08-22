@@ -10,6 +10,7 @@ import sys
 import threading
 import time
 import urllib.request
+import webbrowser
 
 # Ensure project root is in sys.path
 BASE_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -18,16 +19,19 @@ if BASE_DIR not in sys.path:
 
 from command_center.server import start_command_center
 
-PORT = 8080
-SERVER_URL = f"http://127.0.0.1:{PORT}"
 
-
-def run_background_server():
-    try:
-        server = start_command_center(port=PORT)
-        server.serve_forever()
-    except Exception as e:
-        pass
+def find_and_start_server(start_port: int = 8080, max_attempts: int = 20):
+    """Binds to the first available port and starts serving in the background."""
+    for offset in range(max_attempts):
+        port = start_port + offset
+        try:
+            server = start_command_center(port=port)
+            server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+            server_thread.start()
+            return server, port
+        except OSError:
+            continue
+    raise RuntimeError("Could not bind Command Center to any available port.")
 
 
 def wait_for_server(url: str, timeout: float = 5.0):
@@ -43,12 +47,15 @@ def wait_for_server(url: str, timeout: float = 5.0):
 
 
 def main():
-    # 1. Start backend server in quiet daemon thread
-    server_thread = threading.Thread(target=run_background_server, daemon=True)
-    server_thread.start()
+    # 1. Bind and start backend server
+    try:
+        server, port = find_and_start_server(start_port=8080)
+        server_url = f"http://127.0.0.1:{port}"
+    except Exception as e:
+        server_url = "http://127.0.0.1:8080"
 
     # 2. Wait for server readiness
-    wait_for_server(SERVER_URL, timeout=4.0)
+    wait_for_server(server_url, timeout=4.0)
 
     # 3. Resolve icon path
     icon_path = os.path.join(BASE_DIR, "assets", "icon.ico")
@@ -60,7 +67,7 @@ def main():
         import webview
         window = webview.create_window(
             title="PILL RED // Forensic Intelligence",
-            url=SERVER_URL,
+            url=server_url,
             width=1280,
             height=850,
             min_size=(1024, 700),
@@ -69,9 +76,8 @@ def main():
         )
         webview.start(icon=icon_path)
     except Exception as e:
-        # Fallback to default browser if webview fails
-        import webbrowser
-        webbrowser.open(SERVER_URL)
+        # Fallback to default browser if native webview fails
+        webbrowser.open(server_url)
         while True:
             time.sleep(1)
 

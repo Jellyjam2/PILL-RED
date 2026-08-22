@@ -104,10 +104,27 @@ class AccountService:
             data["sessions"] = {}
         _save_accounts(data)
 
-    def register_user(self, username: str, email: str, password: str) -> Dict[str, Any]:
-        """Registers a new user under the Free Community Tier."""
+    def register_user(
+        self,
+        username: str,
+        email: str,
+        password: str,
+        city: str = "",
+        age: str = "",
+        postal_code: str = "",
+        birth_day: str = "",
+        birth_month: str = "",
+        birth_year: str = ""
+    ) -> Dict[str, Any]:
+        """Registers a new user under the Free Community Tier with extended profile details."""
         username = username.strip()
         email = email.strip().lower()
+        city = city.strip()
+        age = str(age).strip()
+        postal_code = postal_code.strip()
+        birth_day = str(birth_day).strip()
+        birth_month = str(birth_month).strip()
+        birth_year = str(birth_year).strip()
 
         if not username or len(username) < 3:
             return {"success": False, "error": "Username must be at least 3 characters."}
@@ -139,6 +156,12 @@ class AccountService:
             "salt": salt_hex,
             "password_hash": hash_hex,
             "tier": "FREE_COMMUNITY",
+            "city": city,
+            "age": age,
+            "postal_code": postal_code,
+            "birth_day": birth_day,
+            "birth_month": birth_month,
+            "birth_year": birth_year,
             "organization": "Titan Black Swan Technologies",
             "created_at": time.time(),
             "last_login": time.time()
@@ -154,6 +177,10 @@ class AccountService:
             "username": username,
             "email": email,
             "tier": "FREE_COMMUNITY",
+            "city": city,
+            "age": age,
+            "postal_code": postal_code,
+            "birthday": f"{birth_day}/{birth_month}/{birth_year}" if birth_year else "",
             "message": f"Account '@{username}' successfully created under Free Community Tier."
         }
 
@@ -190,6 +217,12 @@ class AccountService:
             "username": matched_user["username"],
             "email": matched_user["email"],
             "tier": matched_user.get("tier", "FREE_COMMUNITY"),
+            "city": matched_user.get("city", ""),
+            "age": matched_user.get("age", ""),
+            "postal_code": matched_user.get("postal_code", ""),
+            "birth_day": matched_user.get("birth_day", ""),
+            "birth_month": matched_user.get("birth_month", ""),
+            "birth_year": matched_user.get("birth_year", ""),
             "organization": "Titan Black Swan Technologies",
             "created_at": time.time(),
             "expires_at": time.time() + (86400 * 30)  # 30-day session
@@ -203,12 +236,20 @@ class AccountService:
         matched_user["last_login"] = time.time()
         _save_accounts(data)
 
+        bday = f"{matched_user.get('birth_day')}/{matched_user.get('birth_month')}/{matched_user.get('birth_year')}" if matched_user.get('birth_year') else ""
+
         return {
             "success": True,
             "session_token": session_token,
+            "user_id": matched_user["user_id"],
             "username": matched_user["username"],
             "email": matched_user["email"],
             "tier": matched_user.get("tier", "FREE_COMMUNITY"),
+            "city": matched_user.get("city", ""),
+            "age": matched_user.get("age", ""),
+            "postal_code": matched_user.get("postal_code", ""),
+            "birthday": bday,
+            "created_at": matched_user.get("created_at", time.time()),
             "organization": "Titan Black Swan Technologies"
         }
 
@@ -229,13 +270,43 @@ class AccountService:
             _save_accounts(data)
             return {"valid": False, "error": "Session expired."}
 
+        bday = f"{session.get('birth_day')}/{session.get('birth_month')}/{session.get('birth_year')}" if session.get('birth_year') else ""
+
         return {
             "valid": True,
+            "user_id": session.get("user_id", ""),
             "username": session["username"],
             "email": session["email"],
             "tier": session.get("tier", "FREE_COMMUNITY"),
+            "city": session.get("city", ""),
+            "age": session.get("age", ""),
+            "postal_code": session.get("postal_code", ""),
+            "birthday": bday,
+            "created_at": session.get("created_at", time.time()),
             "organization": "Titan Black Swan Technologies"
         }
+
+    def get_user_profile(self, user_id_or_username: str) -> Dict[str, Any]:
+        """Retrieves full profile for a user."""
+        data = _load_accounts()
+        users = data.get("users", {})
+        for uid, udata in users.items():
+            if uid == user_id_or_username or udata.get("username", "").lower() == user_id_or_username.lower():
+                bday = f"{udata.get('birth_day')}/{udata.get('birth_month')}/{udata.get('birth_year')}" if udata.get('birth_year') else ""
+                return {
+                    "success": True,
+                    "user_id": udata.get("user_id", uid),
+                    "username": udata.get("username", ""),
+                    "email": udata.get("email", ""),
+                    "tier": udata.get("tier", "FREE_COMMUNITY"),
+                    "city": udata.get("city", ""),
+                    "age": udata.get("age", ""),
+                    "postal_code": udata.get("postal_code", ""),
+                    "birthday": bday,
+                    "created_at": udata.get("created_at", time.time()),
+                    "organization": "Titan Black Swan Technologies"
+                }
+        return {"success": False, "error": "User profile not found."}
 
     def revoke_session(self, session_token: str) -> Dict[str, Any]:
         """Logs out and revokes active session token."""
@@ -249,3 +320,4 @@ class AccountService:
 
 
 ACCOUNT_SERVICE = AccountService()
+

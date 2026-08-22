@@ -733,6 +733,13 @@ const panelSignUp = document.getElementById("panelSignUp");
 const accessGateOverlay = document.getElementById("accessGateOverlay");
 
 function switchGateTab(tab) {
+    const regErr = document.getElementById("registerErrorBanner");
+    const regSucc = document.getElementById("registerSuccessBanner");
+    const loginErr = document.getElementById("loginErrorBanner");
+    if (regErr) regErr.style.display = "none";
+    if (regSucc) regSucc.style.display = "none";
+    if (loginErr) loginErr.style.display = "none";
+
     if (tab === "signin") {
         if (tabBtnSignIn) tabBtnSignIn.classList.add("active");
         if (tabBtnSignUp) tabBtnSignUp.classList.remove("active");
@@ -815,6 +822,52 @@ async function handleSignIn() {
     }
 }
 
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    if (input.type === "password") {
+        input.type = "text";
+        if (btn) {
+            btn.innerHTML = `
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+            `;
+            btn.title = "Hide Password";
+        }
+    } else {
+        input.type = "password";
+        if (btn) {
+            btn.innerHTML = `
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+            `;
+            btn.title = "Show Password";
+        }
+    }
+}
+
+function calculateAgeFromDOB() {
+    const day = parseInt(document.getElementById("inputRegBirthDay")?.value, 10);
+    const month = parseInt(document.getElementById("inputRegBirthMonth")?.value, 10);
+    const year = parseInt(document.getElementById("inputRegBirthYear")?.value, 10);
+    const ageInput = document.getElementById("inputRegAge");
+
+    if (day && month && year && year > 1900 && year <= new Date().getFullYear()) {
+        const today = new Date();
+        let age = today.getFullYear() - year;
+        const m = today.getMonth() + 1 - month;
+        if (m < 0 || (m === 0 && today.getDate() < day)) {
+            age--;
+        }
+        if (ageInput && age >= 0) {
+            ageInput.value = age;
+        }
+    }
+}
+
 // Sign Up Handler
 let pendingRegisteredAuth = null;
 
@@ -823,6 +876,13 @@ async function handleSignUp() {
     const email = document.getElementById("inputRegEmail")?.value.trim() || "";
     const password = document.getElementById("inputRegPassword")?.value || "";
     const confirmPassword = document.getElementById("inputRegPasswordConfirm")?.value || "";
+    const birth_day = document.getElementById("inputRegBirthDay")?.value || "";
+    const birth_month = document.getElementById("inputRegBirthMonth")?.value || "";
+    const birth_year = document.getElementById("inputRegBirthYear")?.value || "";
+    const age = document.getElementById("inputRegAge")?.value || "";
+    const city = document.getElementById("inputRegCity")?.value.trim() || "";
+    const postal_code = document.getElementById("inputRegPostalCode")?.value.trim() || "";
+
     const errorBanner = document.getElementById("registerErrorBanner");
     const successBanner = document.getElementById("registerSuccessBanner");
     const btnSubmitSignUp = document.getElementById("btnSubmitSignUp");
@@ -843,7 +903,17 @@ async function handleSignUp() {
         const res = await fetch("/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+                city,
+                age,
+                postal_code,
+                birth_day,
+                birth_month,
+                birth_year
+            })
         });
         const data = await res.json();
 
@@ -1169,11 +1239,14 @@ async function executeInstallUpdate() {
 
 // ==================== BILLING, CHECKOUT & CRYPTOGRAPHIC LICENSING ====================
 const upgradeModalOverlay = document.getElementById("upgradeModalOverlay");
+const myAccountModalOverlay = document.getElementById("myAccountModalOverlay");
 const licenseReceiptModalOverlay = document.getElementById("licenseReceiptModalOverlay");
 let currentActiveLicense = null;
+let currentSelectedPlanTier = "FORENSIC_PRO";
 
 function openUpgradeModal() {
     closeDrawer();
+    selectPlanTier("FORENSIC_PRO"); // Default selection
     if (upgradeModalOverlay) upgradeModalOverlay.style.display = "flex";
 }
 
@@ -1187,8 +1260,149 @@ if (upgradeModalOverlay) {
     });
 }
 
+function selectPlanTier(tierId) {
+    currentSelectedPlanTier = tierId;
+
+    const cardFree = document.getElementById("cardTierFree");
+    const cardPro = document.getElementById("cardTierPro");
+    const cardInst = document.getElementById("cardTierInst");
+
+    const tagFree = document.getElementById("tagSelectFree");
+    const tagPro = document.getElementById("tagSelectPro");
+    const tagInst = document.getElementById("tagSelectInst");
+
+    const boxStd = document.getElementById("checkoutBoxStandard");
+    const boxInst = document.getElementById("checkoutBoxInstitutional");
+
+    const planSummary = document.getElementById("checkoutPlanSummary");
+    const priceSummary = document.getElementById("checkoutPriceSummary");
+    const btnPaypal = document.getElementById("btnPaypalCheckout");
+    const btnPaypalText = document.getElementById("btnPaypalCheckoutText");
+    const titleText = document.getElementById("checkoutTitleText");
+    const badgesRow = document.getElementById("checkoutPaymentBadges");
+
+    if (cardFree) cardFree.classList.remove("active");
+    if (cardPro) cardPro.classList.remove("active");
+    if (cardInst) cardInst.classList.remove("active");
+
+    if (tagFree) tagFree.textContent = "Click to Select";
+    if (tagPro) tagPro.textContent = "Click to Select";
+    if (tagInst) tagInst.textContent = "Click to Learn & Contact";
+
+    if (tierId === "FREE_COMMUNITY") {
+        if (cardFree) cardFree.classList.add("active");
+        if (tagFree) tagFree.textContent = "SELECTED PLAN";
+        if (boxStd) boxStd.style.display = "block";
+        if (boxInst) boxInst.style.display = "none";
+
+        if (titleText) titleText.textContent = "Free Community Plan";
+        if (badgesRow) badgesRow.style.display = "none";
+        if (planSummary) planSummary.textContent = "Free Community (Evaluation & Protocol Rig)";
+        if (priceSummary) priceSummary.textContent = "$0.00 USD";
+        if (btnPaypal) {
+            btnPaypal.disabled = true;
+            btnPaypal.style.background = "#27272a";
+            btnPaypal.style.color = "#a1a1aa";
+            btnPaypal.style.boxShadow = "none";
+        }
+        if (btnPaypalText) btnPaypalText.textContent = "Current Default Active Plan ($0.00)";
+    } else if (tierId === "FORENSIC_PRO") {
+        if (cardPro) cardPro.classList.add("active");
+        if (tagPro) tagPro.textContent = "SELECTED PLAN";
+        if (boxStd) boxStd.style.display = "block";
+        if (boxInst) boxInst.style.display = "none";
+
+        if (titleText) titleText.textContent = "Secure Checkout — PayPal + Debit/Credit Card";
+        if (badgesRow) badgesRow.style.display = "flex";
+        if (planSummary) planSummary.textContent = "Forensic Pro (1 Month Entitlement)";
+        if (priceSummary) priceSummary.textContent = "$49.00 USD";
+        if (btnPaypal) {
+            btnPaypal.disabled = false;
+            btnPaypal.style.background = "#ffc439";
+            btnPaypal.style.color = "#003087";
+            btnPaypal.style.boxShadow = "0 0 16px rgba(255, 196, 57, 0.35)";
+        }
+        if (btnPaypalText) btnPaypalText.textContent = "Complete Purchase ($49.00)";
+    } else if (tierId === "INSTITUTIONAL") {
+        if (cardInst) cardInst.classList.add("active");
+        if (tagInst) tagInst.textContent = "LEARN & CONTACT";
+        if (boxStd) boxStd.style.display = "none";
+        if (boxInst) boxInst.style.display = "block";
+    }
+}
+
+function handleInstitutionalContact() {
+    showPillRedConfirm({
+        title: "TITAN BLACK SWAN TECHNOLOGIES // INSTITUTIONAL INQUIRY",
+        message: `<strong>🏛️ Institutional Governance &amp; Custom Deployments</strong><br><br>Email: <code>enterprise@titanblackswan.com</code><br>Steward: <strong>Titan Black Swan Technologies</strong><br><br>Includes multi-seat administrator provisioning, on-premise air-gapped license leasing, Coq/Lean 4 formal verification artifacts, and custom high-throughput telemetry adapters.`,
+        confirmText: "Close",
+        onConfirm: () => {}
+    });
+}
+
+// ==================== MY ACCOUNT & PROFILE CONTROLLER ====================
+function openMyAccountModal() {
+    closeDrawer();
+    const uname = activeAuthSession ? activeAuthSession.username : "analyst";
+    const email = activeAuthSession ? activeAuthSession.email : "analyst@titan.internal";
+    const tier = activeAuthSession ? activeAuthSession.tier : "FREE_COMMUNITY";
+    const city = activeAuthSession ? activeAuthSession.city || "Not Provided" : "Not Provided";
+    const age = activeAuthSession ? activeAuthSession.age || "Not Provided" : "Not Provided";
+    const postal = activeAuthSession ? activeAuthSession.postal_code || "Not Provided" : "Not Provided";
+    const bday = activeAuthSession ? activeAuthSession.birthday || "Not Provided" : "Not Provided";
+    const uid = activeAuthSession ? activeAuthSession.user_id || "USR-LOCAL-01" : "USR-LOCAL-01";
+
+    const titleEl = document.getElementById("accUsernameTitle");
+    const pillEl = document.getElementById("accTierPill");
+    const uidEl = document.getElementById("accUserIdDisplay");
+    const emailEl = document.getElementById("accProfileEmail");
+    const dobEl = document.getElementById("accProfileDOB");
+    const ageEl = document.getElementById("accProfileAge");
+    const cityEl = document.getElementById("accProfileCity");
+    const postalEl = document.getElementById("accProfilePostal");
+    const licTierEl = document.getElementById("accLicenseTier");
+    const orderRefEl = document.getElementById("accOrderRef");
+
+    if (titleEl) titleEl.textContent = `@${uname}`;
+    if (uidEl) uidEl.textContent = `Account ID: ${uid}`;
+    if (emailEl) emailEl.textContent = email;
+    if (dobEl) dobEl.textContent = bday;
+    if (ageEl) ageEl.textContent = age;
+    if (cityEl) cityEl.textContent = city;
+    if (postalEl) postalEl.textContent = postal;
+
+    if (pillEl) {
+        pillEl.textContent = tier === "FORENSIC_PRO" ? "🔴 FORENSIC PRO" : "🆓 FREE COMMUNITY";
+        pillEl.style.background = tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.15)" : "rgba(0, 240, 255, 0.15)";
+        pillEl.style.color = tier === "FORENSIC_PRO" ? "#ff4d79" : "var(--accent-cyan)";
+        pillEl.style.borderColor = tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.3)" : "rgba(0, 240, 255, 0.3)";
+    }
+
+    if (licTierEl) {
+        licTierEl.textContent = tier === "FORENSIC_PRO" ? "FORENSIC_PRO (Commercial License Active)" : "FREE_COMMUNITY (Evaluation Mode)";
+        licTierEl.className = tier === "FORENSIC_PRO" ? "acc-field-value font-bold text-red" : "acc-field-value font-bold text-cyan";
+    }
+
+    if (orderRefEl) {
+        orderRefEl.textContent = currentActiveLicense ? currentActiveLicense.payment?.order_id || "PAYPAL-ORD-ACTIVE" : "FREE-COMMUNITY-EVAL";
+    }
+
+    if (myAccountModalOverlay) myAccountModalOverlay.style.display = "flex";
+}
+
+function closeMyAccountModal() {
+    if (myAccountModalOverlay) myAccountModalOverlay.style.display = "none";
+}
+
+if (myAccountModalOverlay) {
+    myAccountModalOverlay.addEventListener("click", (e) => {
+        if (e.target === myAccountModalOverlay) closeMyAccountModal();
+    });
+}
+
 function openLicenseReceiptModal() {
     closeDrawer();
+    closeMyAccountModal();
     const uname = activeAuthSession ? activeAuthSession.username : "guest";
     const tier = activeAuthSession ? activeAuthSession.tier : "FREE_COMMUNITY";
     const badgeEl = document.getElementById("licenseBadgeTag");
@@ -1274,11 +1488,14 @@ async function handlePaypalCheckout() {
 
             closeUpgradeModal();
 
+            // Direct the user straight to My Account
+            openMyAccountModal();
+
             showPillRedConfirm({
                 title: "TITAN BLACK SWAN TECHNOLOGIES // PAYMENT CONFIRMED",
-                message: `<strong>✓ Payment Captured &amp; Verified!</strong><br><br>Order: <code>${orderData.order_id}</code><br>Entitlement: <strong class="text-red">FORENSIC PRO</strong> (Commercial License Active)<br><br>Signed license receipt issued under <code>PILLRED-LICENSE-1.0</code>.`,
-                confirmText: "View License Receipt",
-                onConfirm: () => openLicenseReceiptModal()
+                message: `<strong>✓ Payment Captured &amp; Verified!</strong><br><br>Order: <code>${orderData.order_id}</code><br>Entitlement: <strong class="text-red">FORENSIC PRO</strong> (Commercial License Active)<br><br>Welcome to your <strong>My Account</strong> center. Your signed license receipt is issued under <code>PILLRED-LICENSE-1.0</code>.`,
+                confirmText: "OK",
+                onConfirm: () => {}
             });
         } else {
             alert(`Capture error: ${captureData.error || "Payment verification failed."}`);
@@ -1292,7 +1509,7 @@ async function handlePaypalCheckout() {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.011.45 5.39.117 5.845.117h7.094c3.55 0 6.134 1.777 6.134 5.28 0 3.32-2.316 6.326-5.836 6.326H9.72a.641.641 0 0 0-.633.541l-1.378 8.532a.64.64 0 0 1-.633.541z"/>
                 </svg>
-                <span>Complete Purchase ($49.00)</span>
+                <span id="btnPaypalCheckoutText">Complete Purchase ($49.00)</span>
             `;
         }
     }
@@ -1356,6 +1573,7 @@ setInterval(fetchDashboardState, 1000);
 setInterval(pollBrowserStatus, 2000);
 fetchDashboardState();
 pollBrowserStatus();
+
 
 
 

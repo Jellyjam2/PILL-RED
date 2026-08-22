@@ -1,4 +1,4 @@
 8479500fb6fcbf2048fcb71b6938fc7a59e7336c4725bab086064ac8c7fd0925  dist/pillred-1.0.0-py3-none-any.whl
 00280494de606dde6eaf37305bcdd987791f621f44538e3b12059f33e59f9b1d  dist/pillred-1.0.0.tar.gz
-a36d3361d6f7fdfe66dc4fd1d1d497f15b19f2a6ff4cc8fde40b46455151245b  dist/PILL-RED.exe
+61d3bce45d2537791a897b2a00c0fdd57c00aa7d5e69e0112568f0c9c9fd1f57  dist/PILL-RED.exe
 8b03a98a6af02b2b6272048d12d14adfae10c880ae6e9a4e3a815381e2305d1e  target/release/pillred-verify.exe

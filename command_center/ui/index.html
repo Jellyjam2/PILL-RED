@@ -129,17 +129,23 @@
                 <span>Session: ACTIVE (Local Sovereign)</span>
             </div>
             <div class="drawer-license-actions">
+                <button class="btn-drawer-action" id="btnDrawerMyAccount" onclick="openMyAccountModal()" title="View My Account &amp; Profile">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span>My Account</span>
+                </button>
                 <button class="btn-drawer-action" id="btnDrawerViewLicense" onclick="openLicenseReceiptModal()" title="View Signed Titan Black Swan Technologies License">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
                     </svg>
-                    <span>View License</span>
+                    <span>License</span>
                 </button>
                 <button class="btn-drawer-action btn-action-upgrade" id="btnDrawerUpgrade" onclick="openUpgradeModal()" title="Upgrade to Forensic Pro">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                     </svg>
-                    <span>Upgrade Plan</span>
+                    <span>Plans</span>
                 </button>
             </div>
             <button class="btn-drawer-signout" id="btnDrawerSignOut" title="Lock session and return to Access Gate">
@@ -520,7 +526,14 @@
                     </div>
                     <div class="gate-input-group">
                         <label class="gate-label">Password</label>
-                        <input type="password" id="inputLoginPassword" class="gate-input" placeholder="••••••••••••" required autocomplete="current-password">
+                        <div class="pwd-input-wrap">
+                            <input type="password" id="inputLoginPassword" class="gate-input" placeholder="••••••••••••" required autocomplete="current-password">
+                            <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputLoginPassword', this)" title="Show/Hide Password">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="gate-checkbox-row">
                         <label class="gate-checkbox-label">
@@ -541,28 +554,96 @@
             <!-- Create Free Account Panel -->
             <div class="gate-tab-content" id="panelSignUp" style="display: none;">
                 <form id="formSignUp" onsubmit="event.preventDefault(); handleSignUp();">
-                    <div class="gate-input-group">
-                        <label class="gate-label">Username</label>
-                        <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                    <div class="gate-grid-2">
+                        <div class="gate-input-group">
+                            <label class="gate-label">Username</label>
+                            <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                        </div>
+                        <div class="gate-input-group">
+                            <label class="gate-label">Email Address</label>
+                            <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
+                        </div>
                     </div>
-                    <div class="gate-input-group">
-                        <label class="gate-label">Email Address</label>
-                        <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
+
+                    <div class="gate-grid-2">
+                        <div class="gate-input-group">
+                            <label class="gate-label">Password</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="inputRegPassword" class="gate-input" placeholder="Min 8 chars, 1 letter, 1 number" required autocomplete="new-password">
+                                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPassword', this)" title="Show/Hide Password">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gate-input-group">
+                            <label class="gate-label">Confirm Password</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="inputRegPasswordConfirm" class="gate-input" placeholder="Re-enter password" required autocomplete="new-password">
+                                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPasswordConfirm', this)" title="Show/Hide Password">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="gate-input-group">
-                        <label class="gate-label">Password</label>
-                        <input type="password" id="inputRegPassword" class="gate-input" placeholder="Minimum 8 characters" required autocomplete="new-password">
-                    </div>
-                    <div class="gate-input-group">
-                        <label class="gate-label">Confirm Password</label>
-                        <input type="password" id="inputRegPasswordConfirm" class="gate-input" placeholder="Re-enter password" required autocomplete="new-password">
-                    </div>
-                    
+
                     <!-- Live Password Strength Meter -->
                     <div class="pwd-requirements" id="pwdRequirements">
                         <div class="pwd-req-item" id="reqLen"><span class="req-dot">○</span> 8+ characters</div>
                         <div class="pwd-req-item" id="reqLetter"><span class="req-dot">○</span> At least 1 letter</div>
                         <div class="pwd-req-item" id="reqNum"><span class="req-dot">○</span> At least 1 number</div>
+                    </div>
+
+                    <!-- Personal & Profile Details Section -->
+                    <div class="gate-section-divider">
+                        <span>AUDITOR PROFILE &amp; LOCATION</span>
+                    </div>
+
+                    <div class="gate-dob-row">
+                        <div class="gate-input-group flex-1">
+                            <label class="gate-label">Birth Day</label>
+                            <input type="number" id="inputRegBirthDay" class="gate-input" placeholder="DD (e.g. 15)" min="1" max="31" oninput="calculateAgeFromDOB()">
+                        </div>
+                        <div class="gate-input-group flex-1">
+                            <label class="gate-label">Birth Month</label>
+                            <select id="inputRegBirthMonth" class="gate-input gate-select" onchange="calculateAgeFromDOB()">
+                                <option value="">Month</option>
+                                <option value="01">01 - Jan</option>
+                                <option value="02">02 - Feb</option>
+                                <option value="03">03 - Mar</option>
+                                <option value="04">04 - Apr</option>
+                                <option value="05">05 - May</option>
+                                <option value="06">06 - Jun</option>
+                                <option value="07">07 - Jul</option>
+                                <option value="08">08 - Aug</option>
+                                <option value="09">09 - Sep</option>
+                                <option value="10">10 - Oct</option>
+                                <option value="11">11 - Nov</option>
+                                <option value="12">12 - Dec</option>
+                            </select>
+                        </div>
+                        <div class="gate-input-group flex-1">
+                            <label class="gate-label">Birth Year</label>
+                            <input type="number" id="inputRegBirthYear" class="gate-input" placeholder="YYYY (e.g. 1998)" min="1920" max="2026" oninput="calculateAgeFromDOB()">
+                        </div>
+                        <div class="gate-input-group flex-1">
+                            <label class="gate-label">Age</label>
+                            <input type="number" id="inputRegAge" class="gate-input" placeholder="Age" min="16" max="120">
+                        </div>
+                    </div>
+
+                    <div class="gate-grid-2">
+                        <div class="gate-input-group">
+                            <label class="gate-label">City</label>
+                            <input type="text" id="inputRegCity" class="gate-input" placeholder="e.g. London / New York / Cape Town">
+                        </div>
+                        <div class="gate-input-group">
+                            <label class="gate-label">Postal / ZIP Code</label>
+                            <input type="text" id="inputRegPostalCode" class="gate-input" placeholder="e.g. 8001 / SW1A 1AA">
+                        </div>
                     </div>
 
                     <div class="gate-checkbox-row">
@@ -667,14 +748,14 @@
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
                     </span>
-                    <span class="modal-title">TITAN BLACK SWAN TECHNOLOGIES // PLANS &amp; ENTITLEMENTS</span>
+                    <span class="modal-title">TITAN BLACK SWAN TECHNOLOGIES // CHOOSE YOUR PLAN</span>
                 </div>
                 <button class="modal-btn-close" onclick="closeUpgradeModal()">&times;</button>
             </div>
             <div class="modal-body" id="upgradeModalBody">
                 <div class="tier-matrix-grid">
                     <!-- Free Community Card -->
-                    <div class="tier-card tier-card-free" id="cardTierFree">
+                    <div class="tier-card tier-card-free" id="cardTierFree" onclick="selectPlanTier('FREE_COMMUNITY')" style="cursor: pointer;">
                         <div class="tier-badge-label">FREE COMMUNITY</div>
                         <div class="tier-price">$0 <span>/ forever</span></div>
                         <div class="tier-subtext">Sovereign Evidence Engine Evaluation</div>
@@ -686,11 +767,11 @@
                             <li>✓ Standalone Offline Verifier</li>
                             <li>✓ Automatic Application Updates</li>
                         </ul>
-                        <div class="tier-current-tag" id="tagCurrentFree">CURRENT TIER</div>
+                        <div class="tier-select-indicator" id="tagSelectFree">Click to Select</div>
                     </div>
 
                     <!-- Forensic Pro Card (Recommended) -->
-                    <div class="tier-card tier-card-pro active" id="cardTierPro">
+                    <div class="tier-card tier-card-pro active" id="cardTierPro" onclick="selectPlanTier('FORENSIC_PRO')" style="cursor: pointer;">
                         <div class="tier-badge-recommended">RECOMMENDED</div>
                         <div class="tier-badge-label text-red">🔴 FORENSIC PRO</div>
                         <div class="tier-price">$49 <span>/ month</span></div>
@@ -704,10 +785,11 @@
                             <li>✓ Cryptographic License Receipt</li>
                             <li>✓ Priority Protocol Updates</li>
                         </ul>
+                        <div class="tier-select-indicator" id="tagSelectPro">SELECTED PLAN</div>
                     </div>
 
                     <!-- Institutional Card -->
-                    <div class="tier-card tier-card-inst" id="cardTierInst">
+                    <div class="tier-card tier-card-inst" id="cardTierInst" onclick="selectPlanTier('INSTITUTIONAL')" style="cursor: pointer;">
                         <div class="tier-badge-label text-yellow">🏛️ INSTITUTIONAL</div>
                         <div class="tier-price" style="font-size: 16px;">Custom / Contact</div>
                         <div class="tier-subtext">Enterprise Governance &amp; Multi-Seat</div>
@@ -718,39 +800,185 @@
                             <li>✓ Custom Retention &amp; SLA Support</li>
                             <li>✓ Enterprise Deployment Rights</li>
                         </ul>
+                        <div class="tier-select-indicator" id="tagSelectInst">Click to Learn &amp; Contact</div>
                     </div>
                 </div>
 
-                <!-- Checkout Container -->
+                <!-- Dynamic Checkout / Info Container -->
                 <div class="checkout-box" id="checkoutBox">
-                    <div class="checkout-header">
-                        <div class="checkout-title">Secure Checkout — PayPal + Debit/Credit Card</div>
-                        <div class="payment-badges-row">
-                            <span class="pay-badge pay-paypal">PayPal</span>
-                            <span class="pay-badge pay-visa">VISA</span>
-                            <span class="pay-badge pay-mc">Mastercard</span>
+                    <!-- Standard Pro / Free Checkout Content -->
+                    <div id="checkoutBoxStandard">
+                        <div class="checkout-header">
+                            <div class="checkout-title" id="checkoutTitleText">Secure Checkout — PayPal + Debit/Credit Card</div>
+                            <div class="payment-badges-row" id="checkoutPaymentBadges">
+                                <span class="pay-badge pay-paypal">PayPal</span>
+                                <span class="pay-badge pay-visa">VISA</span>
+                                <span class="pay-badge pay-mc">Mastercard</span>
+                            </div>
+                        </div>
+                        <div class="checkout-summary-row">
+                            <span>Selected Plan: <strong id="checkoutPlanSummary">Forensic Pro (1 Month Entitlement)</strong></span>
+                            <span class="text-pure font-mono font-bold" id="checkoutPriceSummary">$49.00 USD</span>
+                        </div>
+                        <div class="evidence-safe-notice" style="margin-top: 10px;">
+                            <span class="text-green">✓ Evidence Sovereignty Invariant:</span> Payment modifies application entitlements only. Your sovereign evidence repository remains 100% untouched.
+                        </div>
+                        <div class="checkout-actions" id="checkoutActionsWrap">
+                            <button class="btn-paypal-checkout" id="btnPaypalCheckout" onclick="handlePaypalCheckout()">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.011.45 5.39.117 5.845.117h7.094c3.55 0 6.134 1.777 6.134 5.28 0 3.32-2.316 6.326-5.836 6.326H9.72a.641.641 0 0 0-.633.541l-1.378 8.532a.64.64 0 0 1-.633.541z"/>
+                                </svg>
+                                <span id="btnPaypalCheckoutText">Complete Purchase ($49.00)</span>
+                            </button>
+                        </div>
+                        <div class="checkout-footer-note">Powered by PayPal • Server-Side Authoritative Webhook State Verification</div>
+                    </div>
+
+                    <!-- Institutional Deep-Dive Content (shown when Institutional is selected) -->
+                    <div id="checkoutBoxInstitutional" style="display: none;">
+                        <div class="inst-info-header">
+                            <div class="text-yellow font-bold" style="font-size: 13px;">HOW INSTITUTIONAL &amp; CUSTOM CONTRACTS WORK</div>
+                            <span class="inst-badge-pill">Enterprise Governance</span>
+                        </div>
+                        <div class="inst-explanation-text">
+                            The <strong>Institutional Tier</strong> is tailored for enterprise audit firms, compliance testing laboratories, quantitative research funds, and large-scale casino/gaming operators.
+                        </div>
+                        <div class="inst-features-grid">
+                            <div class="inst-feat-card">
+                                <strong>1. Multi-Seat Hierarchy &amp; Admin</strong>
+                                <span>Provision team licenses with Role-Based Access Control (Lead Auditor, Audit Analyst, Read-Only Compliance).</span>
+                            </div>
+                            <div class="inst-feat-card">
+                                <strong>2. Centralized Air-Gapped Licensing</strong>
+                                <span>On-premise license server support for air-gapped forensic environments with automated lease tokens.</span>
+                            </div>
+                            <div class="inst-feat-card">
+                                <strong>3. Formal Verification Artifacts</strong>
+                                <span>Direct access to Coq, Lean 4, and Kani mathematical proofs certifying zero edge leakage under the protocol.</span>
+                            </div>
+                            <div class="inst-feat-card">
+                                <strong>4. Custom Ingest Adapters &amp; 24/7 SLA</strong>
+                                <span>Custom high-throughput websocket/gRPC connectors tailored to your proprietary game feeds with dedicated SLA.</span>
+                            </div>
+                        </div>
+                        <div class="inst-contact-cta">
+                            <div class="inst-cta-desc">
+                                Contact Titan Black Swan Technologies Enterprise Team for tailored volume pricing, custom master services agreements (MSA), and direct proof-of-concept deployment.
+                            </div>
+                            <button class="btn-inst-contact" onclick="handleInstitutionalContact()">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <span>Request Institutional Proposal (enterprise@titanblackswan.com)</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="checkout-summary-row">
-                        <span>Selected Plan: <strong>Forensic Pro (1 Month Entitlement)</strong></span>
-                        <span class="text-pure font-mono font-bold">$49.00 USD</span>
-                    </div>
-                    <div class="evidence-safe-notice" style="margin-top: 10px;">
-                        <span class="text-green">✓ Evidence Sovereignty Invariant:</span> Payment modifies application entitlements only. Your sovereign evidence repository remains 100% untouched.
-                    </div>
-                    <div class="checkout-actions">
-                        <button class="btn-paypal-checkout" id="btnPaypalCheckout" onclick="handlePaypalCheckout()">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.011.45 5.39.117 5.845.117h7.094c3.55 0 6.134 1.777 6.134 5.28 0 3.32-2.316 6.326-5.836 6.326H9.72a.641.641 0 0 0-.633.541l-1.378 8.532a.64.64 0 0 1-.633.541z"/>
-                            </svg>
-                            <span>Complete Purchase ($49.00)</span>
-                        </button>
-                    </div>
-                    <div class="checkout-footer-note">Powered by PayPal • Server-Side Authoritative Webhook State Verification</div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="closeUpgradeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MY ACCOUNT & ENTITLEMENTS MODAL ==================== -->
+    <div class="modal-overlay" id="myAccountModalOverlay" style="display: none;">
+        <div class="modal-card modal-card-large">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon-glow text-cyan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </span>
+                    <span class="modal-title">TITAN BLACK SWAN TECHNOLOGIES // MY ACCOUNT</span>
+                </div>
+                <button class="modal-btn-close" onclick="closeMyAccountModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="myAccountModalBody">
+                <!-- User Banner Row -->
+                <div class="acc-user-banner">
+                    <div class="acc-avatar-large">👤</div>
+                    <div class="acc-user-meta">
+                        <div class="acc-username-row">
+                            <span class="acc-username-text" id="accUsernameTitle">@analyst</span>
+                            <span class="acc-tier-pill" id="accTierPill">🔴 FORENSIC PRO</span>
+                        </div>
+                        <div class="acc-subtext font-mono" id="accUserIdDisplay">Account ID: USR-8F3A29B1</div>
+                        <div class="acc-subtext">Corporate Steward: <strong>Titan Black Swan Technologies</strong></div>
+                    </div>
+                </div>
+
+                <div class="acc-sections-grid">
+                    <!-- Personal Profile Card -->
+                    <div class="acc-card">
+                        <div class="acc-card-title">Personal &amp; Auditor Profile</div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Email Address:</span>
+                            <span class="acc-field-value font-mono" id="accProfileEmail">analyst@titan.internal</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Date of Birth:</span>
+                            <span class="acc-field-value" id="accProfileDOB">—</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Age:</span>
+                            <span class="acc-field-value font-mono" id="accProfileAge">—</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">City:</span>
+                            <span class="acc-field-value" id="accProfileCity">—</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Postal / ZIP Code:</span>
+                            <span class="acc-field-value font-mono" id="accProfilePostal">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Entitlement & License Card -->
+                    <div class="acc-card">
+                        <div class="acc-card-title">Active Entitlement &amp; License</div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">License Spec:</span>
+                            <span class="acc-field-value font-mono text-muted">PILLRED-LICENSE-1.0</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Entitlement Tier:</span>
+                            <span class="acc-field-value font-bold" id="accLicenseTier">FORENSIC_PRO</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Payment Method:</span>
+                            <span class="acc-field-value" id="accPaymentMethod">PayPal / Debit &amp; Credit Card</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Order Reference:</span>
+                            <span class="acc-field-value font-mono text-cyan" id="accOrderRef">PAYPAL-ORD-ACTIVE</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Security Protocol:</span>
+                            <span class="acc-field-value text-green">✓ scrypt memory-hard KDF active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evidence-safe-notice" style="margin-top: 14px;">
+                    <span class="text-green">✓ Zero Cloud Transmission Invariant:</span> Your personal account data is managed sovereignly and completely separated from your cryptographic evidence repository.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeMyAccountModal()">Close</button>
+                <button class="btn btn-secondary" onclick="openLicenseReceiptModal()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span>View License Receipt</span>
+                </button>
+                <button class="btn btn-primary" onclick="closeMyAccountModal(); openUpgradeModal();">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    <span>Change / Upgrade Plan</span>
+                </button>
             </div>
         </div>
     </div>

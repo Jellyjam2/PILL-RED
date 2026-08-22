@@ -75,6 +75,45 @@ class TestAuthService(unittest.TestCase):
         sess_after = ACCOUNT_SERVICE.verify_session(token)
         self.assertFalse(sess_after["valid"])
 
+    def test_extended_profile_registration_and_retrieval(self):
+        import secrets
+        rand_id = secrets.token_hex(4)
+        uname = f"profile_user_{rand_id}"
+        email = f"profile_{rand_id}@titan.internal"
+        pwd = "SecureProfile@2026"
+
+        res = ACCOUNT_SERVICE.register_user(
+            username=uname,
+            email=email,
+            password=pwd,
+            city="Cape Town",
+            age="28",
+            postal_code="8001",
+            birth_day="15",
+            birth_month="08",
+            birth_year="1998"
+        )
+        self.assertTrue(res["success"], res.get("error"))
+        self.assertEqual(res["city"], "Cape Town")
+        self.assertEqual(res["age"], "28")
+        self.assertEqual(res["postal_code"], "8001")
+        self.assertEqual(res["birthday"], "15/08/1998")
+
+        # Authenticate and inspect session
+        auth = ACCOUNT_SERVICE.authenticate_user(uname, pwd)
+        self.assertTrue(auth["success"])
+        self.assertEqual(auth["city"], "Cape Town")
+        self.assertEqual(auth["age"], "28")
+        self.assertEqual(auth["postal_code"], "8001")
+        self.assertEqual(auth["birthday"], "15/08/1998")
+
+        # Fetch profile directly
+        prof = ACCOUNT_SERVICE.get_user_profile(uname)
+        self.assertTrue(prof["success"])
+        self.assertEqual(prof["city"], "Cape Town")
+        self.assertEqual(prof["postal_code"], "8001")
+        self.assertEqual(prof["birthday"], "15/08/1998")
+
 
 class TestUpdateManagerAndEvidenceInvariance(unittest.TestCase):
 

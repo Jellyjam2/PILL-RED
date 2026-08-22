@@ -621,9 +621,31 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 res = ACCOUNT_SERVICE.register_user(
                     username=data.get("username", ""),
                     email=data.get("email", ""),
-                    password=data.get("password", "")
+                    password=data.get("password", ""),
+                    city=data.get("city", ""),
+                    age=data.get("age", ""),
+                    postal_code=data.get("postal_code", ""),
+                    birth_day=data.get("birth_day", ""),
+                    birth_month=data.get("birth_month", ""),
+                    birth_year=data.get("birth_year", "")
                 )
                 self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/profile":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                identifier = data.get("identifier", "")
+                res = ACCOUNT_SERVICE.get_user_profile(identifier)
+                self.send_response(200 if res.get("success") else 404)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps(res).encode("utf-8"))

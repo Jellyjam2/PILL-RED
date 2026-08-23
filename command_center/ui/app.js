@@ -740,16 +740,26 @@ function switchGateTab(tab) {
     if (regSucc) regSucc.style.display = "none";
     if (loginErr) loginErr.style.display = "none";
 
+    const statusBadgeText = document.getElementById("gateCardStatusText");
+    const heading = document.getElementById("gateCardHeading");
+    const desc = document.getElementById("gateCardDesc");
+
     if (tab === "signin") {
         if (tabBtnSignIn) tabBtnSignIn.classList.add("active");
         if (tabBtnSignUp) tabBtnSignUp.classList.remove("active");
         if (panelSignIn) panelSignIn.style.display = "block";
         if (panelSignUp) panelSignUp.style.display = "none";
+        if (statusBadgeText) statusBadgeText.textContent = "AUTHENTICATION REQUIRED";
+        if (heading) heading.textContent = "Sign In to Command Center";
+        if (desc) desc.textContent = "Access local evidence engine and sovereign forensic audit tools.";
     } else {
         if (tabBtnSignIn) tabBtnSignIn.classList.remove("active");
         if (tabBtnSignUp) tabBtnSignUp.classList.add("active");
         if (panelSignIn) panelSignIn.style.display = "none";
         if (panelSignUp) panelSignUp.style.display = "block";
+        if (statusBadgeText) statusBadgeText.textContent = "AUDITOR PROVISIONING";
+        if (heading) heading.textContent = "Create Free Auditor Account";
+        if (desc) desc.textContent = "Initialize sovereign cryptographic audit credentials.";
     }
 }
 

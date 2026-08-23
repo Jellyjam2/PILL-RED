@@ -503,177 +503,212 @@
 
     <!-- ==================== ACCESS GATE OVERLAY ==================== -->
     <div class="access-gate-overlay" id="accessGateOverlay" style="display: flex;">
-        <div class="access-gate-card">
-            <div class="gate-brand-header">
-                <div class="corporate-badge">TITAN BLACK SWAN TECHNOLOGIES</div>
-                <img src="assets/logo.jpg" alt="PILL RED" class="gate-logo-large">
-                <h1 class="gate-title">PILL RED <span class="gate-title-sep">//</span> <span class="gate-title-sub">FORENSIC INTELLIGENCE</span></h1>
-                <div class="gate-subtitle">Cryptographic Evidence &amp; Real-time Causal Audit Subsystem</div>
+        <!-- Top Navigation / Branding Header -->
+        <header class="gate-top-bar">
+            <div class="gate-brand-top-left" onclick="openLegalModal('developer')" title="Titan Black Swan Technologies - PILL RED Protocol">
+                <img src="assets/logo.jpg" alt="PILL RED" class="gate-logo-top">
+                <div class="gate-brand-text">
+                    <div class="gate-corp-tag">TITAN BLACK SWAN TECHNOLOGIES</div>
+                    <div class="gate-app-title">PILL RED <span class="gate-title-sep">//</span> <span class="gate-title-sub">FORENSIC INTELLIGENCE</span></div>
+                    <div class="gate-app-sub">Cryptographic Evidence &amp; Real-time Causal Audit</div>
+                </div>
             </div>
 
-            <!-- Tab Switcher -->
-            <div class="gate-tab-switcher">
-                <button class="gate-tab-btn active" id="tabBtnSignIn">🔑 SIGN IN</button>
-                <button class="gate-tab-btn" id="tabBtnSignUp">📝 CREATE FREE ACCOUNT</button>
+            <div class="gate-nav-top-right">
+                <button class="gate-top-btn active" id="tabBtnSignIn" onclick="switchGateTab('signin')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>SIGN IN</span>
+                </button>
+                <button class="gate-top-btn" id="tabBtnSignUp" onclick="switchGateTab('signup')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7.5" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+                    </svg>
+                    <span>CREATE FREE ACCOUNT</span>
+                </button>
             </div>
+        </header>
 
-            <!-- Sign In Panel -->
-            <div class="gate-tab-content" id="panelSignIn">
-                <form id="formSignIn" onsubmit="event.preventDefault(); handleSignIn();">
-                    <div class="gate-input-group">
-                        <label class="gate-label">Username or Email</label>
-                        <input type="text" id="inputLoginIdentifier" class="gate-input" placeholder="e.g. analyst@titan.internal" required autocomplete="username">
+        <!-- Centered Main Form Container -->
+        <main class="gate-center-container">
+            <div class="access-gate-card">
+                <!-- Card Status Header -->
+                <div class="gate-card-header">
+                    <div class="gate-card-status-badge" id="gateCardStatusBadge">
+                        <span class="pulse-dot-red"></span>
+                        <span id="gateCardStatusText">AUTHENTICATION REQUIRED</span>
                     </div>
-                    <div class="gate-input-group">
-                        <label class="gate-label">Password</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="inputLoginPassword" class="gate-input" placeholder="••••••••••••" required autocomplete="current-password">
-                            <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputLoginPassword', this)" title="Show/Hide Password">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="gate-checkbox-row">
-                        <label class="gate-checkbox-label">
-                            <input type="checkbox" id="chkRememberMe" checked>
-                            <span>Remember My Session (Local Sovereign)</span>
-                        </label>
-                    </div>
-                    <div class="gate-error-banner" id="loginErrorBanner" style="display: none;"></div>
-                    <button type="submit" class="btn-gate-primary" id="btnSubmitSignIn">
-                        <span>SIGN IN TO COMMAND CENTER</span>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
+                    <h2 class="gate-card-heading" id="gateCardHeading">Sign In to Command Center</h2>
+                    <p class="gate-card-desc" id="gateCardDesc">Access local evidence engine and sovereign forensic audit tools.</p>
+                </div>
 
-            <!-- Create Free Account Panel -->
-            <div class="gate-tab-content" id="panelSignUp" style="display: none;">
-                <form id="formSignUp" onsubmit="event.preventDefault(); handleSignUp();">
-                    <div class="gate-grid-2">
+                <!-- Sign In Panel -->
+                <div class="gate-tab-content" id="panelSignIn">
+                    <form id="formSignIn" onsubmit="event.preventDefault(); handleSignIn();">
                         <div class="gate-input-group">
-                            <label class="gate-label">Username</label>
-                            <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                            <label class="gate-label">Username or Email</label>
+                            <input type="text" id="inputLoginIdentifier" class="gate-input" placeholder="e.g. analyst@titan.internal" required autocomplete="username">
                         </div>
-                        <div class="gate-input-group">
-                            <label class="gate-label">Email Address</label>
-                            <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
-                        </div>
-                    </div>
-
-                    <div class="gate-grid-2">
                         <div class="gate-input-group">
                             <label class="gate-label">Password</label>
                             <div class="pwd-input-wrap">
-                                <input type="password" id="inputRegPassword" class="gate-input" placeholder="Min 8 chars, 1 letter, 1 number" required autocomplete="new-password">
-                                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPassword', this)" title="Show/Hide Password">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <input type="password" id="inputLoginPassword" class="gate-input" placeholder="••••••••••••" required autocomplete="current-password">
+                                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputLoginPassword', this)" title="Show/Hide Password">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                                     </svg>
                                 </button>
                             </div>
                         </div>
-                        <div class="gate-input-group">
-                            <label class="gate-label">Confirm Password</label>
-                            <div class="pwd-input-wrap">
-                                <input type="password" id="inputRegPasswordConfirm" class="gate-input" placeholder="Re-enter password" required autocomplete="new-password">
-                                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPasswordConfirm', this)" title="Show/Hide Password">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                                    </svg>
-                                </button>
+                        <div class="gate-checkbox-row">
+                            <label class="gate-checkbox-label">
+                                <input type="checkbox" id="chkRememberMe" checked>
+                                <span>Remember My Session (Local Sovereign)</span>
+                            </label>
+                        </div>
+                        <div class="gate-error-banner" id="loginErrorBanner" style="display: none;"></div>
+                        <button type="submit" class="btn-gate-primary" id="btnSubmitSignIn">
+                            <span>SIGN IN TO COMMAND CENTER</span>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
+                        <div class="gate-switch-hint">
+                            <span>Need an account?</span>
+                            <a href="javascript:void(0)" onclick="switchGateTab('signup')" class="gate-link-highlight">Create a Free Account →</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Create Free Account Panel -->
+                <div class="gate-tab-content" id="panelSignUp" style="display: none;">
+                    <form id="formSignUp" onsubmit="event.preventDefault(); handleSignUp();">
+                        <div class="gate-grid-2">
+                            <div class="gate-input-group">
+                                <label class="gate-label">Username</label>
+                                <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                            </div>
+                            <div class="gate-input-group">
+                                <label class="gate-label">Email Address</label>
+                                <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Live Password Strength Meter -->
-                    <div class="pwd-requirements" id="pwdRequirements">
-                        <div class="pwd-req-item" id="reqLen"><span class="req-dot">○</span> 8+ characters</div>
-                        <div class="pwd-req-item" id="reqLetter"><span class="req-dot">○</span> At least 1 letter</div>
-                        <div class="pwd-req-item" id="reqNum"><span class="req-dot">○</span> At least 1 number</div>
-                    </div>
-
-                    <!-- Personal & Profile Details Section -->
-                    <div class="gate-section-divider">
-                        <span>AUDITOR PROFILE &amp; LOCATION</span>
-                    </div>
-
-                    <div class="gate-dob-row">
-                        <div class="gate-input-group flex-1">
-                            <label class="gate-label">Birth Day</label>
-                            <input type="number" id="inputRegBirthDay" class="gate-input" placeholder="DD (e.g. 15)" min="1" max="31" oninput="calculateAgeFromDOB()">
+                        <div class="gate-grid-2">
+                            <div class="gate-input-group">
+                                <label class="gate-label">Password</label>
+                                <div class="pwd-input-wrap">
+                                    <input type="password" id="inputRegPassword" class="gate-input" placeholder="Min 8 chars, 1 letter, 1 number" required autocomplete="new-password">
+                                    <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPassword', this)" title="Show/Hide Password">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="gate-input-group">
+                                <label class="gate-label">Confirm Password</label>
+                                <div class="pwd-input-wrap">
+                                    <input type="password" id="inputRegPasswordConfirm" class="gate-input" placeholder="Re-enter password" required autocomplete="new-password">
+                                    <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputRegPasswordConfirm', this)" title="Show/Hide Password">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="gate-input-group flex-1">
-                            <label class="gate-label">Birth Month</label>
-                            <select id="inputRegBirthMonth" class="gate-input gate-select" onchange="calculateAgeFromDOB()">
-                                <option value="">Month</option>
-                                <option value="01">01 - Jan</option>
-                                <option value="02">02 - Feb</option>
-                                <option value="03">03 - Mar</option>
-                                <option value="04">04 - Apr</option>
-                                <option value="05">05 - May</option>
-                                <option value="06">06 - Jun</option>
-                                <option value="07">07 - Jul</option>
-                                <option value="08">08 - Aug</option>
-                                <option value="09">09 - Sep</option>
-                                <option value="10">10 - Oct</option>
-                                <option value="11">11 - Nov</option>
-                                <option value="12">12 - Dec</option>
-                            </select>
-                        </div>
-                        <div class="gate-input-group flex-1">
-                            <label class="gate-label">Birth Year</label>
-                            <input type="number" id="inputRegBirthYear" class="gate-input" placeholder="YYYY (e.g. 1998)" min="1920" max="2026" oninput="calculateAgeFromDOB()">
-                        </div>
-                        <div class="gate-input-group flex-1">
-                            <label class="gate-label">Age</label>
-                            <input type="number" id="inputRegAge" class="gate-input" placeholder="Age" min="16" max="120">
-                        </div>
-                    </div>
 
-                    <div class="gate-grid-2">
-                        <div class="gate-input-group">
-                            <label class="gate-label">City</label>
-                            <input type="text" id="inputRegCity" class="gate-input" placeholder="e.g. London / New York / Cape Town">
+                        <!-- Live Password Strength Meter -->
+                        <div class="pwd-requirements" id="pwdRequirements">
+                            <div class="pwd-req-item" id="reqLen"><span class="req-dot">○</span> 8+ characters</div>
+                            <div class="pwd-req-item" id="reqLetter"><span class="req-dot">○</span> At least 1 letter</div>
+                            <div class="pwd-req-item" id="reqNum"><span class="req-dot">○</span> At least 1 number</div>
                         </div>
-                        <div class="gate-input-group">
-                            <label class="gate-label">Postal / ZIP Code</label>
-                            <input type="text" id="inputRegPostalCode" class="gate-input" placeholder="e.g. 8001 / SW1A 1AA">
+
+                        <!-- Personal & Profile Details Section -->
+                        <div class="gate-section-divider">
+                            <span>AUDITOR PROFILE &amp; LOCATION</span>
                         </div>
-                    </div>
 
-                    <div class="gate-checkbox-row">
-                        <label class="gate-checkbox-label">
-                            <input type="checkbox" id="chkAcceptTerms" required>
-                            <span>I agree to the <a href="javascript:void(0)" onclick="openLegalModal('terms')" class="gate-link">Terms of Service</a> &amp; <a href="javascript:void(0)" onclick="openLegalModal('privacy')" class="gate-link">Privacy Policy</a></span>
-                        </label>
-                    </div>
+                        <div class="gate-dob-row">
+                            <div class="gate-input-group flex-1">
+                                <label class="gate-label">Birth Day</label>
+                                <input type="number" id="inputRegBirthDay" class="gate-input" placeholder="DD (e.g. 15)" min="1" max="31" oninput="calculateAgeFromDOB()">
+                            </div>
+                            <div class="gate-input-group flex-1">
+                                <label class="gate-label">Birth Month</label>
+                                <select id="inputRegBirthMonth" class="gate-input gate-select" onchange="calculateAgeFromDOB()">
+                                    <option value="">Month</option>
+                                    <option value="01">01 - Jan</option>
+                                    <option value="02">02 - Feb</option>
+                                    <option value="03">03 - Mar</option>
+                                    <option value="04">04 - Apr</option>
+                                    <option value="05">05 - May</option>
+                                    <option value="06">06 - Jun</option>
+                                    <option value="07">07 - Jul</option>
+                                    <option value="08">08 - Aug</option>
+                                    <option value="09">09 - Sep</option>
+                                    <option value="10">10 - Oct</option>
+                                    <option value="11">11 - Nov</option>
+                                    <option value="12">12 - Dec</option>
+                                </select>
+                            </div>
+                            <div class="gate-input-group flex-1">
+                                <label class="gate-label">Birth Year</label>
+                                <input type="number" id="inputRegBirthYear" class="gate-input" placeholder="YYYY (e.g. 1998)" min="1920" max="2026" oninput="calculateAgeFromDOB()">
+                            </div>
+                            <div class="gate-input-group flex-1">
+                                <label class="gate-label">Age</label>
+                                <input type="number" id="inputRegAge" class="gate-input" placeholder="Age" min="16" max="120">
+                            </div>
+                        </div>
 
-                    <div class="gate-error-banner" id="registerErrorBanner" style="display: none;"></div>
-                    <div class="gate-success-banner" id="registerSuccessBanner" style="display: none;"></div>
+                        <div class="gate-grid-2">
+                            <div class="gate-input-group">
+                                <label class="gate-label">City</label>
+                                <input type="text" id="inputRegCity" class="gate-input" placeholder="e.g. London / New York / Cape Town">
+                            </div>
+                            <div class="gate-input-group">
+                                <label class="gate-label">Postal / ZIP Code</label>
+                                <input type="text" id="inputRegPostalCode" class="gate-input" placeholder="e.g. 8001 / SW1A 1AA">
+                            </div>
+                        </div>
 
-                    <button type="submit" class="btn-gate-primary" id="btnSubmitSignUp">
-                        <span>CREATE FREE ACCOUNT</span>
-                    </button>
-                    <button type="button" class="btn-gate-enter" id="btnEnterAfterRegister" style="display: none;" onclick="enterDashboardAfterRegister()">
-                        <span>ENTER COMMAND CENTER →</span>
-                    </button>
-                </form>
+                        <div class="gate-checkbox-row">
+                            <label class="gate-checkbox-label">
+                                <input type="checkbox" id="chkAcceptTerms" required>
+                                <span>I agree to the <a href="javascript:void(0)" onclick="openLegalModal('terms')" class="gate-link">Terms of Service</a> &amp; <a href="javascript:void(0)" onclick="openLegalModal('privacy')" class="gate-link">Privacy Policy</a></span>
+                            </label>
+                        </div>
+
+                        <div class="gate-error-banner" id="registerErrorBanner" style="display: none;"></div>
+                        <div class="gate-success-banner" id="registerSuccessBanner" style="display: none;"></div>
+
+                        <button type="submit" class="btn-gate-primary" id="btnSubmitSignUp">
+                            <span>CREATE FREE ACCOUNT</span>
+                        </button>
+                        <button type="button" class="btn-gate-enter" id="btnEnterAfterRegister" style="display: none;" onclick="enterDashboardAfterRegister()">
+                            <span>ENTER COMMAND CENTER →</span>
+                        </button>
+                        <div class="gate-switch-hint">
+                            <span>Already registered?</span>
+                            <a href="javascript:void(0)" onclick="switchGateTab('signin')" class="gate-link-highlight">Sign In to Existing Account →</a>
+                        </div>
+                    </form>
+                </div>
             </div>
+        </main>
 
-            <!-- Footer Governance & Info Links -->
-            <div class="gate-footer">
-                <button class="gate-footer-link" onclick="openLegalModal('terms')">Terms of Service</button>
-                <span class="gate-footer-dot">•</span>
-                <button class="gate-footer-link" onclick="openLegalModal('privacy')">Privacy Policy</button>
-                <span class="gate-footer-dot">•</span>
-                <button class="gate-footer-link" onclick="openLegalModal('developer')">Developer &amp; Protocol</button>
-            </div>
-        </div>
+        <!-- Footer Governance & Info Links -->
+        <footer class="gate-bottom-bar">
+            <button class="gate-footer-link" onclick="openLegalModal('terms')">Terms of Service</button>
+            <span class="gate-footer-dot">•</span>
+            <button class="gate-footer-link" onclick="openLegalModal('privacy')">Privacy Policy</button>
+            <span class="gate-footer-dot">•</span>
+            <button class="gate-footer-link" onclick="openLegalModal('developer')">Developer &amp; Protocol Information</button>
+        </footer>
     </div>
 
     <!-- ==================== AUTHORITATIVE LEGAL & PROTOCOL MODAL ==================== -->

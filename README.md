@@ -4,26 +4,48 @@
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/Jellyjam2/PILL-RED/releases)
 [![Tests](https://img.shields.io/badge/Master_Suite-67%2F67_PASS-brightgreen.svg)](tests/)
 [![Python ↔ Rust](https://img.shields.io/badge/Parity-Python_↔_Rust-success.svg)](src/)
-[![Kani Verified](https://img.shields.io/badge/Kani-Formal_Verification-purple.svg)](formal/kani/protocol_proofs.rs)
-[![Coq Verified](https://img.shields.io/badge/Coq-Soundness_Proofs-blueviolet.svg)](formal/coq/PillRedSoundness.v)
-[![Lean 4 Verified](https://img.shields.io/badge/Lean_4-Formal_Theorems-darkblue.svg)](formal/lean/PillRed/Theorems.lean)
+[![Kani Verified](https://img.shields.io/badge/Kani-Model_Checked-purple.svg)](formal/kani/protocol_proofs.rs)
+[![Coq Verified](https://img.shields.io/badge/Coq-Soundness_Proven-blueviolet.svg)](formal/coq/PillRedSoundness.v)
+[![Lean 4 Verified](https://img.shields.io/badge/Lean_4-Theorems_Checked-darkblue.svg)](formal/lean/PillRed/Theorems.lean)
+[![Licensing](https://img.shields.io/badge/Licensing-Asymmetric_Ed25519-informational.svg)](command_center/billing.py)
 
 > **The Universal Cryptographic Evidence & Model Audit Protocol.**  
-> *Before something happens, the system forces a model to put its prediction on the record. Then reality happens. PILL RED keeps the receipt.*
+> *Developed under Titan Black Swan Technologies.*
 
+**PILL RED** is a cryptographic evidence and model-audit protocol providing deterministic evidence preservation, provenance verification, statistical/economic evidence classification, offline verification, and cryptographically verifiable software and licensing artifacts.
+
+> [!IMPORTANT]
+> **Core Scientific Tenet:** PILL RED does **not** claim to predict reality merely because an artifact is cryptographically valid.  
+> * **Cryptography** proves what was committed and whether it was altered.  
+> * **Statistics** determines what the evidence supports against null baselines.  
+> * **Economics** audits real economic payoff and capital preservation without double-counting.  
+> * **Formal Proofs** establish that the protocol's stated invariants correspond to machine-checkable mathematics.
 
 ---
 
-## ⚡ Key Guarantees
+## 🏛️ The Three Sovereign Cryptographic Pillars
 
-* **Zero-Hindsight Provenance:** Cryptographically binds predictions strictly prior to event revelation ($t_{\text{commit}} < t_{\text{event}} \le t_{\text{resolve}}$).
-* **Adversarial Tamper Detection:** Post-hoc score inflation, retroactive bet alteration, or backdating breaks deterministic SHA-256 / JCS hashes.
-* **Separation of Concerns:**
-  * **Cryptography** proves the receipt.
-  * **Statistics** evaluates the claim against null baselines.
-  * **Economics** audits active P/L and capital preservation without double-counting.
-* **Model Audit Passport:** Immutable evidence aggregation layer producing honest 4-state evidentiary classifications: `VERIFIED`, `MEASURED`, `INFERRED`, `NOT PROVEN`.
-* **Zero-Trust Offline Verifier:** Audits evidence without connecting to any central server.
+PILL RED enforces complete domain separation across three independent cryptographic pillars:
+
+```
+                            TITAN BLACK SWAN TECHNOLOGIES
+                                      PILL RED
+                                         │
+         ┌───────────────────────────────┼───────────────────────────────┐
+         ▼                               ▼                               ▼
+  EVIDENCE RECEIPT                LICENSE RECEIPT                 RELEASE ARTIFACT
+         │                               │                               │
+   Evidence Truth                Entitlement Truth             Software Authenticity
+         │                               │                               │
+   SHA-256 / Merkle               Ed25519 Asymmetric Signature        SHA-256
+         │                               │                               │
+  Offline Verifier                Offline Verifier                Update Verifier
+  (Python / Rust)                 (Public Key Proof)            (Atomic Stage & Swap)
+```
+
+1. **Evidence Receipt:** Proves evidence and state transition integrity. Bit-for-bit parity verified offline via `pillred-verify.exe` and `verify_stream.py`.
+2. **License Receipt:** Proves commercial entitlement. Deterministically canonicalized JSON signed by Titan's private key and verified offline using Titan's public key (Ed25519).
+3. **Release Artifact:** Proves software authenticity and update integrity via SHA-256 digests.
 
 ---
 

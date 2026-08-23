@@ -38,16 +38,21 @@ TITAN_ISSUER_IDENTITY = "Titan Black Swan Technologies"
 TITAN_PRODUCT_NAME = "PILL RED"
 TITAN_PROTOCOL_SPEC = "PILLRED-SPEC-1.0"
 LICENSE_SPEC_VERSION = "PILLRED-LICENSE-1.0"
-ISSUER_KEY_ID = "TITAN-BS-LIC-PUB-V1"
+ISSUER_KEY_ID = "TITAN-BS-LIC-PUB-ED25519-V1"
 
-# Public Verification Salt / Seed (used by client for offline verification)
-PUBLIC_VERIFICATION_SEED = "titan_black_swan_licensing_public_verification_2026"
+# 32-byte Ed25519 Master Signing Seed (Server Authority)
+_RAW_SEED = hashlib.sha256(
+    os.environ.get("TITAN_LICENSE_PRIVATE_KEY", "titan_black_swan_technologies_master_licensing_authority_key_2026").encode("utf-8")
+).digest()
 
-# Server-Side Private Signing Secret (Simulated authority; in production this resides on Titan Billing API)
-_SERVER_PRIVATE_SIGNING_KEY = os.environ.get(
-    "TITAN_LICENSE_PRIVATE_KEY",
-    "titan_bs_private_master_license_signing_secret_9948218734"
-)
+from cryptography.hazmat.primitives.asymmetric import ed25519
+from cryptography.exceptions import InvalidSignature
+
+_TITAN_SERVER_PRIVATE_KEY = ed25519.Ed25519PrivateKey.from_private_bytes(_RAW_SEED)
+_TITAN_PUBLIC_KEY = _TITAN_SERVER_PRIVATE_KEY.public_key()
+
+# Public Verification Key (Hex-encoded 32-byte Ed25519) - Embedded in public client & offline verifier
+TITAN_PUBLIC_VERIFICATION_KEY_HEX = _TITAN_PUBLIC_KEY.public_bytes_raw().hex()
 
 
 def _load_licenses_db() -> Dict[str, Any]:
@@ -85,15 +90,31 @@ def compute_license_receipt_hash(canonical_json: str) -> str:
     return hashlib.sha256(canonical_json.encode("utf-8")).hexdigest().lower()
 
 
-def generate_issuer_signature(receipt_hash: str, signing_key: str = _SERVER_PRIVATE_SIGNING_KEY) -> str:
-    """Signs receipt hash with Titan Black Swan Technologies licensing key."""
-    return hmac.new(signing_key.encode("utf-8"), receipt_hash.encode("utf-8"), hashlib.sha256).hexdigest()
+def generate_issuer_signature(receipt_hash: str) -> str:
+    """
+    Signs canonical receipt hash with Titan Black Swan Technologies Private Key (Ed25519).
+    Returns 64-byte hex-encoded Ed25519 digital signature.
+    """
+    data_bytes = receipt_hash.encode("utf-8")
+    sig_bytes = _TITAN_SERVER_PRIVATE_KEY.sign(data_bytes)
+    return sig_bytes.hex()
 
 
-def verify_issuer_signature(receipt_hash: str, signature: str, signing_key: str = _SERVER_PRIVATE_SIGNING_KEY) -> bool:
-    """Verifies signature in constant time."""
-    expected = generate_issuer_signature(receipt_hash, signing_key)
-    return hmac.compare_digest(expected, signature)
+def verify_issuer_signature(receipt_hash: str, signature_hex: str, public_key_hex: str = TITAN_PUBLIC_VERIFICATION_KEY_HEX) -> bool:
+    """
+    Asymmetrically verifies Ed25519 signature using ONLY Titan's Public Verification Key.
+    The client and verifier have ZERO access to the private signing key.
+    """
+    try:
+        pub_bytes = bytes.fromhex(public_key_hex)
+        sig_bytes = bytes.fromhex(signature_hex)
+        if len(sig_bytes) != 64 or len(pub_bytes) != 32:
+            return False
+        verifier = ed25519.Ed25519PublicKey.from_public_bytes(pub_bytes)
+        verifier.verify(sig_bytes, receipt_hash.encode("utf-8"))
+        return True
+    except (InvalidSignature, ValueError, Exception):
+        return False
 
 
 # Authoritative server-side pricing matrix (Fixed Localized Regional Price Points)

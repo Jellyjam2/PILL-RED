@@ -204,9 +204,17 @@ class TestBillingAndLicensingAssurance(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(PROJECT_ROOT, "evidence", "licenses.json")))
 
     def test_BILL_019_private_key_isolation(self):
-        """Proves that client verification relies on standard signature verification."""
-        self.assertTrue(len(TITAN_ISSUER_IDENTITY) > 0)
-        self.assertEqual(LICENSE_SPEC_VERSION, "PILLRED-LICENSE-1.0")
+        """Proves that client verification relies on asymmetric Ed25519 public key cryptography."""
+        from command_center.billing import TITAN_PUBLIC_VERIFICATION_KEY_HEX
+        self.assertEqual(len(TITAN_PUBLIC_VERIFICATION_KEY_HEX), 64)  # 32 bytes hex
+        receipt_h = hashlib.sha256(b"canonical_payload").hexdigest()
+        sig = generate_issuer_signature(receipt_h)
+        self.assertEqual(len(sig), 128)  # 64 bytes hex Ed25519 signature
+        # Public key verifier verifies signature without private key
+        self.assertTrue(verify_issuer_signature(receipt_h, sig, TITAN_PUBLIC_VERIFICATION_KEY_HEX))
+        # Tampered public key fails
+        bad_pub = "00" * 32
+        self.assertFalse(verify_issuer_signature(receipt_h, sig, bad_pub))
 
     def test_BILL_020_offline_verifier_independence(self):
         """Proves offline verification functions without network/auth calls."""

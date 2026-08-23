@@ -1650,13 +1650,12 @@ async function handlePaypalCheckout() {
 
     try {
         const curr = (typeof getCurrencyCode === "function") ? getCurrencyCode() : "USD";
-        const amt = (typeof getProPriceAmount === "function") ? getProPriceAmount() : 49.00;
 
-        // 1. Create order
+        // 1. Create order (Server resolves exact localized price point independently)
         const createRes = await fetch("/api/billing/create_order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: uid, tier_id: "FORENSIC_PRO", currency: curr, amount: amt })
+            body: JSON.stringify({ user_id: uid, tier_id: "FORENSIC_PRO", currency: curr })
         });
         const orderData = await createRes.json();
 
@@ -1665,7 +1664,7 @@ async function handlePaypalCheckout() {
             return;
         }
 
-        // 2. Capture payment (server-side authoritative confirmation)
+        // 2. Capture payment (server-side authoritative confirmation and signed receipt issuance)
         const captureRes = await fetch("/api/billing/capture_order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1674,8 +1673,7 @@ async function handlePaypalCheckout() {
                 user_id: uid,
                 username: uname,
                 tier_id: "FORENSIC_PRO",
-                currency: curr,
-                amount: amt
+                currency: curr
             })
         });
         const captureData = await captureRes.json();

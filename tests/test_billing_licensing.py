@@ -215,6 +215,48 @@ class TestBillingAndLicensingAssurance(unittest.TestCase):
         ver = BILLING_SERVICE.verify_license_offline(cap["license"])
         self.assertTrue(ver["valid"])
 
+    def test_BILL_021_localized_pricing_server_authority(self):
+        """Proves server-authoritative pricing for regional currencies (ZAR, EUR, GBP, USD)."""
+        # Test ZAR
+        res_zar = BILLING_SERVICE.create_order(self.test_user_id, "FORENSIC_PRO", currency="ZAR")
+        self.assertEqual(res_zar["amount"], 890.00)
+        self.assertEqual(res_zar["currency"], "ZAR")
+
+        # Test EUR
+        res_eur = BILLING_SERVICE.create_order(self.test_user_id, "FORENSIC_PRO", currency="EUR")
+        self.assertEqual(res_eur["amount"], 45.00)
+        self.assertEqual(res_eur["currency"], "EUR")
+
+        # Test GBP
+        res_gbp = BILLING_SERVICE.create_order(self.test_user_id, "FORENSIC_PRO", currency="GBP")
+        self.assertEqual(res_gbp["amount"], 39.00)
+        self.assertEqual(res_gbp["currency"], "GBP")
+
+        # Test Client Tamper Attempt (Passing client amount has zero effect on server authority)
+        res_tamper = BILLING_SERVICE.create_order(self.test_user_id, "FORENSIC_PRO", currency="ZAR", amount=1.00)
+        self.assertEqual(res_tamper["amount"], 890.00, "Server must reject client-dictated price tampering!")
+
+    def test_BILL_022_signed_license_receipt_exact_structure(self):
+        """Proves signed license receipt adheres to canonical product, tier, currency, amount and offline verification."""
+        order_res = BILLING_SERVICE.create_order(self.test_user_id, "FORENSIC_PRO", currency="ZAR")
+        cap = BILLING_SERVICE.capture_order_idempotent(
+            order_res["order_id"],
+            self.test_user_id,
+            self.test_username,
+            tier_id="FORENSIC_PRO"
+        )
+        lic = cap["license"]
+        self.assertEqual(lic["product"], "PILL_RED")
+        self.assertEqual(lic["tier"], "FORENSIC_PRO")
+        self.assertEqual(lic["currency"], "ZAR")
+        self.assertEqual(lic["amount"], "890.00")
+        self.assertEqual(lic["billing_period"], "monthly")
+        self.assertEqual(lic["payment"]["provider"], "PAYPAL")
+        self.assertEqual(lic["payment"]["status"], "CAPTURED")
+
+        ver = BILLING_SERVICE.verify_license_offline(lic)
+        self.assertTrue(ver["valid"])
+
 
 if __name__ == "__main__":
     unittest.main()

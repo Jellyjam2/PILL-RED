@@ -96,17 +96,51 @@ def verify_issuer_signature(receipt_hash: str, signature: str, signing_key: str 
     return hmac.compare_digest(expected, signature)
 
 
-class BillingService:
-    """Manages tiers, orders, idempotent payment capture, and signed license issuance."""
+# Authoritative server-side pricing matrix (Fixed Localized Regional Price Points)
+AUTHORITATIVE_TIER_PRICES: Dict[str, Dict[str, float]] = {
+    "FORENSIC_PRO": {
+        "USD": 49.00,
+        "ZAR": 890.00,
+        "EUR": 45.00,
+        "GBP": 39.00,
+        "JPY": 7500.00,
+        "CAD": 65.00,
+        "AUD": 75.00,
+        "BRL": 245.00,
+        "CNY": 350.00,
+        "CHF": 44.00,
+    }
+}
+
+
+def resolve_authoritative_price(tier_id: str, requested_currency: Optional[str] = "USD") -> tuple[float, str]:
+    """
+    Authoritative server-side price resolution.
+    The server rejects any client-specified amount and independently maps
+    tier + currency to the authoritative fixed commercial price point.
+    """
+    curr = (requested_currency or "USD").upper().strip()
+    tier_table = AUTHORITATIVE_TIER_PRICES.get(tier_id, {})
+    if curr in tier_table:
+        return float(tier_table[curr]), curr
+    default_price = float(tier_table.get("USD", 49.00))
+    return default_price, "USD"
+
+
+class BillingLicensingService:
+    """
+    Titan Black Swan Technologies Commercial Billing & Licensing Subsystem.
+    Provides authoritative PayPal order processing and signed offline license issuance.
+    """
 
     def __init__(self):
         self.tiers = {
             "FREE_COMMUNITY": {
                 "tier_id": "FREE_COMMUNITY",
                 "name": "Free Community",
-                "price_usd": 0.00,
-                "billing_cycle": "forever",
-                "description": "Experience and evaluate the core protocol and sovereign evidence engine.",
+                "price_usd": 0.0,
+                "billing_cycle": "perpetual",
+                "description": "Standard sovereign evidence generation and offline audit verification.",
                 "features": [
                     "Sovereign local evidence engine",
                     "Telemetry ingest & Merkle ledger",
@@ -164,12 +198,16 @@ class BillingService:
         currency: str = "USD",
         amount: Optional[float] = None
     ) -> Dict[str, Any]:
-        """Prepares a new PayPal order intent with multi-currency support."""
+        """
+        Prepares a new PayPal order intent.
+        Security Invariant: The server resolves the exact localized amount
+        from AUTHORITATIVE_TIER_PRICES, ignoring any client-submitted amounts.
+        """
         if tier_id not in self.tiers or tier_id == "FREE_COMMUNITY":
             return {"success": False, "error": "Invalid tier for purchase."}
 
         tier = self.tiers[tier_id]
-        final_amount = amount if amount is not None else tier["price_usd"]
+        authoritative_amount, authoritative_currency = resolve_authoritative_price(tier_id, currency)
         order_id = f"PAYPAL-ORD-{secrets.token_hex(8).upper()}"
 
         db = _load_licenses_db()
@@ -177,8 +215,9 @@ class BillingService:
             "order_id": order_id,
             "user_id": user_id,
             "tier_id": tier_id,
-            "amount": final_amount,
-            "currency": currency,
+            "amount": authoritative_amount,
+            "amount_usd": tier.get("price_usd", 49.00),
+            "currency": authoritative_currency,
             "provider": "PAYPAL",
             "payment_methods": ["PayPal", "Debit / Credit Card (Visa/Mastercard)"],
             "status": "CREATED",
@@ -190,9 +229,9 @@ class BillingService:
         return {
             "success": True,
             "order_id": order_id,
-            "amount": final_amount,
-            "amount_usd": tier["price_usd"],
-            "currency": currency,
+            "amount": authoritative_amount,
+            "amount_usd": tier.get("price_usd", 49.00),
+            "currency": authoritative_currency,
             "tier_name": tier["name"],
             "provider": "PAYPAL"
         }
@@ -203,12 +242,13 @@ class BillingService:
         user_id: str,
         username: str,
         tier_id: str = "FORENSIC_PRO",
-        currency: str = "USD",
+        currency: Optional[str] = None,
         amount: Optional[float] = None
     ) -> Dict[str, Any]:
         """
         Idempotently captures order payment and issues signed license receipt.
         Guarantees that duplicate submissions of the same order_id return the existing license.
+        Authoritatively derives amount and currency from server order state.
         """
         db = _load_licenses_db()
         orders = db.get("orders", {})
@@ -225,27 +265,37 @@ class BillingService:
                     "license": licenses[existing_lic_id]
                 }
 
+        # Resolve authoritative amount and currency from server order record
+        if order_id in orders:
+            order_data = orders[order_id]
+            auth_amount = float(order_data.get("amount", 49.00))
+            auth_curr = order_data.get("currency", "USD")
+        else:
+            auth_amount, auth_curr = resolve_authoritative_price(tier_id, currency or "USD")
+
         # Issue new license
         license_id = f"LIC-PRO-{secrets.token_hex(8).upper()}"
         now = time.time()
         expires = now + (86400 * 30)  # 30 days
-        final_amount = amount if amount is not None else 49.00
 
         # Assemble Canonical License Payload
         payload = {
             "license_spec": LICENSE_SPEC_VERSION,
             "issuer": TITAN_ISSUER_IDENTITY,
-            "product": TITAN_PRODUCT_NAME,
+            "product": "PILL_RED",
             "protocol": TITAN_PROTOCOL_SPEC,
             "license_id": license_id,
             "account_id": user_id,
             "username": username,
             "tier": tier_id,
+            "currency": auth_curr,
+            "amount": f"{auth_amount:.2f}",
+            "billing_period": "monthly",
             "payment": {
                 "provider": "PAYPAL",
                 "order_id": order_id,
-                "amount": final_amount,
-                "currency": currency,
+                "amount": auth_amount,
+                "currency": auth_curr,
                 "status": "CAPTURED",
                 "funding_method": "PayPal / Debit & Credit Card"
             },
@@ -337,7 +387,7 @@ class BillingService:
         # 1. Spec & Issuer Checks
         if license_payload.get("issuer") != TITAN_ISSUER_IDENTITY:
             return {"valid": False, "error": f"Invalid issuer: {license_payload.get('issuer')}"}
-        if license_payload.get("product") != TITAN_PRODUCT_NAME:
+        if license_payload.get("product") not in (TITAN_PRODUCT_NAME, "PILL RED", "PILL_RED"):
             return {"valid": False, "error": f"Invalid product: {license_payload.get('product')}"}
         if license_payload.get("license_spec") != LICENSE_SPEC_VERSION:
             return {"valid": False, "error": f"Unsupported license spec: {license_payload.get('license_spec')}"}
@@ -513,4 +563,5 @@ class BillingService:
             }
 
 
-BILLING_SERVICE = BillingService()
+BillingService = BillingLicensingService
+BILLING_SERVICE = BillingLicensingService()

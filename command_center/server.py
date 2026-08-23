@@ -619,6 +619,8 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
             try:
                 data = json.loads(body.decode("utf-8")) if body else {}
                 res = ACCOUNT_SERVICE.register_user(
+                    first_name=data.get("first_name", ""),
+                    last_name=data.get("last_name", ""),
                     username=data.get("username", ""),
                     email=data.get("email", ""),
                     password=data.get("password", ""),
@@ -627,7 +629,8 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                     postal_code=data.get("postal_code", ""),
                     birth_day=data.get("birth_day", ""),
                     birth_month=data.get("birth_month", ""),
-                    birth_year=data.get("birth_year", "")
+                    birth_year=data.get("birth_year", ""),
+                    avatar=data.get("avatar", "")
                 )
                 self.send_response(200 if res.get("success") else 400)
                 self.send_header("Content-Type", "application/json")
@@ -654,6 +657,39 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/auth/profile/update":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                identifier = data.get("identifier", "")
+                updates = data.get("updates", {})
+                res = ACCOUNT_SERVICE.update_user_profile(identifier, updates)
+                self.send_response(200 if res.get("success") else 400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/billing/entitlement":
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body.decode("utf-8")) if body else {}
+                identifier = data.get("user_id") or data.get("username") or data.get("identifier", "")
+                res = BILLING_SERVICE.get_user_entitlement_status(identifier)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
         elif parsed.path == "/api/auth/login":
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length)

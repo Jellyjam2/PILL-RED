@@ -389,4 +389,115 @@ class BillingService:
             pass
 
 
+    def get_user_entitlement_status(self, user_id_or_username: str) -> Dict[str, Any]:
+        """
+        Evaluates active license and entitlement status for a user.
+        - Recognizes Founder Enrico Leitch with Lifetime Master Access (never expires).
+        - Automatically detects expired customer subscriptions and enforces fallback to Free Community.
+        """
+        ident = str(user_id_or_username).strip().lower()
+        is_founder = (
+            ident in ("enrico", "enrico leitch", "enrico_leitch", "enricoleitch", "architect.lumina@proton.me", "enrico@titanblackswan.com")
+        )
+
+        if is_founder:
+            return {
+                "tier": "FOUNDER_MASTER_ALL_TIERS",
+                "is_founder": True,
+                "is_active": True,
+                "is_lifetime": True,
+                "expires_at": None,
+                "plan_name": "Founder Master All-Tiers",
+                "status_text": "LIFETIME MASTER ACCESS (NEVER EXPIRES)"
+            }
+
+        # Check accounts.json
+        accounts_path = os.path.join(DATA_DIR, "accounts.json")
+        user_record = None
+        if os.path.exists(accounts_path):
+            try:
+                with open(accounts_path, "r", encoding="utf-8") as f:
+                    acc_data = json.load(f)
+                for uid, udata in acc_data.get("users", {}).items():
+                    if uid == user_id_or_username or udata.get("username", "").lower() == ident or udata.get("email", "").lower() == ident or udata.get("full_name", "").lower() in ("enrico leitch", "enrico"):
+                        user_record = udata
+                        if udata.get("is_founder") or udata.get("full_name", "").lower() in ("enrico leitch", "enrico"):
+                            return {
+                                "tier": "FOUNDER_MASTER_ALL_TIERS",
+                                "is_founder": True,
+                                "is_active": True,
+                                "is_lifetime": True,
+                                "expires_at": None,
+                                "plan_name": "Founder Master All-Tiers",
+                                "status_text": "LIFETIME MASTER ACCESS (NEVER EXPIRES)"
+                            }
+                        break
+            except Exception:
+                pass
+
+        # Check licenses.json
+        db = _load_licenses_db()
+        licenses = db.get("licenses", {})
+        matched_license = None
+
+        # Find latest active license
+        for lic_id, lic in reversed(list(licenses.items())):
+            if lic.get("account_id") == user_id_or_username or lic.get("username", "").lower() == ident:
+                matched_license = lic
+                break
+
+        if not matched_license:
+            current_tier = user_record.get("tier", "FREE_COMMUNITY") if user_record else "FREE_COMMUNITY"
+            return {
+                "tier": current_tier,
+                "is_founder": False,
+                "is_active": True,
+                "is_lifetime": current_tier == "FREE_COMMUNITY",
+                "expires_at": None,
+                "plan_name": "Free Community Tier",
+                "status_text": "Active (Free Community Evaluation)"
+            }
+
+        # Validate expiration date
+        expires_str = matched_license.get("expires_at", "")
+        try:
+            exp_time = time.mktime(time.strptime(expires_str, "%Y-%m-%dT%H:%M:%SZ"))
+            now = time.time()
+            if now > exp_time:
+                # Demote expired license automatically
+                if user_record and user_record.get("user_id"):
+                    self._update_user_account_tier(user_record["user_id"], "FREE_COMMUNITY")
+                return {
+                    "tier": "FREE_COMMUNITY",
+                    "previous_tier": matched_license.get("tier", "FORENSIC_PRO"),
+                    "is_founder": False,
+                    "is_active": False,
+                    "is_expired": True,
+                    "expires_at": expires_str,
+                    "plan_name": "Free Community Tier",
+                    "status_text": f"EXPIRED on {expires_str} (Reverted to Free Community)"
+                }
+            else:
+                days_left = max(0, int((exp_time - now) / 86400))
+                return {
+                    "tier": matched_license.get("tier", "FORENSIC_PRO"),
+                    "is_founder": False,
+                    "is_active": True,
+                    "is_expired": False,
+                    "expires_at": expires_str,
+                    "days_remaining": days_left,
+                    "plan_name": self.tiers.get(matched_license.get("tier", "FORENSIC_PRO"), {}).get("name", "Forensic Pro"),
+                    "status_text": f"Active ({days_left} Days Remaining)"
+                }
+        except Exception:
+            return {
+                "tier": matched_license.get("tier", "FORENSIC_PRO"),
+                "is_founder": False,
+                "is_active": True,
+                "is_expired": False,
+                "expires_at": expires_str,
+                "status_text": "Active Entitlement"
+            }
+
+
 BILLING_SERVICE = BillingService()

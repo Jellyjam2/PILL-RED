@@ -106,17 +106,22 @@ class AccountService:
 
     def register_user(
         self,
-        username: str,
-        email: str,
-        password: str,
+        username: str = "",
+        email: str = "",
+        password: str = "",
+        first_name: str = "",
+        last_name: str = "",
         city: str = "",
         age: str = "",
         postal_code: str = "",
         birth_day: str = "",
         birth_month: str = "",
-        birth_year: str = ""
+        birth_year: str = "",
+        avatar: str = ""
     ) -> Dict[str, Any]:
-        """Registers a new user under the Free Community Tier with extended profile details."""
+        """Registers a new user with First Name, Surname, and extended profile details."""
+        first_name = first_name.strip()
+        last_name = last_name.strip()
         username = username.strip()
         email = email.strip().lower()
         city = city.strip()
@@ -125,9 +130,19 @@ class AccountService:
         birth_day = str(birth_day).strip()
         birth_month = str(birth_month).strip()
         birth_year = str(birth_year).strip()
+        avatar = avatar.strip()
 
-        if not username or len(username) < 3:
-            return {"success": False, "error": "Username must be at least 3 characters."}
+        # If username not explicitly provided, generate from first & last name
+        if not username and (first_name or last_name):
+            clean_first = re.sub(r'[^a-zA-Z0-9_]', '', first_name).lower()
+            clean_last = re.sub(r'[^a-zA-Z0-9_]', '', last_name).lower()
+            username = f"{clean_first}_{clean_last}" if (clean_first and clean_last) else (clean_first or clean_last or email.split('@')[0])
+        elif username and not first_name and not last_name:
+            first_name = username.split('_')[0].capitalize()
+            last_name = " ".join(part.capitalize() for part in username.split('_')[1:]) if len(username.split('_')) > 1 else ""
+
+        if not username or len(username) < 2:
+            return {"success": False, "error": "Name / Username must be at least 2 characters."}
         if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
             return {"success": False, "error": "Invalid email address format."}
 
@@ -141,7 +156,7 @@ class AccountService:
         # Check uniqueness
         for uid, udata in users.items():
             if udata.get("username", "").lower() == username.lower():
-                return {"success": False, "error": f"Username '@{username}' is already registered."}
+                return {"success": False, "error": f"Account with username '@{username}' is already registered."}
             if udata.get("email", "").lower() == email:
                 return {"success": False, "error": f"Email '{email}' is already registered."}
 
@@ -149,13 +164,29 @@ class AccountService:
         salt_hex, hash_hex = hash_password_memory_hard(password)
         user_id = f"USR-{secrets.token_hex(8).upper()}"
 
+        # Founder / Steward Master Entitlement Recognition for Enrico Leitch
+        full_name = f"{first_name} {last_name}".strip()
+        is_founder = (
+            full_name.lower() in ("enrico leitch", "enrico") or
+            email in ("architect.lumina@proton.me", "enrico@titanblackswan.com") or
+            username.lower() in ("enrico", "enrico_leitch", "enricoleitch")
+        )
+
+        user_tier = "FOUNDER_MASTER_ALL_TIERS" if is_founder else "FREE_COMMUNITY"
+
         user_record = {
             "user_id": user_id,
             "username": username,
+            "first_name": first_name or (full_name.split()[0] if full_name else username),
+            "last_name": last_name or (" ".join(full_name.split()[1:]) if len(full_name.split()) > 1 else ""),
+            "full_name": full_name or username,
             "email": email,
             "salt": salt_hex,
             "password_hash": hash_hex,
-            "tier": "FREE_COMMUNITY",
+            "tier": user_tier,
+            "is_founder": is_founder,
+            "expires_at": None if is_founder else None,
+            "avatar": avatar,
             "city": city,
             "age": age,
             "postal_code": postal_code,
@@ -171,17 +202,24 @@ class AccountService:
         data["users"] = users
         _save_accounts(data)
 
+        tier_msg = "Founder Master All-Tiers (Lifetime Access)" if is_founder else "Free Community Tier"
         return {
             "success": True,
             "user_id": user_id,
             "username": username,
+            "first_name": user_record["first_name"],
+            "last_name": user_record["last_name"],
+            "full_name": user_record["full_name"],
             "email": email,
-            "tier": "FREE_COMMUNITY",
+            "tier": user_tier,
+            "is_founder": is_founder,
+            "expires_at": None,
+            "avatar": avatar,
             "city": city,
             "age": age,
             "postal_code": postal_code,
             "birthday": f"{birth_day}/{birth_month}/{birth_year}" if birth_year else "",
-            "message": f"Account '@{username}' successfully created under Free Community Tier."
+            "message": f"Account '{user_record['full_name']}' successfully registered with {tier_msg}."
         }
 
     def authenticate_user(self, identifier: str, password: str) -> Dict[str, Any]:
@@ -215,8 +253,13 @@ class AccountService:
             "session_token": session_token,
             "user_id": matched_user["user_id"],
             "username": matched_user["username"],
+            "first_name": matched_user.get("first_name", ""),
+            "last_name": matched_user.get("last_name", ""),
+            "full_name": matched_user.get("full_name", matched_user["username"]),
             "email": matched_user["email"],
             "tier": matched_user.get("tier", "FREE_COMMUNITY"),
+            "is_founder": matched_user.get("is_founder", False),
+            "avatar": matched_user.get("avatar", ""),
             "city": matched_user.get("city", ""),
             "age": matched_user.get("age", ""),
             "postal_code": matched_user.get("postal_code", ""),
@@ -243,8 +286,13 @@ class AccountService:
             "session_token": session_token,
             "user_id": matched_user["user_id"],
             "username": matched_user["username"],
+            "first_name": session_record["first_name"],
+            "last_name": session_record["last_name"],
+            "full_name": session_record["full_name"],
             "email": matched_user["email"],
             "tier": matched_user.get("tier", "FREE_COMMUNITY"),
+            "is_founder": matched_user.get("is_founder", False),
+            "avatar": matched_user.get("avatar", ""),
             "city": matched_user.get("city", ""),
             "age": matched_user.get("age", ""),
             "postal_code": matched_user.get("postal_code", ""),
@@ -276,8 +324,13 @@ class AccountService:
             "valid": True,
             "user_id": session.get("user_id", ""),
             "username": session["username"],
+            "first_name": session.get("first_name", ""),
+            "last_name": session.get("last_name", ""),
+            "full_name": session.get("full_name", session["username"]),
             "email": session["email"],
             "tier": session.get("tier", "FREE_COMMUNITY"),
+            "is_founder": session.get("is_founder", False),
+            "avatar": session.get("avatar", ""),
             "city": session.get("city", ""),
             "age": session.get("age", ""),
             "postal_code": session.get("postal_code", ""),
@@ -297,16 +350,62 @@ class AccountService:
                     "success": True,
                     "user_id": udata.get("user_id", uid),
                     "username": udata.get("username", ""),
+                    "first_name": udata.get("first_name", ""),
+                    "last_name": udata.get("last_name", ""),
+                    "full_name": udata.get("full_name", udata.get("username", "")),
                     "email": udata.get("email", ""),
                     "tier": udata.get("tier", "FREE_COMMUNITY"),
+                    "is_founder": udata.get("is_founder", False),
+                    "avatar": udata.get("avatar", ""),
                     "city": udata.get("city", ""),
                     "age": udata.get("age", ""),
                     "postal_code": udata.get("postal_code", ""),
                     "birthday": bday,
+                    "birth_day": udata.get("birth_day", ""),
+                    "birth_month": udata.get("birth_month", ""),
+                    "birth_year": udata.get("birth_year", ""),
                     "created_at": udata.get("created_at", time.time()),
                     "organization": "Titan Black Swan Technologies"
                 }
         return {"success": False, "error": "User profile not found."}
+
+    def update_user_profile(self, identifier: str, updates: Dict[str, Any]) -> Dict[str, Any]:
+        """Updates user profile fields (Name, Surname, City, Postal, DOB, Avatar) sovereignly."""
+        data = _load_accounts()
+        users = data.get("users", {})
+        matched_uid = None
+        for uid, udata in users.items():
+            if uid == identifier or udata.get("username", "").lower() == identifier.lower() or udata.get("email", "").lower() == identifier.lower():
+                matched_uid = uid
+                break
+
+        if not matched_uid:
+            return {"success": False, "error": "User not found."}
+
+        target = users[matched_uid]
+        if "first_name" in updates:
+            target["first_name"] = str(updates["first_name"]).strip()
+        if "last_name" in updates:
+            target["last_name"] = str(updates["last_name"]).strip()
+        if "first_name" in updates or "last_name" in updates:
+            target["full_name"] = f"{target.get('first_name', '')} {target.get('last_name', '')}".strip() or target.get("username", "")
+        if "city" in updates:
+            target["city"] = str(updates["city"]).strip()
+        if "postal_code" in updates:
+            target["postal_code"] = str(updates["postal_code"]).strip()
+        if "age" in updates:
+            target["age"] = str(updates["age"]).strip()
+        if "birth_day" in updates:
+            target["birth_day"] = str(updates["birth_day"]).strip()
+        if "birth_month" in updates:
+            target["birth_month"] = str(updates["birth_month"]).strip()
+        if "birth_year" in updates:
+            target["birth_year"] = str(updates["birth_year"]).strip()
+        if "avatar" in updates:
+            target["avatar"] = str(updates["avatar"]).strip()
+
+        _save_accounts(data)
+        return {"success": True, "message": "Profile updated successfully.", "profile": self.get_user_profile(matched_uid)}
 
     def revoke_session(self, session_token: str) -> Dict[str, Any]:
         """Logs out and revokes active session token."""

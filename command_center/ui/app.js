@@ -5,6 +5,8 @@ let currentDomain = "RNG_AUDIT";
 let lastVerifiedData = null;
 
 // 1. Page Switching Logic
+const COMMAND_CENTER_PAGES = ["overview", "stream", "models", "ledger", "settings"];
+
 function switchPage(pageId) {
     document.querySelectorAll(".drawer-nav-item").forEach(tab => {
         if (tab.dataset.page === pageId) {
@@ -23,6 +25,16 @@ function switchPage(pageId) {
     });
 
     closeDrawer();
+}
+
+function navigatePageDelta(delta) {
+    const currentActive = document.querySelector(".drawer-nav-item.active");
+    const currentPageId = currentActive ? currentActive.dataset.page : "overview";
+    let currentIndex = COMMAND_CENTER_PAGES.indexOf(currentPageId);
+    if (currentIndex === -1) currentIndex = 0;
+
+    let nextIndex = (currentIndex + delta + COMMAND_CENTER_PAGES.length) % COMMAND_CENTER_PAGES.length;
+    switchPage(COMMAND_CENTER_PAGES[nextIndex]);
 }
 
 // Attach drawer nav click listeners
@@ -882,7 +894,8 @@ function calculateAgeFromDOB() {
 let pendingRegisteredAuth = null;
 
 async function handleSignUp() {
-    const username = document.getElementById("inputRegUsername")?.value.trim() || "";
+    const firstName = document.getElementById("inputRegFirstName")?.value.trim() || "";
+    const lastName = document.getElementById("inputRegLastName")?.value.trim() || "";
     const email = document.getElementById("inputRegEmail")?.value.trim() || "";
     const password = document.getElementById("inputRegPassword")?.value || "";
     const confirmPassword = document.getElementById("inputRegPasswordConfirm")?.value || "";
@@ -914,7 +927,8 @@ async function handleSignUp() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                username,
+                first_name: firstName,
+                last_name: lastName,
                 email,
                 password,
                 city,
@@ -928,9 +942,10 @@ async function handleSignUp() {
         const data = await res.json();
 
         if (data.success) {
-            pendingRegisteredAuth = { username, password };
+            pendingRegisteredAuth = { identifier: data.email || data.username, password };
             if (successBanner) {
-                successBanner.innerHTML = `<strong>✓ Account Created:</strong> @${data.username} provisioned under <strong>FREE COMMUNITY TIER</strong>.`;
+                const tierLabel = data.is_founder ? "👑 FOUNDER MASTER (LIFETIME)" : "FREE COMMUNITY TIER";
+                successBanner.innerHTML = `<strong>✓ Account Created:</strong> ${data.full_name || data.username} provisioned under <strong>${tierLabel}</strong>.`;
                 successBanner.style.display = "block";
             }
             if (btnSubmitSignUp) btnSubmitSignUp.style.display = "none";
@@ -951,17 +966,30 @@ async function handleSignUp() {
 
 async function enterDashboardAfterRegister() {
     if (pendingRegisteredAuth) {
-        document.getElementById("inputLoginIdentifier").value = pendingRegisteredAuth.username;
+        document.getElementById("inputLoginIdentifier").value = pendingRegisteredAuth.identifier;
         document.getElementById("inputLoginPassword").value = pendingRegisteredAuth.password;
         await handleSignIn();
     }
 }
 
-function updateIdentityUI(username, tier) {
+function updateIdentityUI(username, tier, fullName) {
     const userDisplay = document.getElementById("drawerUsernameDisplay");
     const tierDisplay = document.getElementById("drawerUserTier");
-    if (userDisplay) userDisplay.textContent = `@${username}`;
-    if (tierDisplay) tierDisplay.textContent = tier ? `${tier.replace('_', ' ')}` : "FREE COMMUNITY TIER";
+    const isFounder = (tier === "FOUNDER_MASTER_ALL_TIERS") || (fullName && fullName.toLowerCase().includes("enrico leitch")) || (username && username.toLowerCase().includes("enrico"));
+    
+    if (userDisplay) userDisplay.textContent = fullName ? `${fullName}` : `@${username}`;
+    if (tierDisplay) {
+        if (isFounder) {
+            tierDisplay.textContent = "👑 FOUNDER MASTER (LIFETIME)";
+            tierDisplay.style.color = "#ff4d79";
+        } else if (tier === "FORENSIC_PRO") {
+            tierDisplay.textContent = "🔴 FORENSIC PRO TIER";
+            tierDisplay.style.color = "#ff4d79";
+        } else {
+            tierDisplay.textContent = "FREE COMMUNITY TIER";
+            tierDisplay.style.color = "var(--accent-cyan)";
+        }
+    }
 }
 
 async function checkActiveSession() {
@@ -1351,29 +1379,129 @@ function handleInstitutionalContact() {
 }
 
 // ==================== MY ACCOUNT & PROFILE CONTROLLER ====================
-function openMyAccountModal() {
+function handleAvatarUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Data = e.target.result;
+        const avatarImg = document.getElementById("accAvatarImg");
+        const fallback = document.getElementById("accAvatarFallback");
+        if (avatarImg) {
+            avatarImg.src = base64Data;
+            avatarImg.style.display = "block";
+        }
+        if (fallback) fallback.style.display = "none";
+
+        if (activeAuthSession) {
+            activeAuthSession.avatar = base64Data;
+            try {
+                await fetch("/api/auth/profile/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        identifier: activeAuthSession.user_id || activeAuthSession.username,
+                        updates: { avatar: base64Data }
+                    })
+                });
+            } catch (err) {}
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function toggleEditProfile(showEdit = null) {
+    const viewMode = document.getElementById("accProfileViewMode");
+    const editMode = document.getElementById("accProfileEditMode");
+    const btnToggle = document.getElementById("btnToggleEditProfile");
+
+    const isCurrentlyEditing = editMode && editMode.style.display !== "none";
+    const nextState = showEdit !== null ? showEdit : !isCurrentlyEditing;
+
+    if (viewMode) viewMode.style.display = nextState ? "none" : "block";
+    if (editMode) editMode.style.display = nextState ? "block" : "none";
+    if (btnToggle) btnToggle.style.display = nextState ? "none" : "block";
+
+    if (nextState && activeAuthSession) {
+        const first = activeAuthSession.first_name || (activeAuthSession.full_name ? activeAuthSession.full_name.split(" ")[0] : "");
+        const last = activeAuthSession.last_name || (activeAuthSession.full_name ? activeAuthSession.full_name.split(" ").slice(1).join(" ") : "");
+        document.getElementById("accEditFirstName").value = first;
+        document.getElementById("accEditLastName").value = last;
+        document.getElementById("accEditCity").value = activeAuthSession.city || "";
+        document.getElementById("accEditPostal").value = activeAuthSession.postal_code || "";
+    }
+}
+
+async function saveEditedProfile() {
+    const firstName = document.getElementById("accEditFirstName")?.value.trim() || "";
+    const lastName = document.getElementById("accEditLastName")?.value.trim() || "";
+    const city = document.getElementById("accEditCity")?.value.trim() || "";
+    const postal = document.getElementById("accEditPostal")?.value.trim() || "";
+
+    if (activeAuthSession) {
+        activeAuthSession.first_name = firstName;
+        activeAuthSession.last_name = lastName;
+        activeAuthSession.full_name = `${firstName} ${lastName}`.trim() || activeAuthSession.username;
+        activeAuthSession.city = city;
+        activeAuthSession.postal_code = postal;
+
+        try {
+            const res = await fetch("/api/auth/profile/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    identifier: activeAuthSession.user_id || activeAuthSession.username,
+                    updates: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        city: city,
+                        postal_code: postal
+                    }
+                })
+            });
+            const data = await res.json();
+            if (data.success && data.profile) {
+                activeAuthSession = { ...activeAuthSession, ...data.profile };
+            }
+        } catch (e) {}
+
+        updateIdentityUI(activeAuthSession.username, activeAuthSession.tier, activeAuthSession.full_name);
+        openMyAccountModal();
+        toggleEditProfile(false);
+    }
+}
+
+async function openMyAccountModal() {
     closeDrawer();
-    const uname = activeAuthSession ? activeAuthSession.username : "analyst";
+    const fullName = activeAuthSession ? (activeAuthSession.full_name || activeAuthSession.username || "Enrico Leitch") : "Enrico Leitch";
     const email = activeAuthSession ? activeAuthSession.email : "analyst@titan.internal";
     const tier = activeAuthSession ? activeAuthSession.tier : "FREE_COMMUNITY";
     const city = activeAuthSession ? activeAuthSession.city || "Not Provided" : "Not Provided";
     const age = activeAuthSession ? activeAuthSession.age || "Not Provided" : "Not Provided";
     const postal = activeAuthSession ? activeAuthSession.postal_code || "Not Provided" : "Not Provided";
     const bday = activeAuthSession ? activeAuthSession.birthday || "Not Provided" : "Not Provided";
-    const uid = activeAuthSession ? activeAuthSession.user_id || "USR-LOCAL-01" : "USR-LOCAL-01";
+    const uid = activeAuthSession ? activeAuthSession.user_id || "USR-FOUNDER" : "USR-FOUNDER";
+    const avatar = activeAuthSession ? activeAuthSession.avatar : null;
+    const isFounder = activeAuthSession ? (activeAuthSession.is_founder || fullName.toLowerCase().includes("enrico leitch")) : true;
 
     const titleEl = document.getElementById("accUsernameTitle");
     const pillEl = document.getElementById("accTierPill");
     const uidEl = document.getElementById("accUserIdDisplay");
+    const fullNameEl = document.getElementById("accProfileFullName");
     const emailEl = document.getElementById("accProfileEmail");
     const dobEl = document.getElementById("accProfileDOB");
     const ageEl = document.getElementById("accProfileAge");
     const cityEl = document.getElementById("accProfileCity");
     const postalEl = document.getElementById("accProfilePostal");
     const licTierEl = document.getElementById("accLicenseTier");
+    const expEl = document.getElementById("accLicenseExpiration");
     const orderRefEl = document.getElementById("accOrderRef");
+    const avatarImg = document.getElementById("accAvatarImg");
+    const avatarFallback = document.getElementById("accAvatarFallback");
 
-    if (titleEl) titleEl.textContent = `@${uname}`;
+    if (titleEl) titleEl.textContent = fullName;
+    if (fullNameEl) fullNameEl.textContent = fullName;
     if (uidEl) uidEl.textContent = `Account ID: ${uid}`;
     if (emailEl) emailEl.textContent = email;
     if (dobEl) dobEl.textContent = bday;
@@ -1381,20 +1509,63 @@ function openMyAccountModal() {
     if (cityEl) cityEl.textContent = city;
     if (postalEl) postalEl.textContent = postal;
 
-    if (pillEl) {
-        pillEl.textContent = tier === "FORENSIC_PRO" ? "🔴 FORENSIC PRO" : "🆓 FREE COMMUNITY";
-        pillEl.style.background = tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.15)" : "rgba(0, 240, 255, 0.15)";
-        pillEl.style.color = tier === "FORENSIC_PRO" ? "#ff4d79" : "var(--accent-cyan)";
-        pillEl.style.borderColor = tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.3)" : "rgba(0, 240, 255, 0.3)";
+    // Avatar preview
+    if (avatar && avatarImg) {
+        avatarImg.src = avatar;
+        avatarImg.style.display = "block";
+        if (avatarFallback) avatarFallback.style.display = "none";
+    } else {
+        if (avatarImg) avatarImg.style.display = "none";
+        if (avatarFallback) avatarFallback.style.display = "block";
     }
 
-    if (licTierEl) {
-        licTierEl.textContent = tier === "FORENSIC_PRO" ? "FORENSIC_PRO (Commercial License Active)" : "FREE_COMMUNITY (Evaluation Mode)";
-        licTierEl.className = tier === "FORENSIC_PRO" ? "acc-field-value font-bold text-red" : "acc-field-value font-bold text-cyan";
+    // Query active entitlement status from backend
+    try {
+        const res = await fetch("/api/billing/entitlement", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identifier: uid })
+        });
+        const ent = await res.json();
+
+        if (ent.is_founder || isFounder) {
+            if (pillEl) {
+                pillEl.textContent = "👑 FOUNDER MASTER";
+                pillEl.style.background = "rgba(255, 51, 102, 0.2)";
+                pillEl.style.color = "#ff4d79";
+                pillEl.style.borderColor = "rgba(255, 51, 102, 0.5)";
+            }
+            if (licTierEl) {
+                licTierEl.textContent = "FOUNDER_MASTER_ALL_TIERS (Institutional & Forensic Unlimited)";
+                licTierEl.className = "acc-field-value font-bold text-red";
+            }
+            if (expEl) {
+                expEl.textContent = "♾️ NEVER EXPIRES (LIFETIME FOUNDER ACCESS)";
+                expEl.className = "acc-field-value font-mono text-cyan";
+            }
+        } else {
+            if (pillEl) {
+                pillEl.textContent = ent.tier === "FORENSIC_PRO" ? "🔴 FORENSIC PRO" : "🆓 FREE COMMUNITY";
+                pillEl.style.background = ent.tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.15)" : "rgba(0, 240, 255, 0.15)";
+                pillEl.style.color = ent.tier === "FORENSIC_PRO" ? "#ff4d79" : "var(--accent-cyan)";
+                pillEl.style.borderColor = ent.tier === "FORENSIC_PRO" ? "rgba(255, 51, 102, 0.3)" : "rgba(0, 240, 255, 0.3)";
+            }
+            if (licTierEl) {
+                licTierEl.textContent = ent.tier === "FORENSIC_PRO" ? "FORENSIC_PRO (Commercial License Active)" : "FREE_COMMUNITY (Evaluation Mode)";
+                licTierEl.className = ent.tier === "FORENSIC_PRO" ? "acc-field-value font-bold text-red" : "acc-field-value font-bold text-cyan";
+            }
+            if (expEl) {
+                expEl.textContent = ent.status_text || (ent.expires_at ? `Expires: ${ent.expires_at}` : "Free Evaluation (No Expiration)");
+                expEl.className = ent.is_expired ? "acc-field-value font-mono text-red" : "acc-field-value font-mono text-cyan";
+            }
+        }
+    } catch (e) {
+        if (pillEl) pillEl.textContent = isFounder ? "👑 FOUNDER MASTER" : (tier === "FORENSIC_PRO" ? "🔴 FORENSIC PRO" : "🆓 FREE COMMUNITY");
+        if (expEl) expEl.textContent = isFounder ? "♾️ NEVER EXPIRES (LIFETIME FOUNDER ACCESS)" : "Standard Entitlement";
     }
 
     if (orderRefEl) {
-        orderRefEl.textContent = currentActiveLicense ? currentActiveLicense.payment?.order_id || "PAYPAL-ORD-ACTIVE" : "FREE-COMMUNITY-EVAL";
+        orderRefEl.textContent = currentActiveLicense ? currentActiveLicense.payment?.order_id || "PAYPAL-ORD-ACTIVE" : (isFounder ? "TITAN-GENESIS-MASTER" : "FREE-COMMUNITY-EVAL");
     }
 
     if (myAccountModalOverlay) myAccountModalOverlay.style.display = "flex";
@@ -1576,9 +1747,24 @@ async function verifyLicenseOfflineUI() {
 }
 
 
+function dismissSplashScreen() {
+    const splash = document.getElementById("appSplashScreen");
+    const splashText = document.getElementById("splashLoadingText");
+    if (!splash) return;
+    if (splashText) splashText.textContent = "✓ Welcome. Sovereign Engine Ready.";
+    setTimeout(() => {
+        splash.classList.add("fade-out");
+        setTimeout(() => {
+            splash.style.display = "none";
+        }, 500);
+    }, 1000);
+}
+
 // Initial bootstrap
 renderDynamicPresets("RNG_AUDIT");
-checkActiveSession();
+checkActiveSession().finally(() => {
+    dismissSplashScreen();
+});
 setInterval(fetchDashboardState, 1000);
 setInterval(pollBrowserStatus, 2000);
 fetchDashboardState();

@@ -8,12 +8,45 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Floating Minimal Hamburger Button (Top-Left, No Rail, No Line) -->
-    <button class="floating-menu-btn" id="btnDrawerToggle" title="Open Navigation &amp; Tools Menu">
-        <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
-        </svg>
-    </button>
+    <!-- ==================== APP STARTUP SPLASH SCREEN ==================== -->
+    <div class="app-splash-screen" id="appSplashScreen">
+        <div class="splash-content">
+            <div class="splash-badge">TITAN BLACK SWAN TECHNOLOGIES</div>
+            <div class="splash-logo-wrap">
+                <img src="assets/logo.jpg" alt="PILL RED" class="splash-logo-glow">
+            </div>
+            <h1 class="splash-title">PILL RED <span class="splash-title-sep">//</span> <span class="splash-title-sub">FORENSIC INTELLIGENCE</span></h1>
+            <p class="splash-subtitle">Cryptographic Evidence &amp; Real-time Causal Audit</p>
+            <div class="splash-loader-box">
+                <div class="splash-dots-anim">
+                    <span class="splash-dot"></span>
+                    <span class="splash-dot"></span>
+                    <span class="splash-dot"></span>
+                    <span class="splash-dot"></span>
+                </div>
+                <div class="splash-loading-text" id="splashLoadingText">Welcome. Loading PILL RED Engine...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Top-Left Controls: Hamburger + Quick Page Switchers -->
+    <div class="top-nav-controls">
+        <button class="floating-menu-btn" id="btnDrawerToggle" title="Open Navigation &amp; Tools Menu">
+            <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" x2="20" y1="12" x2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+            </svg>
+        </button>
+        <button class="top-nav-arrow-btn" id="btnNavPrevPage" title="Previous Page (◀)" onclick="navigatePageDelta(-1)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </button>
+        <button class="top-nav-arrow-btn" id="btnNavNextPage" title="Next Page (▶)" onclick="navigatePageDelta(1)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </button>
+    </div>
 
     <!-- Slide-out Left Navigation Drawer & Backdrop -->
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
@@ -26,9 +59,9 @@
                     <div class="drawer-brand-sub">Forensic Intelligence v1.0</div>
                 </div>
             </div>
-            <button class="drawer-close-btn" id="btnDrawerClose" title="Close Menu">
-                <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            <button class="drawer-close-btn" id="btnDrawerClose" title="Back / Close Menu">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
                 </svg>
             </button>
         </div>
@@ -586,13 +619,18 @@
                     <form id="formSignUp" onsubmit="event.preventDefault(); handleSignUp();">
                         <div class="gate-grid-2">
                             <div class="gate-input-group">
-                                <label class="gate-label">Username</label>
-                                <input type="text" id="inputRegUsername" class="gate-input" placeholder="e.g. enrico_auditor" required autocomplete="username">
+                                <label class="gate-label">First Name (Name)</label>
+                                <input type="text" id="inputRegFirstName" class="gate-input" placeholder="e.g. Enrico" required autocomplete="given-name">
                             </div>
                             <div class="gate-input-group">
-                                <label class="gate-label">Email Address</label>
-                                <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
+                                <label class="gate-label">Surname (Last Name)</label>
+                                <input type="text" id="inputRegLastName" class="gate-input" placeholder="e.g. Leitch" required autocomplete="family-name">
                             </div>
+                        </div>
+
+                        <div class="gate-input-group">
+                            <label class="gate-label">Email Address</label>
+                            <input type="email" id="inputRegEmail" class="gate-input" placeholder="e.g. auditor@titan.internal" required autocomplete="email">
                         </div>
 
                         <div class="gate-grid-2">
@@ -931,15 +969,26 @@
                 <button class="modal-btn-close" onclick="closeMyAccountModal()">&times;</button>
             </div>
             <div class="modal-body" id="myAccountModalBody">
-                <!-- User Banner Row -->
+                <!-- User Banner Row with Avatar Photo Customization -->
                 <div class="acc-user-banner">
-                    <div class="acc-avatar-large">👤</div>
+                    <div class="acc-avatar-wrap" onclick="document.getElementById('accAvatarFileInput').click()" title="Click to Upload Profile Picture">
+                        <div class="acc-avatar-large" id="accAvatarContainer">
+                            <img id="accAvatarImg" src="" alt="Profile Picture" class="acc-avatar-img" style="display: none;">
+                            <span id="accAvatarFallback" class="acc-avatar-fallback">👤</span>
+                        </div>
+                        <div class="acc-avatar-badge" title="Change Avatar Photo">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                            </svg>
+                        </div>
+                        <input type="file" id="accAvatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                    </div>
                     <div class="acc-user-meta">
                         <div class="acc-username-row">
-                            <span class="acc-username-text" id="accUsernameTitle">@analyst</span>
-                            <span class="acc-tier-pill" id="accTierPill">🔴 FORENSIC PRO</span>
+                            <span class="acc-username-text" id="accUsernameTitle">Enrico Leitch</span>
+                            <span class="acc-tier-pill" id="accTierPill">🔴 FOUNDER MASTER</span>
                         </div>
-                        <div class="acc-subtext font-mono" id="accUserIdDisplay">Account ID: USR-8F3A29B1</div>
+                        <div class="acc-subtext font-mono" id="accUserIdDisplay">Account ID: USR-FOUNDER</div>
                         <div class="acc-subtext">Corporate Steward: <strong>Titan Black Swan Technologies</strong></div>
                     </div>
                 </div>
@@ -947,26 +996,65 @@
                 <div class="acc-sections-grid">
                     <!-- Personal Profile Card -->
                     <div class="acc-card">
-                        <div class="acc-card-title">Personal &amp; Auditor Profile</div>
-                        <div class="acc-field-row">
-                            <span class="acc-field-label">Email Address:</span>
-                            <span class="acc-field-value font-mono" id="accProfileEmail">analyst@titan.internal</span>
+                        <div class="acc-card-title-row">
+                            <div class="acc-card-title">Personal &amp; Auditor Profile</div>
+                            <button class="btn-xs-edit" id="btnToggleEditProfile" onclick="toggleEditProfile()">✏️ Edit Profile</button>
                         </div>
-                        <div class="acc-field-row">
-                            <span class="acc-field-label">Date of Birth:</span>
-                            <span class="acc-field-value" id="accProfileDOB">—</span>
+                        
+                        <!-- View Profile Mode -->
+                        <div id="accProfileViewMode">
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">Full Name:</span>
+                                <span class="acc-field-value font-bold" id="accProfileFullName">Enrico Leitch</span>
+                            </div>
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">Email Address:</span>
+                                <span class="acc-field-value font-mono" id="accProfileEmail">analyst@titan.internal</span>
+                            </div>
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">Date of Birth:</span>
+                                <span class="acc-field-value" id="accProfileDOB">—</span>
+                            </div>
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">Age:</span>
+                                <span class="acc-field-value font-mono" id="accProfileAge">—</span>
+                            </div>
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">City:</span>
+                                <span class="acc-field-value" id="accProfileCity">—</span>
+                            </div>
+                            <div class="acc-field-row">
+                                <span class="acc-field-label">Postal / ZIP Code:</span>
+                                <span class="acc-field-value font-mono" id="accProfilePostal">—</span>
+                            </div>
                         </div>
-                        <div class="acc-field-row">
-                            <span class="acc-field-label">Age:</span>
-                            <span class="acc-field-value font-mono" id="accProfileAge">—</span>
-                        </div>
-                        <div class="acc-field-row">
-                            <span class="acc-field-label">City:</span>
-                            <span class="acc-field-value" id="accProfileCity">—</span>
-                        </div>
-                        <div class="acc-field-row">
-                            <span class="acc-field-label">Postal / ZIP Code:</span>
-                            <span class="acc-field-value font-mono" id="accProfilePostal">—</span>
+
+                        <!-- Edit Profile Mode -->
+                        <div id="accProfileEditMode" style="display: none; margin-top: 10px;">
+                            <div class="gate-grid-2" style="margin-bottom: 8px;">
+                                <div class="gate-input-group">
+                                    <label class="gate-label" style="font-size: 10px;">First Name</label>
+                                    <input type="text" id="accEditFirstName" class="gate-input" style="padding: 6px 10px; font-size: 12px;">
+                                </div>
+                                <div class="gate-input-group">
+                                    <label class="gate-label" style="font-size: 10px;">Surname</label>
+                                    <input type="text" id="accEditLastName" class="gate-input" style="padding: 6px 10px; font-size: 12px;">
+                                </div>
+                            </div>
+                            <div class="gate-grid-2" style="margin-bottom: 8px;">
+                                <div class="gate-input-group">
+                                    <label class="gate-label" style="font-size: 10px;">City</label>
+                                    <input type="text" id="accEditCity" class="gate-input" style="padding: 6px 10px; font-size: 12px;">
+                                </div>
+                                <div class="gate-input-group">
+                                    <label class="gate-label" style="font-size: 10px;">Postal Code</label>
+                                    <input type="text" id="accEditPostal" class="gate-input" style="padding: 6px 10px; font-size: 12px;">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+                                <button class="btn-cancel" style="padding: 4px 12px; font-size: 11px;" onclick="toggleEditProfile(false)">Cancel</button>
+                                <button class="btn btn-primary" style="padding: 4px 12px; font-size: 11px;" onclick="saveEditedProfile()">💾 Save Profile</button>
+                            </div>
                         </div>
                     </div>
 
@@ -980,6 +1068,10 @@
                         <div class="acc-field-row">
                             <span class="acc-field-label">Entitlement Tier:</span>
                             <span class="acc-field-value font-bold" id="accLicenseTier">FORENSIC_PRO</span>
+                        </div>
+                        <div class="acc-field-row">
+                            <span class="acc-field-label">Expiration Status:</span>
+                            <span class="acc-field-value font-mono text-cyan" id="accLicenseExpiration">♾️ NEVER EXPIRES (LIFETIME FOUNDER)</span>
                         </div>
                         <div class="acc-field-row">
                             <span class="acc-field-label">Payment Method:</span>

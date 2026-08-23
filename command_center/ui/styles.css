@@ -97,11 +97,56 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
+.top-nav-controls {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 90;
+}
+
+.floating-menu-btn {
+    background: #181920;
+    border: 1px solid #2d2e38;
+    color: #e4e4e7;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
 .floating-menu-btn:hover {
     background: #24242e;
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-    box-shadow: 0 0 12px rgba(255, 51, 102, 0.4);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.top-nav-arrow-btn {
+    background: #181920;
+    border: 1px solid #2d2e38;
+    color: #a1a1aa;
+    border-radius: 8px;
+    width: 32px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.top-nav-arrow-btn:hover {
+    background: #242530;
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
 }
 
 /* Slide-out Left Navigation Drawer */
@@ -119,10 +164,10 @@ body {
     transition: opacity 0.2s ease;
 }
 
-/* Universal Sleek Cyberpunk Scrollbars */
+/* Universal Sleek Tactical Grey Scrollbars */
 * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 51, 102, 0.35) #07080b;
+    scrollbar-color: #3f3f46 #090a0f;
 }
 
 ::-webkit-scrollbar {
@@ -131,19 +176,19 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: #07080b;
+    background: #090a0f;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 51, 102, 0.35);
+    background: #3f3f46;
     border-radius: 4px;
     transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 51, 102, 0.75);
-    box-shadow: 0 0 10px rgba(255, 51, 102, 0.8);
+    background: #71717a;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .drawer-backdrop.active {
@@ -1658,14 +1703,14 @@ body {
 
 .btn-gate-primary {
     width: 100%;
-    background: var(--accent-red);
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
     color: #ffffff;
-    border: 1px solid #ff3366;
-    box-shadow: 0 0 16px rgba(255, 51, 102, 0.35);
+    border: 1px solid #00c6ff;
+    box-shadow: 0 0 18px rgba(0, 198, 255, 0.4);
     border-radius: 6px;
-    padding: 10px 16px;
-    font-size: 12.5px;
-    font-weight: 700;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -1677,8 +1722,8 @@ body {
 }
 
 .btn-gate-primary:hover {
-    background: #ff1a53;
-    box-shadow: 0 0 22px rgba(255, 51, 102, 0.55);
+    background: linear-gradient(135deg, #33d1ff 0%, #1a82ff 100%);
+    box-shadow: 0 0 24px rgba(0, 198, 255, 0.65);
     transform: translateY(-1px);
 }
 
@@ -2638,5 +2683,236 @@ body {
     color: #e4e4e7;
 }
 
+.acc-card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+}
 
+.acc-card-title-row .acc-card-title {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
 
+.btn-xs-edit {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #a1a1aa;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all 0.15s ease;
+}
+
+.btn-xs-edit:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border-color: var(--accent-cyan);
+}
+
+/* Avatar Photo Customization in My Account */
+.acc-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.acc-avatar-large {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #14151b;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.acc-avatar-wrap:hover .acc-avatar-large {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+}
+
+.acc-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.acc-avatar-fallback {
+    font-size: 22px;
+}
+
+.acc-avatar-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #1e1f29;
+    border: 1px solid #3f3f46;
+    color: #00f0ff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    transition: all 0.15s ease;
+}
+
+.acc-avatar-wrap:hover .acc-avatar-badge {
+    background: var(--accent-cyan);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* ==================== APP STARTUP SPLASH SCREEN ==================== */
+.app-splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at 50% 40%, #13151f 0%, #08090d 75%, #030406 100%);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+
+.app-splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.splash-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 520px;
+    padding: 30px;
+}
+
+.splash-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--accent-cyan);
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.splash-logo-wrap {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.splash-logo-glow {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    box-shadow: 0 0 35px rgba(255, 51, 102, 0.55), 0 0 10px rgba(0, 240, 255, 0.3);
+    animation: splashPulse 2.2s infinite ease-in-out;
+}
+
+@keyframes splashPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(255, 51, 102, 0.5), 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+    50% {
+        transform: scale(1.04);
+        box-shadow: 0 0 50px rgba(255, 51, 102, 0.8), 0 0 25px rgba(0, 240, 255, 0.5);
+    }
+}
+
+.splash-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text-pure);
+    margin: 0 0 6px 0;
+}
+
+.splash-title-sep {
+    color: var(--accent-red);
+}
+
+.splash-title-sub {
+    font-weight: 600;
+    color: #a1a1aa;
+}
+
+.splash-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin: 0 0 28px 0;
+}
+
+.splash-loader-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.splash-dots-anim {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.splash-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-cyan);
+    animation: splashDotBounce 1.4s infinite ease-in-out both;
+}
+
+.splash-dot:nth-child(1) { animation-delay: -0.32s; }
+.splash-dot:nth-child(2) { animation-delay: -0.16s; }
+.splash-dot:nth-child(3) { animation-delay: 0s; }
+.splash-dot:nth-child(4) { animation-delay: 0.16s; }
+
+@keyframes splashDotBounce {
+    0%, 80%, 100% {
+        transform: scale(0.4);
+        opacity: 0.3;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+        box-shadow: 0 0 12px var(--accent-cyan);
+    }
+}
+
+.splash-loading-text {
+    font-size: 11.5px;
+    color: #a1a1aa;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+}

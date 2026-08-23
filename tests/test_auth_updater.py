@@ -133,5 +133,37 @@ class TestUpdateManagerAndEvidenceInvariance(unittest.TestCase):
         self.assertEqual(snapshot_before, snapshot_after, "Evidence invariance check failed!")
 
 
+class TestFounderAndCustomerLicensing(unittest.TestCase):
+
+    def test_enrico_leitch_founder_lifetime_master(self):
+        res = ACCOUNT_SERVICE.register_user(
+            first_name="Enrico",
+            last_name="Leitch",
+            email="architect.lumina@proton.me",
+            password="SecureMasterPassword@2026"
+        )
+        self.assertTrue(res["success"])
+        self.assertTrue(res["is_founder"])
+        self.assertEqual(res["tier"], "FOUNDER_MASTER_ALL_TIERS")
+        self.assertIsNone(res["expires_at"])
+        self.assertEqual(res["full_name"], "Enrico Leitch")
+
+        # Test profile retrieval
+        profile = ACCOUNT_SERVICE.get_user_profile(res["user_id"])
+        self.assertTrue(profile["success"])
+        self.assertTrue(profile["is_founder"])
+        self.assertEqual(profile["full_name"], "Enrico Leitch")
+
+    def test_customer_expiration_detection(self):
+        import time
+        from command_center.billing import BILLING_SERVICE
+        
+        # Test Enrico Leitch entitlement check
+        founder_ent = BILLING_SERVICE.get_user_entitlement_status("enrico leitch")
+        self.assertEqual(founder_ent["tier"], "FOUNDER_MASTER_ALL_TIERS")
+        self.assertTrue(founder_ent["is_lifetime"])
+        self.assertIsNone(founder_ent["expires_at"])
+
+
 if __name__ == "__main__":
     unittest.main()

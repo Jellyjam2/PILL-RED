@@ -25,7 +25,6 @@ jobs:
         uses: model-checking/kani-github-action@v1
         with:
           working-directory: formal/kani
-          args: --enable-unstable
 
       - name: Run Kani Crate Unit Tests
         working-directory: formal/kani

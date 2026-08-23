@@ -1318,6 +1318,7 @@ function selectPlanTier(tierId) {
     const btnPaypalText = document.getElementById("btnPaypalCheckoutText");
     const titleText = document.getElementById("checkoutTitleText");
     const badgesRow = document.getElementById("checkoutPaymentBadges");
+    const formattedProPrice = (typeof getFormattedProPrice === "function") ? getFormattedProPrice() : "$49.00 USD";
 
     if (cardFree) cardFree.classList.remove("active");
     if (cardPro) cardPro.classList.remove("active");
@@ -1336,7 +1337,7 @@ function selectPlanTier(tierId) {
         if (titleText) titleText.textContent = "Free Community Plan";
         if (badgesRow) badgesRow.style.display = "none";
         if (planSummary) planSummary.textContent = "Free Community (Evaluation & Protocol Rig)";
-        if (priceSummary) priceSummary.textContent = "$0.00 USD";
+        if (priceSummary) priceSummary.textContent = "$0.00";
         if (btnPaypal) {
             btnPaypal.disabled = true;
             btnPaypal.style.background = "#27272a";
@@ -1352,15 +1353,15 @@ function selectPlanTier(tierId) {
 
         if (titleText) titleText.textContent = "Secure Checkout — PayPal + Debit/Credit Card";
         if (badgesRow) badgesRow.style.display = "flex";
-        if (planSummary) planSummary.textContent = "Forensic Pro (1 Month Entitlement)";
-        if (priceSummary) priceSummary.textContent = "$49.00 USD";
+        if (planSummary) planSummary.textContent = `Forensic Pro (1 Month Entitlement)`;
+        if (priceSummary) priceSummary.textContent = formattedProPrice;
         if (btnPaypal) {
             btnPaypal.disabled = false;
             btnPaypal.style.background = "#ffc439";
             btnPaypal.style.color = "#003087";
             btnPaypal.style.boxShadow = "0 0 16px rgba(255, 196, 57, 0.35)";
         }
-        if (btnPaypalText) btnPaypalText.textContent = "Complete Purchase ($49.00)";
+        if (btnPaypalText) btnPaypalText.textContent = `Complete Purchase (${formattedProPrice})`;
     } else if (tierId === "INSTITUTIONAL") {
         if (cardInst) cardInst.classList.add("active");
         if (tagInst) tagInst.textContent = "LEARN & CONTACT";
@@ -1368,6 +1369,20 @@ function selectPlanTier(tierId) {
         if (boxInst) boxInst.style.display = "block";
     }
 }
+
+function toggleLocaleDropdown() {
+    const menu = document.getElementById("localeDropdownMenu");
+    if (!menu) return;
+    menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
+document.addEventListener("click", (e) => {
+    const wrap = document.querySelector(".locale-dropdown-wrap");
+    const menu = document.getElementById("localeDropdownMenu");
+    if (menu && wrap && !wrap.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
 
 function handleInstitutionalContact() {
     showPillRedConfirm({
@@ -1634,11 +1649,14 @@ async function handlePaypalCheckout() {
     }
 
     try {
+        const curr = (typeof getCurrencyCode === "function") ? getCurrencyCode() : "USD";
+        const amt = (typeof getProPriceAmount === "function") ? getProPriceAmount() : 49.00;
+
         // 1. Create order
         const createRes = await fetch("/api/billing/create_order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: uid, tier_id: "FORENSIC_PRO" })
+            body: JSON.stringify({ user_id: uid, tier_id: "FORENSIC_PRO", currency: curr, amount: amt })
         });
         const orderData = await createRes.json();
 
@@ -1655,7 +1673,9 @@ async function handlePaypalCheckout() {
                 order_id: orderData.order_id,
                 user_id: uid,
                 username: uname,
-                tier_id: "FORENSIC_PRO"
+                tier_id: "FORENSIC_PRO",
+                currency: curr,
+                amount: amt
             })
         });
         const captureData = await captureRes.json();

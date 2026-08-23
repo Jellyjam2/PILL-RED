@@ -136,13 +136,16 @@ class TestUpdateManagerAndEvidenceInvariance(unittest.TestCase):
 class TestFounderAndCustomerLicensing(unittest.TestCase):
 
     def test_enrico_leitch_founder_lifetime_master(self):
+        import secrets
+        rand_id = secrets.token_hex(4)
         res = ACCOUNT_SERVICE.register_user(
+            username=f"enrico_leitch_{rand_id}",
             first_name="Enrico",
             last_name="Leitch",
-            email="architect.lumina@proton.me",
+            email=f"architect.lumina_{rand_id}@proton.me",
             password="SecureMasterPassword@2026"
         )
-        self.assertTrue(res["success"])
+        self.assertTrue(res["success"], res.get("error"))
         self.assertTrue(res["is_founder"])
         self.assertEqual(res["tier"], "FOUNDER_MASTER_ALL_TIERS")
         self.assertIsNone(res["expires_at"])
@@ -155,7 +158,6 @@ class TestFounderAndCustomerLicensing(unittest.TestCase):
         self.assertEqual(profile["full_name"], "Enrico Leitch")
 
     def test_customer_expiration_detection(self):
-        import time
         from command_center.billing import BILLING_SERVICE
         
         # Test Enrico Leitch entitlement check

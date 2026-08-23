@@ -771,7 +771,9 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                 data = json.loads(body.decode("utf-8")) if body else {}
                 res = BILLING_SERVICE.create_order(
                     user_id=data.get("user_id", "ANON"),
-                    tier_id=data.get("tier_id", "FORENSIC_PRO")
+                    tier_id=data.get("tier_id", "FORENSIC_PRO"),
+                    currency=data.get("currency", "USD"),
+                    amount=data.get("amount")
                 )
                 self.send_response(200 if res.get("success") else 400)
                 self.send_header("Content-Type", "application/json")
@@ -791,7 +793,9 @@ Every evaluated prediction was hashed ($H_t = \\text{{SHA256}}(H_{{t-1}} \\,|\\,
                     order_id=data.get("order_id", ""),
                     user_id=data.get("user_id", "ANON"),
                     username=data.get("username", "guest"),
-                    tier_id=data.get("tier_id", "FORENSIC_PRO")
+                    tier_id=data.get("tier_id", "FORENSIC_PRO"),
+                    currency=data.get("currency", "USD"),
+                    amount=data.get("amount")
                 )
                 self.send_response(200 if res.get("success") else 400)
                 self.send_header("Content-Type", "application/json")

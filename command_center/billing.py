@@ -157,12 +157,19 @@ class BillingService:
             "tiers": list(self.tiers.values())
         }
 
-    def create_order(self, user_id: str, tier_id: str) -> Dict[str, Any]:
-        """Prepares a new PayPal order intent."""
+    def create_order(
+        self,
+        user_id: str,
+        tier_id: str,
+        currency: str = "USD",
+        amount: Optional[float] = None
+    ) -> Dict[str, Any]:
+        """Prepares a new PayPal order intent with multi-currency support."""
         if tier_id not in self.tiers or tier_id == "FREE_COMMUNITY":
             return {"success": False, "error": "Invalid tier for purchase."}
 
         tier = self.tiers[tier_id]
+        final_amount = amount if amount is not None else tier["price_usd"]
         order_id = f"PAYPAL-ORD-{secrets.token_hex(8).upper()}"
 
         db = _load_licenses_db()
@@ -170,8 +177,8 @@ class BillingService:
             "order_id": order_id,
             "user_id": user_id,
             "tier_id": tier_id,
-            "amount_usd": tier["price_usd"],
-            "currency": "USD",
+            "amount": final_amount,
+            "currency": currency,
             "provider": "PAYPAL",
             "payment_methods": ["PayPal", "Debit / Credit Card (Visa/Mastercard)"],
             "status": "CREATED",
@@ -183,8 +190,9 @@ class BillingService:
         return {
             "success": True,
             "order_id": order_id,
+            "amount": final_amount,
             "amount_usd": tier["price_usd"],
-            "currency": "USD",
+            "currency": currency,
             "tier_name": tier["name"],
             "provider": "PAYPAL"
         }
@@ -194,7 +202,9 @@ class BillingService:
         order_id: str,
         user_id: str,
         username: str,
-        tier_id: str = "FORENSIC_PRO"
+        tier_id: str = "FORENSIC_PRO",
+        currency: str = "USD",
+        amount: Optional[float] = None
     ) -> Dict[str, Any]:
         """
         Idempotently captures order payment and issues signed license receipt.
@@ -219,6 +229,7 @@ class BillingService:
         license_id = f"LIC-PRO-{secrets.token_hex(8).upper()}"
         now = time.time()
         expires = now + (86400 * 30)  # 30 days
+        final_amount = amount if amount is not None else 49.00
 
         # Assemble Canonical License Payload
         payload = {
@@ -233,6 +244,8 @@ class BillingService:
             "payment": {
                 "provider": "PAYPAL",
                 "order_id": order_id,
+                "amount": final_amount,
+                "currency": currency,
                 "status": "CAPTURED",
                 "funding_method": "PayPal / Debit & Credit Card"
             },

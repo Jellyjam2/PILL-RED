@@ -149,6 +149,117 @@ body {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
 }
 
+.top-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(14, 15, 20, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 4px 12px 4px 6px;
+    height: 36px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+
+.top-nav-brand:hover {
+    border-color: rgba(255, 51, 102, 0.4);
+    box-shadow: 0 0 14px rgba(255, 51, 102, 0.2);
+}
+
+.top-nav-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 51, 102, 0.4);
+    box-shadow: 0 0 8px rgba(255, 51, 102, 0.3);
+}
+
+.top-nav-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--text-pure);
+    text-transform: uppercase;
+}
+
+/* Floating Top-Right Locale & Currency Switcher */
+.top-locale-controls {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 90;
+}
+
+.locale-dropdown-wrap {
+    position: relative;
+}
+
+.locale-picker-btn {
+    background: #181920;
+    border: 1px solid #2d2e38;
+    color: #e4e4e7;
+    border-radius: 8px;
+    height: 36px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.locale-picker-btn:hover {
+    background: #242530;
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+}
+
+.locale-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 280px;
+    max-height: 380px;
+    overflow-y: auto;
+    background: #0d0e14;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.15);
+    padding: 6px 0;
+    z-index: 1000;
+}
+
+.locale-menu-header {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #71717a;
+    padding: 8px 14px 4px 14px;
+    text-transform: uppercase;
+}
+
+.locale-option {
+    padding: 8px 14px;
+    font-size: 11.5px;
+    color: #d4d4d8;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.locale-option:hover {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--accent-cyan);
+}
+
 /* Slide-out Left Navigation Drawer */
 .drawer-backdrop {
     position: fixed;
@@ -1580,6 +1691,26 @@ body {
     margin-bottom: 18px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     padding-bottom: 14px;
+}
+
+.gate-card-logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.gate-card-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 51, 102, 0.4);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.4), 0 0 10px rgba(0, 240, 255, 0.25);
+    transition: all 0.2s ease;
+}
+
+.gate-card-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 51, 102, 0.6), 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
 .gate-card-status-badge {

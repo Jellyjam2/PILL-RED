@@ -147,23 +147,17 @@ mod kani_proofs {
     #[kani::proof]
     fn check_passport_section_tamper_detection() {
         use std::collections::BTreeMap;
-        // NOTE: We use a symbolic choice over a discrete set of floating-point values
-        // instead of a fully unbounded symbolic float (kani::any::<f64>()).
-        // Serialization of a fully symbolic float to JSON strings triggers dtoa/ryu
-        // formatting algorithms with symbolic loops, leading to infinite SMT loop
-        // unwinding. Choosing from a discrete set of floats allows the solver to
-        // evaluate concrete serialization paths while still proving the relation:
-        // stat_val != 0.55 <=> verification fails.
-        let choice: u8 = kani::any();
-        let stat_val: f64 = match choice % 3 {
-            0 => 0.55,
-            1 => 0.99,
-            _ => 1.23,
-        };
+        // NOTE: We use a symbolic u32 integer for the evidence value in this harness
+        // instead of a symbolic float (f64). In SMT solvers, serializing a symbolic
+        // float to a JSON string requires symbolic execution of floating-point formatting
+        // algorithms (dtoa/ryu), causing state explosion and solver timeouts.
+        // Using a symbolic integer proves the exact same cryptographic tamper-detection
+        // invariant while keeping SMT serialization loops statically bounded and tractable.
+        let stat_val: u32 = kani::any();
 
         let mut stat_map = BTreeMap::new();
         stat_map.insert("inferred".to_string(), json!({ "p_value": 0.001 }));
-        stat_map.insert("measured".to_string(), json!({ "win_rate": 0.55 }));
+        stat_map.insert("measured".to_string(), json!({ "win_rate": 55 }));
         let stat_hash = sha256_hex(&canonical_json(&stat_map));
 
         let mut econ_map = BTreeMap::new();
@@ -192,8 +186,7 @@ mod kani_proofs {
         passport["passport_hash"] = json!(expected_passport_hash);
 
         let res = verify_passport(&passport);
-        let is_exact = (stat_val - 0.55).abs() < 1e-9;
-        if is_exact {
+        if stat_val == 55 {
             assert!(res.is_ok(), "Untampered canonical statistical value must pass verify_passport()");
         } else {
             assert!(res.is_err(), "Mutated statistical value must cause statistical_evidence_hash mismatch and fail verify_passport()");

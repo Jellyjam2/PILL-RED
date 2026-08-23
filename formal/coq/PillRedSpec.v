@@ -1,9 +1,9 @@
 (** * Formal Model of the PILL RED Evidence Protocol (PILLRED-SPEC-1.0) in Coq *)
 
-From Stdlib Require Import Strings.String.
-From Stdlib Require Import Lists.List.
-From Stdlib Require Import ZArith.ZArith.
-From Stdlib Require Import Reals.Reals.
+Require Import String.
+Require Import List.
+Require Import ZArith.
+Require Import Reals.
 Import ListNotations.
 
 Open Scope string_scope.

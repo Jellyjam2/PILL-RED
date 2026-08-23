@@ -1,8 +1,8 @@
 (** * Soundness Proofs and Security Theorems for PILL RED in Coq *)
 
-From Stdlib Require Import Strings.String.
-From Stdlib Require Import Lists.List.
-From Stdlib Require Import Reals.Reals.
+Require Import String.
+Require Import List.
+Require Import Reals.
 Require Import PillRedSpec.
 Require Import PillRedInvariants.
 Import ListNotations.

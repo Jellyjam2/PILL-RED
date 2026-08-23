@@ -155,7 +155,7 @@ mod kani_proofs {
         // evaluate concrete serialization paths while still proving the relation:
         // stat_val != 0.55 <=> verification fails.
         let choice: u8 = kani::any();
-        let stat_val = match choice % 3 {
+        let stat_val: f64 = match choice % 3 {
             0 => 0.55,
             1 => 0.99,
             _ => 1.23,

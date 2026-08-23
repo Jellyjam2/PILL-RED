@@ -1,0 +1,23 @@
+[package]
+name = "pillred-kani"
+version = "1.0.0"
+edition = "2021"
+authors = ["Titan Black Swan Technologies <support@titanblackswan.com>"]
+description = "Kani Formal Verification Proof Harnesses for PILL RED Protocol"
+
+[dependencies]
+pill_red_core = { path = "../../" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+hex = "0.4"
+
+[dev-dependencies]
+
+[lib]
+path = "src/lib.rs"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }
+
+

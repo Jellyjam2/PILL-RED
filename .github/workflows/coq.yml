@@ -1,4 +1,4 @@
-name: Coq Theorem Prover Verification
+name: Rocq / Coq Theorem Prover Verification
 
 on:
   push:
@@ -10,17 +10,22 @@ on:
       - 'formal/coq/**'
 
 jobs:
-  coq-verify:
-    name: Coq Inductive Invariants & Soundness Proofs
+  coq-compile:
+    name: Rocq / Coq Soundness Proofs (coqc)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify Coq Specification and Proof Files
+      - name: Install Coq
         run: |
-          echo "[*] Checking Coq formal model files..."
-          test -f formal/coq/PillRedSpec.v
-          test -f formal/coq/PillRedInvariants.v
-          test -f formal/coq/PillRedSoundness.v
-          echo "[✓] Coq formal specification and soundness theorems verified."
+          sudo apt-get update
+          sudo apt-get install -y coq
+
+      - name: Compile and Verify Coq/Rocq Soundness Proofs
+        working-directory: formal/coq
+        run: |
+          rm -f *.vo *.vos *.vok *.glob
+          coqc PillRedSpec.v
+          coqc PillRedInvariants.v
+          coqc PillRedSoundness.v

@@ -1,8 +1,8 @@
 (** * Protocol Invariants and Predicates for PILL RED in Coq *)
 
-Require Import Coq.Strings.String.
-Require Import Coq.Lists.List.
-Require Import Coq.Reals.Reals.
+From Stdlib Require Import Strings.String.
+From Stdlib Require Import Lists.List.
+From Stdlib Require Import Reals.Reals.
 Require Import PillRedSpec.
 Import ListNotations.
 

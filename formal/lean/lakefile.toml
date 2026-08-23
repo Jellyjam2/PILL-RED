@@ -1,0 +1,8 @@
+name = "pillred"
+version = "1.0.0"
+defaultTargets = ["PillRed"]
+
+[[lean_lib]]
+name = "PillRed"
+srcDir = "."
+roots = ["PillRed", "PillRed.Theorems"]

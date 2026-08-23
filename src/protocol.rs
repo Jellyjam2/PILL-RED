@@ -169,8 +169,27 @@ pub fn verify_passport(passport_json: &Value) -> Result<(), Vec<String>> {
     let mut vios = Vec::new();
     let claimed_hash = passport_json.get("passport_hash").and_then(|v| v.as_str()).unwrap_or_default();
 
+    if claimed_hash.is_empty() {
+        vios.push("Missing required passport_hash seal".to_string());
+    }
+
+    // Required section presence validation
+    let required_sections = [
+        "identity",
+        "provenance",
+        "statistical_evidence",
+        "economic_evidence",
+        "evidentiary_conclusions",
+    ];
+    for sec in required_sections {
+        if passport_json.get(sec).is_none() {
+            vios.push(format!("Missing required passport section: {}", sec));
+        }
+    }
+
     // 1. Verify Statistical Evidence Hash
     if let Some(stat_sec) = passport_json.get("statistical_evidence") {
+
         let stat_claimed_hash = stat_sec.get("statistical_evidence_hash").and_then(|v| v.as_str()).unwrap_or_default();
         let mut map = BTreeMap::new();
         if let Some(m) = stat_sec.get("measured") { map.insert("measured".to_string(), m.clone()); }

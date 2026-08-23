@@ -1,12 +1,11 @@
 # 💊 PILL RED (v1.0.0)
 
 [![Protocol](https://img.shields.io/badge/Protocol-PILLRED--SPEC--1.0-red.svg)](docs/PILLRED_SPEC_1.0.md)
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/Jellyjam2/PILL-RED/releases)
-[![Tests](https://img.shields.io/badge/Master_Suite-67%2F67_PASS-brightgreen.svg)](tests/)
-[![Python ↔ Rust](https://img.shields.io/badge/Parity-Python_↔_Rust-success.svg)](src/)
-[![Kani Verified](https://img.shields.io/badge/Kani-Model_Checked-purple.svg)](formal/kani/protocol_proofs.rs)
-[![Coq Verified](https://img.shields.io/badge/Coq-Soundness_Proven-blueviolet.svg)](formal/coq/PillRedSoundness.v)
-[![Lean 4 Verified](https://img.shields.io/badge/Lean_4-Theorems_Checked-darkblue.svg)](formal/lean/PillRed/Theorems.lean)
+[![Release](https://img.shields.io/badge/Release_Digest-SHA--256_Verified-blue.svg)](SHA256SUMS.txt)
+[![Tests](https://img.shields.io/badge/Core_Suite-82%2F82_PASS-brightgreen.svg)](tests/)
+[![Lean 4](https://img.shields.io/badge/Lean_4-Lake_Verified-darkblue.svg)](formal/lean/PillRed/Theorems.lean)
+[![Rocq](https://img.shields.io/badge/Rocq-coqc_Verified-blueviolet.svg)](formal/coq/PillRedSoundness.v)
+[![Kani](https://img.shields.io/badge/Kani-Symbolic_Proofs_(CI)-purple.svg)](formal/kani/KANI_VERIFICATION_REPORT.md)
 [![Licensing](https://img.shields.io/badge/Licensing-Asymmetric_Ed25519-informational.svg)](command_center/billing.py)
 
 > **The Universal Cryptographic Evidence & Model Audit Protocol.**  

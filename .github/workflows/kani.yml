@@ -15,15 +15,19 @@ on:
 
 jobs:
   kani-verify:
-    name: Kani Model Checking Invariants
+    name: Kani Model Checking & Symbolic Proofs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify Kani Proof Harnesses
+      - name: Run Kani Model Checker
+        uses: model-checking/kani-github-action@v1
+        with:
+          working-directory: formal/kani
+          args: --all-targets --enable-unstable
+
+      - name: Run Kani Crate Unit Tests
+        working-directory: formal/kani
         run: |
-          echo "[*] Kani formal verification harness configured for src/protocol.rs"
-          echo "[*] Checking formal/kani/protocol_proofs.rs syntax and assumptions..."
-          test -f formal/kani/protocol_proofs.rs
-          echo "[✓] Kani proofs staged for symbolic model checking."
+          cargo test --verbose

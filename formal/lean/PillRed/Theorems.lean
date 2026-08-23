@@ -6,12 +6,13 @@ namespace PillRed
 theorem commitment_binding_thm (r1 r2 : PredictionReceipt) :
   ValidSingleReceipt r1 →
   r1.commit_hash = computeCommitHash r2 →
-  r1.prediction = r2.prediction ∧ r1.commit_timestamp = r2.commit_timestamp := by
+  r1.prediction = r2.prediction ∧ r1.target_event = r2.target_event ∧ r1.commit_timestamp = r2.commit_timestamp := by
   intro h_valid h_eq
   have h_commit := h_valid.2.1
   rw [h_commit] at h_eq
   have h_col := commit_hash_collision_resistant r1 r2 h_eq
-  exact ⟨h_col.1, h_col.2.2⟩
+  exact h_col
+
 
 /-- Theorem P2: Temporal Precedence Soundness Theorem in Lean 4 -/
 theorem temporal_precedence_soundness_thm (r : PredictionReceipt) (t_e t_r : Timestamp) :

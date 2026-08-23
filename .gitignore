@@ -7,3 +7,17 @@ build/
 dist/
 *.egg-info/
 
+# Coq / Rocq build outputs
+*.vo
+*.vos
+*.vok
+*.glob
+.*.aux
+*.aux
+
+# Lean build outputs
+.lake/
+*.olean
+*.ilean
+
+

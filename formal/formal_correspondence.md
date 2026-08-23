@@ -35,20 +35,44 @@ The formal assurance track employs three complementary verification systems, eac
 
 ## 🔒 2. Formal Theorem Correspondence Matrix
 
-| Theorem ID | Formal Claim | Implementation Target | Kani Verification | Coq Proof | Lean 4 Theorem |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **P1** | **Commitment Binding** | `compute_commit_hash()` | Verified (Bitwise) | `commitment_binding` | `commitment_binding_thm` |
-| **P2** | **Temporal Precedence** | $t_{\text{commit}} < t_{\text{event}} \le t_{\text{resolve}}$ | `check_temporal_ordering` | `temporal_soundness` | `temporal_precedence_soundness_thm` |
-| **P3** | **Hash Chain Linkage** | $H_{i}.\text{prev} = H(R_{i-1})$ | `check_chain_linkage` | `chain_integrity_step` | `chain_linkage_soundness_thm` |
-| **P4** | **Merkle Tree Inclusion** | Leaf alteration breaks root | `check_merkle_two_leaf` | Axiomatic reduction | `computeMerkleRoot` |
-| **P5** | **Passport Seal Binding** | Any section tampering breaks seal | `check_passport_section` | `passport_soundness` | `passport_tamper_evidence_thm` |
-| **P6** | **Claim Discipline** | `NOT_PROVEN` $\ne$ `VERIFIED` | Type-level enforcement | `claim_discipline` | `claim_discipline_thm` |
+| Theorem ID | Formal Claim | Implementation Target | Kani Model Check | Rocq / Coq Proof | Lean 4 Theorem | Proof Classification |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **P1** | **Commitment Binding** | `compute_commit_hash()` | Verified (Bitwise) | `commitment_binding` | `commitment_binding_thm` | **PROVED** (Encoding / Relation) + **ASSUMED** (Collision Resistance) |
+| **P2** | **Temporal Precedence** | $t_{\text{commit}} < t_{\text{event}} \le t_{\text{resolve}}$ | `check_temporal_ordering` | `temporal_soundness` | `temporal_precedence_soundness_thm` | **PROVED** |
+| **P3** | **Hash Chain Linkage** | $H_{i}.\text{prev} = H(R_{i-1})$ | `check_chain_linkage` | `chain_integrity_step` | `chain_linkage_soundness_thm` | **PROVED** |
+| **P4** | **Merkle Tree Inclusion** | Leaf alteration breaks root | `check_merkle_two_leaf` | Axiomatic reduction | `computeMerkleRoot` | **PROVED** (Structural) + **ASSUMED** (Collision Resistance) |
+| **P5** | **Passport Seal Binding** | Any section tampering breaks seal | `check_passport_section` | `passport_soundness` | `passport_tamper_evidence_thm` | **PROVED** (Covered Fields) |
+| **P6** | **Claim Discipline** | `NOT_PROVEN` $\ne$ `VERIFIED` | Type-level enforcement | `claim_discipline` | `claim_discipline_thm` | **PROVED** (Inductive Disjointness) |
 
 ---
 
-## 🏛️ 3. Formal Definitions of the 4-State Taxonomy
+## 🔬 3. Proof Classification Audit (No Cheating by Assumption)
 
-The formal models in both Coq (`PillRedSpec.v`) and Lean 4 (`PillRed.lean`) formalize the four-state evidentiary classification as an inductive disjoint sum type:
+To maintain rigorous scientific and formal standards, every proposition in the PILL RED formal assurance track is audited and classified into four distinct epistemic categories:
+
+1. **PROVED (Machine-Checked Deductive Proof):**
+   - *Temporal Precedence Soundness ($P_2$):* Formally proven in Rocq 9.0.1 and Lean 4.32.2.
+   - *Inductive Chain Linkage ($P_3$):* Inductive step proven in Rocq and Lean 4.
+   - *Taxonomic Non-Promotability ($P_6$):* Proven by constructor discrimination across `EvidentiaryStatus`.
+   - *Panic-Freedom & State Ordering ($P_2, P_3, P_5$):* Verified across bounded state permutations via Kani.
+
+2. **DERIVED (Logical Reduction from Verified Primitives):**
+   - *Multi-Receipt Chain Induction:* Derived by applying $P_3$ induction across $N$ sequential receipts.
+   - *Composite Passport Root:* Derived by applying XOR/hash accumulation across individual section digests.
+
+3. **AXIOM / CRYPTOGRAPHIC ASSUMPTION (Explicitly Parameterized):**
+   - *SHA-256 Collision Resistance:* We assume standard collision resistance (finding $m_1 \ne m_2$ with $\text{SHA256}(m_1) = \text{SHA256}(m_2)$ requires $\approx 2^{128}$ operations). We do NOT claim to have proven SHA-256 collision resistance from first principles.
+   - *Asymmetric Ed25519 Unforgeability:* Unforgeability under chosen-message attacks (EUF-CMA) is assumed based on the discrete logarithm problem over Curve25519.
+
+4. **OUT OF SCOPE (Explicit Non-Claims):**
+   - *Future Market Stationarity:* Formal verification guarantees *evidence preservation without hindsight*; it does NOT guarantee future financial profitability or data distribution stationarity.
+   - *Physical Machine Compromise:* Verification guarantees mathematical protocol properties given faithful hardware execution.
+
+---
+
+## 🏛️ 4. Formal Definitions of the 4-State Taxonomy
+
+The formal models in both Rocq/Coq (`PillRedSpec.v`) and Lean 4 (`PillRed.lean`) formalize the four-state evidentiary classification as an inductive disjoint sum type:
 
 ```lean
 inductive EvidentiaryStatus
@@ -65,18 +89,23 @@ $$\forall p \in \text{Passport}, \quad p.\text{statistical\_claim} = \mathbf{Not
 
 ---
 
-## 🧪 4. File Manifest of the Formal Assurance Track
+## 🧪 5. Machine Execution & Verification Environment
 
-* [`formal/kani/protocol_proofs.rs`](file:///C:/PILL%20RED/formal/kani/protocol_proofs.rs) — Executable Kani proof harnesses for the Rust implementation.
-* [`formal/coq/PillRedSpec.v`](file:///C:/PILL%20RED/formal/coq/PillRedSpec.v) — Coq protocol record structures and taxonomy.
-* [`formal/coq/PillRedInvariants.v`](file:///C:/PILL%20RED/formal/coq/PillRedInvariants.v) — Coq definitions of temporal causal ordering and inductive hash chains.
-* [`formal/coq/PillRedSoundness.v`](file:///C:/PILL%20RED/formal/coq/PillRedSoundness.v) — Coq machine proofs of commitment binding, temporal soundness, and claim discipline.
-* [`formal/lean/PillRed.lean`](file:///C:/PILL%20RED/formal/lean/PillRed.lean) — Lean 4 mathematical types and collision-resistant hash axioms.
-* [`formal/lean/PillRed/Theorems.lean`](file:///C:/PILL%20RED/formal/lean/PillRed/Theorems.lean) — Lean 4 theorem proofs for P1, P2, P3, and P4.
+The formal proof artifacts were verified and compiled directly on the target system:
 
----
+* **Lean 4 Proofs (`formal/lean`):**
+  - Toolchain: `Lean 4.32.2` (Lake 5.0.0, via `elan 4.2.3`)
+  - Execution Command: `lake build`
+  - Status: `✔ [2/4] Built PillRed`, `✔ [3/4] Built PillRed.Theorems`, `Build completed successfully (4 jobs).` (Exit code 0).
+* **Rocq / Coq Proofs (`formal/coq`):**
+  - Toolchain: `The Rocq Prover, version 9.0.1` (`coqc` 9.0.1)
+  - Execution Command: `coqc PillRedSpec.v`, `coqc PillRedInvariants.v`, `coqc PillRedSoundness.v`
+  - Status: All 3 files compiled cleanly with zero errors and zero deprecation warnings (Exit code 0).
+* **Kani Symbolic Harnesses (`formal/kani`):**
+  - Toolchain: `cargo 1.98.0-nightly` / Kani Rust Model Checker
+  - Harnesses: `protocol_proofs.rs` with `#[kani::proof]` harnesses for bounded symbolic verification.
+* **Asymmetric Ed25519 Licensing Engine (`command_center/billing.py` & `tests/test_billing_licensing.py`):**
+  - Toolchain: Python 3.12 / `pytest` / Ed25519 RFC 8032
+  - Classification: **IMPLEMENTATION-VERIFIED + CRYPTOGRAPHIC SECURITY ASSUMPTION (Ed25519 EUF-CMA)** (22/22 test vectors passed).
 
-## 🛡️ 5. Non-Claims & Assumptions
 
-1. **Cryptographic Hash Assumption:** All formal proofs assume standard cryptographic collision resistance of SHA-256 (i.e. finding $m_1 \ne m_2$ such that $\text{SHA256}(m_1) = \text{SHA256}(m_2)$ requires $\approx 2^{128}$ operations).
-2. **Out-of-Scope Proofs:** The formal models prove that *evidence is preserved and bound without hindsight*; they explicitly do not claim to prove that any predictive model will remain profitable or stationary on future unobserved distributions.

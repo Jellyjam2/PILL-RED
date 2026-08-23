@@ -7,7 +7,7 @@ Strictly enforces the 4-state evidentiary taxonomy: VERIFIED, MEASURED, INFERRED
 import time
 import uuid
 from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from pillred.protocol.spec import PROTOCOL_VERSION, canonical_encode, sha256_hex
 from pillred.statistical.engine import StatisticalEvaluationResult
 from pillred.economic.engine import EconomicEvaluationResult

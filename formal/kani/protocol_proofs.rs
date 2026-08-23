@@ -3,7 +3,7 @@
 
 use pill_red_core::protocol::{
     compute_commit_hash, compute_merkle_root, compute_receipt_hash, verify_chain, verify_passport,
-    verify_single, RawReceipt, PROTOCOL_VERSION,
+    verify_single, RawReceipt, PROTOCOL_VERSION, canonical_json, sha256_hex,
 };
 use serde_json::json;
 

@@ -1,11 +1,19 @@
 import os
 import sys
 import time
-import numpy as np
+import math
+import statistics
 from spectral_bridge import IntegratedSovereignLumina
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+# High-speed execution configuration constants
+ROUND_STEPS = [4, 8, 16, 24, 32]
+COMPACT_VARIABLES = True
+EPSILON = 1e-4
+WARMUP_RUNS = 2
+MEASURED_RUNS = 5
 
 def simulate_sha256_round_clauses(target_rounds, use_compact_vars=True):
     """
@@ -55,9 +63,6 @@ def simulate_sha256_round_clauses(target_rounds, use_compact_vars=True):
     return num_compact_vars, compact_clauses
 
 def execute_scaling_audit(rust_library_path=None):
-    # Testing scalability steps across the cryptographic complexity curve
-    round_steps = [4, 8, 16, 24]
-    
     print("=========================================================================")
     print("🔬 [EXPERIMENT] RUNNING MULTI-ROUND SHA-256 FIEDLER OPTIMIZATION AUDIT  ")
     print("=========================================================================\n")
@@ -76,27 +81,52 @@ def execute_scaling_audit(rust_library_path=None):
 
     print(f"🏛️ [CORE ENGINE]: Using Rust FFI at: {rust_library_path}\n")
 
-    for rounds in round_steps:
+    for rounds in ROUND_STEPS:
         print(f"--- Round Target: {rounds} Rounds ---")
         
-        # 1. Synthesize unrolled circuit configuration with compact manifold indexing
-        num_vars, clauses = simulate_sha256_round_clauses(rounds, use_compact_vars=True)
+        # 1. Synthesize unrolled circuit configuration once
+        num_vars, clauses = simulate_sha256_round_clauses(rounds, use_compact_vars=COMPACT_VARIABLES)
         clause_density = len(clauses) / num_vars if num_vars > 0 else 0
         print(f"📈 [DAG MAP] Active Variables: {num_vars} | Total Clauses: {len(clauses)} | Density (m/n): {clause_density:.3f}")
         
-        # 2. Initialize integrated pipeline execution
-        pipeline = IntegratedSovereignLumina(
-            num_vars=num_vars, 
-            clauses=clauses, 
-            rust_path=rust_library_path
-        )
+        # 2. Warmup Runs
+        print(f"🔥 [WARMUP] Running {WARMUP_RUNS} iterations...")
+        for w_idx in range(WARMUP_RUNS):
+            pipeline = IntegratedSovereignLumina(
+                num_vars=num_vars, 
+                clauses=clauses, 
+                rust_path=rust_library_path
+            )
+            pipeline.execute_hybrid_solve(epsilon=EPSILON)
+            
+        # 3. Measured Runs
+        print(f"⏱️ [MEASURE] Running {MEASURED_RUNS} timed iterations...")
+        durations = []
+        is_sat = False
+        for m_idx in range(MEASURED_RUNS):
+            pipeline = IntegratedSovereignLumina(
+                num_vars=num_vars, 
+                clauses=clauses, 
+                rust_path=rust_library_path
+            )
+            start_time = time.perf_counter()
+            is_sat, model, sbp_injected, diag = pipeline.execute_hybrid_solve(epsilon=EPSILON)
+            duration = time.perf_counter() - start_time
+            durations.append(duration)
+
+        # 4. Latency and Throughput Metrics
+        min_val = min(durations)
+        median_val = statistics.median(durations)
         
-        # 3. Track operational processing latency
-        start_time = time.perf_counter()
-        is_sat, model = pipeline.execute_hybrid_solve(epsilon=1e-4)
-        duration = time.perf_counter() - start_time
+        sorted_durations = sorted(durations)
+        p95_idx = max(0, min(len(sorted_durations) - 1, math.ceil(0.95 * len(sorted_durations)) - 1))
+        p95_val = sorted_durations[p95_idx]
         
-        print(f"⏱️ [METRICS] Execution Window: {duration:.4f} seconds.")
+        vars_per_sec = num_vars / median_val if median_val > 0 else 0
+        clauses_per_sec = len(clauses) / median_val if median_val > 0 else 0
+        
+        print(f"⏱️ [LATENCY] Min: {min_val:.4f}s | Median: {median_val:.4f}s | P95: {p95_val:.4f}s")
+        print(f"⚡ [THROUGHPUT] {vars_per_sec:.2f} vars/sec | {clauses_per_sec:.2f} clauses/sec")
         print(f"🏁 Status for {rounds} Rounds: {'SUCCESS (SAT)' if is_sat else 'UNSAT'}\n")
 
 if __name__ == "__main__":

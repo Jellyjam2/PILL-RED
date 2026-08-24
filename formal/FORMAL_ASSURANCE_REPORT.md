@@ -10,7 +10,10 @@
 
 ## 🏛️ 1. Executive Summary & Epistemic Classification
 
-The formal assurance track of PILL RED enforces genuine machine verification and clear epistemic boundarie                      TITAN BLACK SWAN TECHNOLOGIES
+The formal assurance track of PILL RED enforces genuine machine verification and clear epistemic boundaries:
+
+```
+                      TITAN BLACK SWAN TECHNOLOGIES
                                   PILL RED
                                      │
          ┌───────────────────────────┼───────────────────────────┐

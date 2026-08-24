@@ -41,7 +41,7 @@ The formal assurance track employs three complementary verification systems, eac
 | **P2** | **Temporal Precedence** | $t_{\text{commit}} < t_{\text{event}} \le t_{\text{resolve}}$ | `check_temporal_ordering` | `temporal_soundness` | `temporal_precedence_soundness_thm` | **PROVED** |
 | **P3** | **Hash Chain Linkage** | $H_{i}.\text{prev} = H(R_{i-1})$ | `check_chain_linkage` | `chain_integrity_step` | `chain_linkage_soundness_thm` | **PROVED** |
 | **P4** | **Merkle Tree Inclusion** | Leaf alteration breaks root | `check_merkle_two_leaf` | Axiomatic reduction | `computeMerkleRoot` | **PROVED** (Structural) + **ASSUMED** (Collision Resistance) |
-| **P5** | **Passport Seal Binding** | Any section tampering breaks seal | `check_passport_section` | `passport_soundness` | `passport_tamper_evidence_thm` | **PROVED** (Covered Fields) |
+| **P5** | **Passport Seal Binding** | `verify_passport()` | `check_passport_section_tamper_detection` | N/A | N/A | **PROVED** (Bounded integer domain) + **VERIFIED** (Rust floats) |
 | **P6** | **Claim Discipline** | `NOT_PROVEN` $\ne$ `VERIFIED` | Type-level enforcement | `claim_discipline` | `claim_discipline_thm` | **PROVED** (Inductive Disjointness) |
 
 ---
@@ -54,7 +54,7 @@ To maintain rigorous scientific and formal standards, every proposition in the P
    - *Temporal Precedence Soundness ($P_2$):* Formally proven in Rocq 9.0.1 and Lean 4.32.2.
    - *Inductive Chain Linkage ($P_3$):* Inductive step proven in Rocq and Lean 4.
    - *Taxonomic Non-Promotability ($P_6$):* Proven by constructor discrimination across `EvidentiaryStatus`.
-   - *Panic-Freedom & State Ordering ($P_2, P_3, P_5$):* Verified across bounded state permutations via Kani.
+   - *Panic-Freedom & State Ordering ($P_2, P_3, P_5$):* Verified across bounded state permutations via Kani (P5 proved over bounded integer-evidence domain; concrete Rust tests verify production floating-point representations).
 
 2. **DERIVED (Logical Reduction from Verified Primitives):**
    - *Multi-Receipt Chain Induction:* Derived by applying $P_3$ induction across $N$ sequential receipts.
@@ -98,9 +98,9 @@ The formal proof artifacts were verified and compiled directly on the target sys
   - Execution Command: `lake build`
   - Status: `✔ [2/4] Built PillRed`, `✔ [3/4] Built PillRed.Theorems`, `Build completed successfully (4 jobs).` (Exit code 0).
 * **Rocq / Coq Proofs (`formal/coq`):**
-  - Toolchain: `The Rocq Prover, version 9.0.1` (`coqc` 9.0.1)
+  - Toolchain: `Coq / Rocq compatible` (v8.18+ / v9.0.1)
   - Execution Command: `coqc PillRedSpec.v`, `coqc PillRedInvariants.v`, `coqc PillRedSoundness.v`
-  - Status: All 3 files compiled cleanly with zero errors and zero deprecation warnings (Exit code 0).
+  - Status: All 3 files compiled cleanly with zero errors (Exit code 0).
 * **Kani Symbolic Harnesses (`formal/kani`):**
   - Toolchain: `cargo 1.98.0-nightly` / Kani Rust Model Checker
   - Harnesses: `protocol_proofs.rs` with `#[kani::proof]` harnesses for bounded symbolic verification.

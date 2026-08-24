@@ -33,8 +33,8 @@ Unlike surrogate/toy XOR models, these harnesses directly import and symbolicall
 
 ### Harness 4: `check_passport_section_tamper_detection` (Theorem $P_5$)
 - **Target Function:** `pill_red_core::protocol::verify_passport(&serde_json::Value)`
-- **Symbolic Exploration:** Injects tampered metric floats into the passport JSON object.
-- **Invariant Verified:** Any tampering with statistical or economic sections causes `verify_passport()` to return an error.
+- **Symbolic Exploration:** Injects a symbolic `u32` evidence value into the passport JSON object.
+- **Invariant Verified:** Proves that mutating the statistical evidence value away from its canonical integer representation causes `verify_passport()` to fail. This verifies the tamper-binding properties over a bounded integer domain (while concrete Rust tests separately exercise the production floating-point representations).
 
 ---
 

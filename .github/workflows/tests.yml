@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-suite:
-    name: 67/67 Python Master Tests & Cross-Language Conformance
+    name: 82/82 Python Master Tests & Cross-Language Conformance
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

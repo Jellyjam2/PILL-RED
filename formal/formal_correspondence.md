@@ -54,7 +54,7 @@ To maintain rigorous scientific and formal standards, every proposition in the P
    - *Temporal Precedence Soundness ($P_2$):* Formally proven in Rocq 9.0.1 and Lean 4.32.2.
    - *Inductive Chain Linkage ($P_3$):* Inductive step proven in Rocq and Lean 4.
    - *Taxonomic Non-Promotability ($P_6$):* Proven by constructor discrimination across `EvidentiaryStatus`.
-   - *Panic-Freedom & State Ordering ($P_2, P_3, P_5$):* Verified across bounded state permutations via Kani (P5 proved over bounded integer-evidence domain; concrete Rust tests verify production floating-point representations).
+   - *Panic-Freedom & State Ordering ($P_2, P_3, P_5$):* Verified across bounded state permutations via Kani (P2/P5 proved over bounded discrete/integer domains; concrete Rust tests verify production floating-point representations).
 
 2. **DERIVED (Logical Reduction from Verified Primitives):**
    - *Multi-Receipt Chain Induction:* Derived by applying $P_3$ induction across $N$ sequential receipts.

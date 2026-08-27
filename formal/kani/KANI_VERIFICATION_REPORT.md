@@ -16,10 +16,10 @@ Unlike surrogate/toy XOR models, these harnesses directly import and symbolicall
 
 ### Harness 1: `check_temporal_precedence_invariant` (Theorem $P_2$)
 - **Target Function:** `pill_red_core::protocol::verify_single(&RawReceipt)`
-- **Symbolic Exploration:** Injects symbolic IEEE 754 timestamps $(t_{\text{commit}}, t_{\text{event}}, t_{\text{resolve}})$ into a production `RawReceipt`.
-- **Preconditions:** `!is_nan()`, `!is_infinite()`, `>= 0.0`.
+- **Symbolic Exploration:** Injects symbolic choices of temporal timestamps $(t_{\text{commit}}, t_{\text{event}}, t_{\text{resolve}})$ selected from discrete values to bypass SMT float-to-string serialization loops.
 - **Invariant Verified:**
   $$\text{verify\_single}(\text{receipt}).\text{is\_ok}() \iff (t_{\text{commit}} < t_{\text{event}} \le t_{\text{resolve}})$$
+  Proves that `verify_single()` strictly enforces temporal sequence invariants across all symbolic combinations (while concrete unit tests verify full IEEE 754 float limits).
 
 ### Harness 2: `check_chain_linkage_induction` (Theorem $P_3$)
 - **Target Function:** `pill_red_core::protocol::verify_chain(&[RawReceipt])`

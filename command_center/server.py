@@ -47,7 +47,7 @@ class PlatformDataStore:
             {"id": "MOD-SPECTRAL-FFT", "name": "Harmonic Spectral Peak", "elo": 1440, "in_sample_acc": 0.108, "out_sample_acc": 0.102, "status": "ACTIVE"},
             {"id": "MOD-NULL-BASELINE", "name": "Theoretical Uniform Null", "elo": 1400, "in_sample_acc": 0.100, "out_sample_acc": 0.100, "status": "BENCHMARK"},
         ]
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
 
         # Pre-seed with initial prediction for Spin 1
         self.next_prediction: Optional[PredictionRecord] = self.prediction_ledger.lock_prediction(

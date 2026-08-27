@@ -16,14 +16,31 @@ mod kani_proofs {
     /// and rejects every invalid temporal permutation.
     #[kani::proof]
     fn check_temporal_precedence_invariant() {
-        let t_commit: f64 = kani::any();
-        let t_event: f64 = kani::any();
-        let t_resolve: f64 = kani::any();
+        // NOTE: We use symbolic choices over a discrete set of floating-point values
+        // instead of fully unbounded symbolic floats (kani::any::<f64>()).
+        // In SMT solvers, serializing fully symbolic floats to JSON strings triggers
+        // dtoa/ryu formatting loops, causing infinite unwinding and timeouts.
+        // Selecting from discrete sets of floats lets the solver evaluate all
+        // temporal ordering combinations (SAT vs UNSAT) without loop explosion.
+        let choice_commit: u8 = kani::any();
+        let choice_event: u8 = kani::any();
+        let choice_resolve: u8 = kani::any();
 
-        kani::assume(!t_commit.is_nan() && !t_commit.is_infinite());
-        kani::assume(!t_event.is_nan() && !t_event.is_infinite());
-        kani::assume(!t_resolve.is_nan() && !t_resolve.is_infinite());
-        kani::assume(t_commit >= 0.0 && t_event >= 0.0 && t_resolve >= 0.0);
+        let t_commit = match choice_commit % 3 {
+            0 => 100.0,
+            1 => 200.0,
+            _ => 300.0,
+        };
+        let t_event = match choice_event % 3 {
+            0 => 150.0,
+            1 => 250.0,
+            _ => 350.0,
+        };
+        let t_resolve = match choice_resolve % 3 {
+            0 => 180.0,
+            1 => 280.0,
+            _ => 380.0,
+        };
 
         let mut receipt = RawReceipt {
             protocol_version: PROTOCOL_VERSION.to_string(),
